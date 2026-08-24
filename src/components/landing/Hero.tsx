@@ -51,8 +51,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Bottom fade to blend with the rest of the site */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-40 bg-gradient-to-t from-black via-black/80 to-transparent" />
     </section>
   );
 }

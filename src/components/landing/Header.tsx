@@ -1,6 +1,7 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, ShieldCheck } from "lucide-react";
+import logoCem from "@/assets/logo-cem.png.asset.json";
 
 export function Header() {
   return (
