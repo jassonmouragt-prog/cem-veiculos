@@ -165,12 +165,12 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
       engine: engine.trim(),
       fuel,
       transmission,
-      powerHp: powerHp ? Number(powerHp) : undefined,
+      ...(powerHp ? { powerHp: Number(powerHp) } : {}),
       mileage: Number(mileage) || 0,
       price: Number(price),
-      entryValue: entryValue ? Number(entryValue) : undefined,
-      installmentsCount: installmentsCount ? Number(installmentsCount) : undefined,
-      installmentValue: installmentValue ? Number(installmentValue) : undefined,
+      ...(entryValue ? { entryValue: Number(entryValue) } : {}),
+      ...(installmentsCount ? { installmentsCount: Number(installmentsCount) } : {}),
+      ...(installmentValue ? { installmentValue: Number(installmentValue) } : {}),
       acceptsTrade,
       acceptsFinancing,
       color: color.trim(),
@@ -184,6 +184,7 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
       status,
       isFeatured,
     });
+
   };
 
   return (

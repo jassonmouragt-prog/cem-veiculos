@@ -58,8 +58,8 @@ function Index() {
       <FeaturedVehicles
         searchQuery={searchQuery}
         categoryFilter={category}
-        maxPriceFilter={maxPriceNum}
-        yearFilter={yearNum}
+        {...(maxPriceNum !== undefined ? { maxPriceFilter: maxPriceNum } : {})}
+        {...(yearNum !== undefined ? { yearFilter: yearNum } : {})}
       />
       <WhyChooseUs />
       <FinancingCTA />

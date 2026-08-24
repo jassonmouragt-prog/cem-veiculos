@@ -52,7 +52,7 @@ export function SearchBar({
 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-gray-400">Preço Máximo</label>
-            <Select value={price} onValueChange={onPriceChange}>
+            <Select value={price} onValueChange={(value) => onPriceChange?.(value)}>
               <SelectTrigger className="bg-black/50 border-white/10 h-11 text-sm text-white rounded-lg focus:ring-[#E8231F]">
                 <SelectValue placeholder="Indiferente" />
               </SelectTrigger>
@@ -67,7 +67,7 @@ export function SearchBar({
 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-gray-400">Ano</label>
-            <Select value={year} onValueChange={onYearChange}>
+            <Select value={year} onValueChange={(value) => onYearChange?.(value)}>
               <SelectTrigger className="bg-black/50 border-white/10 h-11 text-sm text-white rounded-lg focus:ring-[#E8231F]">
                 <SelectValue placeholder="Indiferente" />
               </SelectTrigger>
@@ -85,7 +85,7 @@ export function SearchBar({
 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-gray-400">Categoria</label>
-            <Select value={category} onValueChange={onCategoryChange}>
+            <Select value={category} onValueChange={(value) => onCategoryChange?.(value)}>
               <SelectTrigger className="bg-black/50 border-white/10 h-11 text-sm text-white rounded-lg focus:ring-[#E8231F]">
                 <SelectValue placeholder="Todas" />
               </SelectTrigger>

@@ -203,11 +203,12 @@ export function updateVehicle(id: string, data: Partial<Omit<Vehicle, "id" | "cr
   if (index === -1) return null;
 
   const existing = all[index];
-  const updatedVehicle: Vehicle = {
-    ...existing,
-    ...data,
-    updatedAt: new Date().toISOString(),
-  };
+  const updatedVehicle: Vehicle = Object.assign(
+    { ...existing },
+    data,
+    { updatedAt: new Date().toISOString() }
+  );
+
 
   all[index] = updatedVehicle;
   saveVehiclesToStorage([...all]);
@@ -257,13 +258,14 @@ export function createLead(data: {
     id: `lead-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
     name: data.name.trim(),
     phone: data.phone.trim(),
-    email: data.email?.trim(),
-    vehicleId: data.vehicleId,
-    vehicleName: data.vehicleName,
-    message: data.message?.trim(),
+    ...(data.email ? { email: data.email.trim() } : {}),
+    ...(data.vehicleId ? { vehicleId: data.vehicleId } : {}),
+    ...(data.vehicleName ? { vehicleName: data.vehicleName } : {}),
+    ...(data.message ? { message: data.message.trim() } : {}),
     status: "novo",
     createdAt: new Date().toISOString(),
   };
+
 
   const updated = [newLead, ...all];
   saveLeadsToStorage(updated);

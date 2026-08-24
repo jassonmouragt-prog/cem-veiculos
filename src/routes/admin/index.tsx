@@ -143,7 +143,9 @@ function DashboardPage() {
                           <div className="flex items-center gap-2">
                             <span className="text-xs sm:text-sm font-semibold text-white truncate">{v.name}</span>
                             {v.isFeatured && (
-                              <Sparkles className="w-3 h-3 text-[#E8231F] shrink-0" title="Destaque na home" />
+                            <span className="relative group inline-flex" title="Destaque na home">
+                              <Sparkles className="w-3 h-3 text-[#E8231F] shrink-0" />
+                            </span>
                             )}
                           </div>
                           <span className="text-[11px] text-gray-400 truncate">{v.modelYear} • {v.mileage.toLocaleString()} km</span>
