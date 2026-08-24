@@ -4,16 +4,18 @@ import bannerHero from "@/assets/banner-hero.png.asset.json";
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-black pt-24 lg:pt-28">
-      {/* Banner background — fills the entire hero area */}
+      {/* Banner background — full image visible on desktop (no cropping) */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat lg:bg-contain lg:bg-right-top"
         style={{ backgroundImage: `url(${bannerHero.url})` }}
         aria-hidden="true"
-      />
-
-      {/* Left-side darkening overlay for text readability */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent" />
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
+      >
+        {/* Left-side darkening overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
+        {/* Bottom fade — applied to the image only */}
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black via-black/80 to-transparent" />
+      </div>
 
       {/* Content */}
       <div className="container relative z-10 mx-auto px-4 py-16 lg:py-24">
@@ -49,8 +51,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Bottom fade to blend with the rest of the site */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-40 bg-gradient-to-t from-black via-black/80 to-transparent" />
     </section>
   );
 }

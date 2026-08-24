@@ -1,23 +1,21 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, ShieldCheck } from "lucide-react";
+import logoCem from "@/assets/logo-cem.png.asset.json";
 
 export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/85 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4 lg:h-18">
         <Link to="/" className="flex min-w-0 items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-gradient font-bold text-white text-base shadow-sm">
-            CM
-          </div>
-          <div className="flex min-w-0 flex-col">
-            <span className="truncate text-base font-bold tracking-tight text-white sm:text-lg">
-              C&M Veículos
-            </span>
-            <span className="text-[11px] font-medium text-[#E8231F] tracking-wide">
-              Confiança que move você
-            </span>
-          </div>
+          <img
+            src={logoCem.url}
+            alt="C&M Veículos"
+            className="h-10 w-auto shrink-0 object-contain sm:h-11"
+          />
+          <span className="hidden text-[11px] font-medium tracking-wide text-[#E8231F] sm:block">
+            Confiança que move você
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex xl:gap-8">
