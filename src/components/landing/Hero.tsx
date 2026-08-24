@@ -17,24 +17,24 @@ export function Hero() {
           </p>
 
           <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-3 sm:gap-4 lg:pt-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#E8231F]/15">
-                <ShieldCheck className="w-4.5 h-4.5 text-[#E8231F]" />
-              </div>
-              <span className="text-xs font-semibold text-gray-200 leading-tight">Procedência Garantida</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#E8231F]/15">
-                <CheckCircle2 className="w-4.5 h-4.5 text-[#E8231F]" />
-              </div>
-              <span className="text-xs font-semibold text-gray-200 leading-tight">Revisados e Certificados</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#E8231F]/15">
-                <Tag className="w-4.5 h-4.5 text-[#E8231F]" />
-              </div>
-              <span className="text-xs font-semibold text-gray-200 leading-tight">Preço Justo e Claro</span>
-            </div>
+            {[
+              { Icon: ShieldCheck, label: "Procedência Garantida" },
+              { Icon: CheckCircle2, label: "Revisados e Certificados" },
+              { Icon: Tag, label: "Preço Justo e Claro" },
+            ].map(({ Icon, label }) => (
+              <button
+                key={label}
+                type="button"
+                className="group flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.03] px-3.5 py-2.5 text-left backdrop-blur-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.03] hover:border-[#E8231F]/30 hover:bg-[#E8231F]/5 hover:shadow-md hover:shadow-[#E8231F]/10 active:scale-[0.99] active:translate-y-0"
+              >
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#E8231F]/15 transition-all duration-200 group-hover:bg-[#E8231F]/25">
+                  <Icon className="h-[18px] w-[18px] text-[#E8231F] transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-[-8deg]" />
+                </div>
+                <span className="text-xs font-semibold text-gray-200 leading-tight transition-colors duration-200 group-hover:text-white">
+                  {label}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
