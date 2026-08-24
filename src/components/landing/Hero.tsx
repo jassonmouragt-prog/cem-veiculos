@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, ShieldCheck, Tag } from "lucide-react";
 
 export function Hero() {
@@ -9,10 +8,6 @@ export function Hero() {
 
       <div className="container mx-auto grid items-center gap-8 px-4 lg:grid-cols-2 lg:gap-12">
         <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
-          <Badge variant="outline" className="w-fit border-[#E8231F]/30 bg-[#E8231F]/10 text-[#E8231F] font-semibold text-xs py-1 px-3.5 rounded-full">
-            +30 ANOS DE HISTÓRIA
-          </Badge>
-          
           <h1 className="max-w-2xl text-2xl font-extrabold text-white leading-[1.2] tracking-tight sm:text-3xl lg:text-4xl xl:text-[42px]">
             Encontre seu próximo carro com <span className="text-brand-gradient">procedência</span> e <span className="text-brand-gradient">sofisticação</span>.
           </h1>
