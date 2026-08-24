@@ -1,24 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Header } from "@/components/landing/Header";
+import { Hero } from "@/components/landing/Hero";
+import { SearchBar } from "@/components/landing/SearchBar";
+import { FeaturedVehicles } from "@/components/landing/FeaturedVehicles";
+import { WhyChooseUs } from "@/components/landing/WhyChooseUs";
+import { FinancingCTA } from "@/components/landing/FinancingCTA";
+import { Testimonials } from "@/components/landing/Testimonials";
+import { Location } from "@/components/landing/Location";
+import { Footer } from "@/components/landing/Footer";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    title: "C&M Veículos | Confiança que move você",
+    meta: [
+      { name: "description", content: "Encontre seu próximo carro com procedência e sofisticação na C&M Veículos. Mais de 30 anos de história conectando você aos melhores veículos." },
+      { property: "og:title", content: "C&M Veículos | Veículos Novos e Seminovos em Teresina" },
+      { property: "og:description", content: "Veículos selecionados, revisados e com garantia para você dirigir com segurança e tranquilidade." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="min-h-screen overflow-x-hidden bg-black font-sans selection:bg-[#E8231F] selection:text-white">
+      <Header />
+      <Hero />
+      <SearchBar />
+      <FeaturedVehicles />
+      <WhyChooseUs />
+      <FinancingCTA />
+      <Testimonials />
+      <Location />
+      <Footer />
+    </main>
   );
 }
