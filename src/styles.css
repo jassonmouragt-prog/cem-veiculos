@@ -164,3 +164,14 @@
 @utility bg-brand-gradient {
   background: linear-gradient(135deg, #E8231F 0%, #B31916 100%);
 }
+
+/* Hide the "Made with Lovable" badge */
+#lovable-badge,
+a[href*="lovable.dev"][target="_blank"][class*="badge"],
+[data-lovable-badge],
+.lovable-badge {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
