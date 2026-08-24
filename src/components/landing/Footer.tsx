@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, Youtube } from "lucide-react";
 
 export function Footer() {
@@ -21,24 +22,67 @@ export function Footer() {
             </div>
           </div>
 
-          {[
-            { title: "Navegação", links: ["Início", "Estoque", "Seminovos", "Financiamento", "Avaliação", "Sobre", "Contato"] },
-            { title: "Categorias", links: ["Todos os veículos", "Carros", "SUVs", "Picapes", "Motos"] },
-            { title: "Institucional", links: ["Financiamento", "Garantia", "Dúvidas frequentes", "Política de privacidade", "Termos de uso"] },
-            { title: "Contato", links: ["(86) 9 9914-8872", "(86) 9 9529-0088", "contato@cmveiculos.com.br", "Av. das Fronteiras, 1417"] },
-          ].map((col) => (
-            <div key={col.title}>
-              <h4 className="font-semibold text-white mb-3.5 text-xs uppercase tracking-wider">{col.title}</h4>
-              <ul className="space-y-2 text-xs text-gray-400">
-                {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="hover:text-white transition-colors">{link}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Navegação */}
+          <div>
+            <h4 className="font-semibold text-white mb-3.5 text-xs uppercase tracking-wider">Navegação</h4>
+            <ul className="space-y-2 text-xs text-gray-400">
+              <li><Link to="/" className="hover:text-white transition-colors">Início</Link></li>
+              <li><Link to="/estoque" className="hover:text-white transition-colors">Estoque Completo</Link></li>
+              <li><a href="/#financiamento" className="hover:text-white transition-colors">Financiamento</a></li>
+              <li><a href="/#sobre" className="hover:text-white transition-colors">Sobre Nós</a></li>
+              <li><a href="/#localizacao" className="hover:text-white transition-colors">Localização</a></li>
+            </ul>
+          </div>
+
+          {/* Categorias */}
+          <div>
+            <h4 className="font-semibold text-white mb-3.5 text-xs uppercase tracking-wider">Categorias</h4>
+            <ul className="space-y-2 text-xs text-gray-400">
+              <li><Link to="/estoque" className="hover:text-white transition-colors">Todos os veículos</Link></li>
+              <li><Link to="/estoque" className="hover:text-white transition-colors">SUVs</Link></li>
+              <li><Link to="/estoque" className="hover:text-white transition-colors">Sedans</Link></li>
+              <li><Link to="/estoque" className="hover:text-white transition-colors">Hatches</Link></li>
+              <li><Link to="/estoque" className="hover:text-white transition-colors">Picapes</Link></li>
+              <li><Link to="/estoque" className="hover:text-white transition-colors">Motos</Link></li>
+            </ul>
+          </div>
+
+          {/* Institucional */}
+          <div>
+            <h4 className="font-semibold text-white mb-3.5 text-xs uppercase tracking-wider">Institucional</h4>
+            <ul className="space-y-2 text-xs text-gray-400">
+              <li><a href="#" className="hover:text-white transition-colors">Financiamento</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Garantia</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Dúvidas frequentes</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Política de privacidade</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Termos de uso</a></li>
+            </ul>
+          </div>
+
+          {/* Contato */}
+          <div>
+            <h4 className="font-semibold text-white mb-3.5 text-xs uppercase tracking-wider">Contato</h4>
+            <ul className="space-y-2 text-xs text-gray-400">
+              <li>
+                <a href="https://wa.me/558699148872" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  (86) 9 9914-8872
+                </a>
+              </li>
+              <li>
+                <a href="https://wa.me/558699148872" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  (86) 9 9529-0088
+                </a>
+              </li>
+              <li>
+                <a href="mailto:contato@cmveiculos.com.br" className="hover:text-white transition-colors">
+                  contato@cmveiculos.com.br
+                </a>
+              </li>
+              <li className="text-gray-500">Av. das Fronteiras, 1417</li>
+            </ul>
+          </div>
         </div>
+
         <div className="text-center pt-6 border-t border-white/5 text-gray-400 text-xs">
           © {new Date().getFullYear()} C&M Veículos. Todos os direitos reservados.
         </div>

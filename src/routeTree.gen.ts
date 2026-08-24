@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as EstoqueRouteImport } from './routes/estoque'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin/configuracoes'
@@ -26,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EstoqueRoute = EstoqueRouteImport.update({
+  id: '/estoque',
+  path: '/estoque',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -62,6 +68,7 @@ const VeiculosSlugRoute = VeiculosSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/leads': typeof AdminLeadsRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/leads': typeof AdminLeadsRoute
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/leads': typeof AdminLeadsRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/estoque'
     | '/login'
     | '/admin/configuracoes'
     | '/admin/leads'
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/estoque'
     | '/login'
     | '/admin/configuracoes'
     | '/admin/leads'
@@ -113,6 +124,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/estoque'
     | '/login'
     | '/admin/configuracoes'
     | '/admin/leads'
@@ -124,6 +136,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  EstoqueRoute: typeof EstoqueRoute
   LoginRoute: typeof LoginRoute
   VeiculosSlugRoute: typeof VeiculosSlugRoute
 }
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estoque': {
+      id: '/estoque'
+      path: '/estoque'
+      fullPath: '/estoque'
+      preLoaderRoute: typeof EstoqueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -208,6 +228,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  EstoqueRoute: EstoqueRoute,
   LoginRoute: LoginRoute,
   VeiculosSlugRoute: VeiculosSlugRoute,
 }

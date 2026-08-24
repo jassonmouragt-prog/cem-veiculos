@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useMatchRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, ShieldCheck } from "lucide-react";
 
@@ -21,25 +21,21 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex xl:gap-8">
-          {[
-            { label: "Início", href: "/" },
-            { label: "Estoque", href: "/#estoque" },
-            { label: "Financiamento", href: "/#financiamento" },
-            { label: "Sobre", href: "/#sobre" },
-            { label: "Localização", href: "/#localizacao" },
-          ].map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className={`text-sm font-medium transition-colors hover:text-white ${
-                item.label === "Início"
-                  ? "text-[#E8231F] font-semibold relative after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-[#E8231F]"
-                  : "text-gray-300"
-              }`}
-            >
-              {item.label}
-            </a>
-          ))}
+          <Link
+            to="/"
+            className="text-sm font-medium transition-colors hover:text-white text-gray-300 [&.active]:text-[#E8231F] [&.active]:font-semibold"
+          >
+            Início
+          </Link>
+          <Link
+            to="/estoque"
+            className="text-sm font-medium transition-colors hover:text-white text-gray-300 [&.active]:text-[#E8231F] [&.active]:font-semibold"
+          >
+            Estoque
+          </Link>
+          <a href="/#financiamento" className="text-sm font-medium transition-colors hover:text-white text-gray-300">Financiamento</a>
+          <a href="/#sobre" className="text-sm font-medium transition-colors hover:text-white text-gray-300">Sobre</a>
+          <a href="/#localizacao" className="text-sm font-medium transition-colors hover:text-white text-gray-300">Localização</a>
         </nav>
 
         <div className="flex items-center gap-2">
