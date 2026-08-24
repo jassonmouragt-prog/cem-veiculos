@@ -203,17 +203,47 @@ export function updateVehicle(id: string, data: Partial<Omit<Vehicle, "id" | "cr
   if (index === -1) return null;
 
   const existing = all[index];
-  const updatedVehicle: Vehicle = Object.assign(
-    { ...existing },
-    data,
-    { updatedAt: new Date().toISOString() }
-  );
-
+  const updatedVehicle: Vehicle = {
+    id: existing.id,
+    slug: existing.slug,
+    name: existing.name,
+    brand: existing.brand,
+    model: existing.model,
+    version: existing.version,
+    manufacturingYear: existing.manufacturingYear,
+    modelYear: existing.modelYear,
+    category: existing.category,
+    engine: existing.engine,
+    fuel: existing.fuel,
+    transmission: existing.transmission,
+    powerHp: existing.powerHp,
+    mileage: existing.mileage,
+    price: existing.price,
+    entryValue: existing.entryValue,
+    installmentsCount: existing.installmentsCount,
+    installmentValue: existing.installmentValue,
+    acceptsTrade: existing.acceptsTrade,
+    acceptsFinancing: existing.acceptsFinancing,
+    color: existing.color,
+    doors: existing.doors,
+    features: existing.features,
+    singleOwner: existing.singleOwner,
+    dealerMaintained: existing.dealerMaintained,
+    description: existing.description,
+    images: existing.images,
+    mainImageIndex: existing.mainImageIndex,
+    status: existing.status,
+    isFeatured: existing.isFeatured,
+    createdAt: existing.createdAt,
+    ...data,
+    updatedAt: new Date().toISOString(),
+  };
 
   all[index] = updatedVehicle;
   saveVehiclesToStorage([...all]);
   return updatedVehicle;
 }
+
 
 export function deleteVehicle(id: string): boolean {
   const all = getVehiclesFromStorage();
