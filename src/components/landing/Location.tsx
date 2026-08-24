@@ -4,7 +4,7 @@ import { MapPin, Phone, Clock } from "lucide-react";
 
 export function Location() {
   return (
-    <section className="bg-[#0a0a0a] py-12 lg:py-16">
+    <section id="localizacao" className="bg-[#0a0a0a] py-12 lg:py-16">
       <div className="container mx-auto grid items-center gap-8 px-4 lg:grid-cols-2 lg:gap-12">
         <div className="space-y-5">
           <Badge variant="secondary" className="bg-[#E8231F]/10 border border-[#E8231F]/20 text-[#E8231F] font-semibold text-xs rounded-full py-0.5 px-3">

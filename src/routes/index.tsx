@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { Header } from "@/components/landing/Header";
 import { Hero } from "@/components/landing/Hero";
 import { SearchBar } from "@/components/landing/SearchBar";
@@ -24,12 +25,42 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [category, setCategory] = useState("todas");
+  const [price, setPrice] = useState("indiferente");
+  const [year, setYear] = useState("indiferente");
+
+  const maxPriceNum = price === "50k" ? 50000 : price === "100k" ? 100000 : price === "150k" ? 150000 : undefined;
+  const yearNum = year !== "indiferente" ? Number(year) : undefined;
+
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setCategory("todas");
+    setPrice("indiferente");
+    setYear("indiferente");
+  };
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-black font-sans selection:bg-[#E8231F] selection:text-white">
       <Header />
       <Hero />
-      <SearchBar />
-      <FeaturedVehicles />
+      <SearchBar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        category={category}
+        onCategoryChange={setCategory}
+        price={price}
+        onPriceChange={setPrice}
+        year={year}
+        onYearChange={setYear}
+        onReset={handleResetFilters}
+      />
+      <FeaturedVehicles
+        searchQuery={searchQuery}
+        categoryFilter={category}
+        maxPriceFilter={maxPriceNum}
+        yearFilter={yearNum}
+      />
       <WhyChooseUs />
       <FinancingCTA />
       <Testimonials />

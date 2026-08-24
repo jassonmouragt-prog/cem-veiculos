@@ -12,7 +12,7 @@ export function WhyChooseUs() {
   ];
 
   return (
-    <section className="bg-black py-12 lg:py-16">
+    <section id="sobre" className="bg-black py-12 lg:py-16">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
           <Badge variant="secondary" className="bg-[#E8231F]/10 border border-[#E8231F]/20 text-[#E8231F] font-semibold text-xs mb-2 rounded-full py-0.5 px-3">

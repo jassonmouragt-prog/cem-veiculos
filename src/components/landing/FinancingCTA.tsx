@@ -4,7 +4,7 @@ import { Calculator } from "lucide-react";
 
 export function FinancingCTA() {
   return (
-    <section className="bg-black py-12 lg:py-16">
+    <section id="financiamento" className="bg-black py-12 lg:py-16">
       <div className="container mx-auto px-4">
         <Card className="bg-[#121212] border-white/5 overflow-hidden flex flex-col md:flex-row rounded-2xl shadow-xl">
           <div className="relative min-h-[240px] md:min-h-[300px] md:w-1/2">
