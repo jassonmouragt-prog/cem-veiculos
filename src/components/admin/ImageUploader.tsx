@@ -74,7 +74,8 @@ export function ImageUploader({
 
     const updated = [...images];
     const temp = updated[index];
-    updated[index] = updated[targetIndex];
+    if (temp === undefined || updated[targetIndex] === undefined) return;
+    updated[index] = updated[targetIndex]!;
     updated[targetIndex] = temp;
 
     // Adjust main image index if moved
@@ -86,6 +87,7 @@ export function ImageUploader({
 
     onChangeImages(updated);
   };
+
 
   return (
     <div className="space-y-4">

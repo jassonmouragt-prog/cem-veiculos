@@ -48,11 +48,12 @@ export function LeadModal({ isOpen, onClose, vehicle }: LeadModalProps) {
       createLead({
         name: name.trim(),
         phone: phone.trim(),
-        email: email.trim() || undefined,
-        vehicleId: vehicle?.id,
-        vehicleName: vehicle?.name || "Interesse Geral",
-        message: message.trim() || undefined,
+        ...(email.trim() ? { email: email.trim() } : {}),
+        ...(vehicle?.id ? { vehicleId: vehicle.id } : {}),
+        ...(vehicle?.name ? { vehicleName: vehicle.name } : {}),
+        ...(message.trim() ? { message: message.trim() } : {}),
       });
+
 
       toast.success("Mensagem enviada com sucesso! Nossos consultores entrarão em contato.");
 
