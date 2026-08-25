@@ -1,8 +1,9 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { isAuthenticated, subscribeToAuth } from "@/lib/auth/auth-service";
 import { migrateLegacyLocalData } from "@/lib/db/store";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -90,7 +91,9 @@ function AdminLayout() {
 
         {/* Main Content Area */}
         <div className="flex-1 min-w-0 flex flex-col min-h-screen bg-[#0a0a0a]">
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </div>
       </div>
     </AdminLayoutContext.Provider>
