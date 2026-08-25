@@ -26,7 +26,7 @@ function LoginPage() {
     const checkAuth = async () => {
       const authPromise = isAuthenticated();
       const timeoutPromise = new Promise<boolean>((resolve) =>
-        setTimeout(() => resolve(false), 5000)
+        setTimeout(() => resolve(false), 5000),
       );
       if (await Promise.race([authPromise, timeoutPromise])) {
         navigate({ to: "/admin" });
