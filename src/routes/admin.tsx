@@ -22,7 +22,12 @@ function AdminLayout() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const auth = await isAuthenticated();
+      // Timeout de 5s para evitar travamento na verificação de auth
+      const authPromise = isAuthenticated();
+      const timeoutPromise = new Promise<boolean>((resolve) =>
+        setTimeout(() => resolve(false), 5000)
+      );
+      const auth = await Promise.race([authPromise, timeoutPromise]);
       setIsAuth(auth);
       if (!auth) {
         navigate({ to: "/login" });

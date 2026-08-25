@@ -24,7 +24,11 @@ function LoginPage() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (await isAuthenticated()) {
+      const authPromise = isAuthenticated();
+      const timeoutPromise = new Promise<boolean>((resolve) =>
+        setTimeout(() => resolve(false), 5000)
+      );
+      if (await Promise.race([authPromise, timeoutPromise])) {
         navigate({ to: "/admin" });
       }
     };
