@@ -8,12 +8,8 @@ export function FinancingCTA() {
       <div className="container mx-auto px-4">
         <Card className="bg-[#121212] border-white/5 overflow-hidden flex flex-col md:flex-row rounded-2xl shadow-xl">
           <div className="relative min-h-[240px] md:min-h-[300px] md:w-1/2">
-            <img 
-              src="https://images.unsplash.com/photo-1550345332-09a3af9c702f?auto=format&fit=crop&q=80&w=800" 
-              alt="Financiamento C&M Veículos" 
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 flex flex-col justify-center bg-gradient-to-t from-black/90 via-black/60 to-black/30 p-6 sm:p-8 lg:p-10">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#121212] to-[#0d0d0d]" />
+            <div className="absolute inset-0 flex flex-col justify-center p-6 sm:p-8 lg:p-10">
               <span className="text-[#E8231F] font-semibold tracking-wider text-xs uppercase mb-1.5">REALIZE SEU SONHO</span>
               <h2 className="mb-2 text-xl font-bold text-white tracking-tight sm:text-2xl lg:text-3xl">
                 Simule seu Financiamento
