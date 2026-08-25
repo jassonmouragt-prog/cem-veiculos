@@ -19,9 +19,13 @@ function AdminLayout() {
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [migrationDone, setMigrationDone] = useState(false);
+  const authCheckRef = useRef(false);
 
   useEffect(() => {
     const checkAuth = async () => {
+      if (authCheckRef.current) return;
+      authCheckRef.current = true;
+
       // Timeout de 5s para evitar travamento na verificação de auth
       const authPromise = isAuthenticated();
       const timeoutPromise = new Promise<boolean>((resolve) =>
@@ -40,12 +44,13 @@ function AdminLayout() {
         }
         setMigrationDone(true);
       }
+      authCheckRef.current = false;
     };
 
     checkAuth();
     const unsubscribe = subscribeToAuth(checkAuth);
     return () => unsubscribe();
-  }, [navigate, migrationDone]);
+  }, [navigate]);
 
   if (isAuth === null) {
     return (

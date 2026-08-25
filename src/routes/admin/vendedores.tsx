@@ -78,17 +78,17 @@ function VendedoresPage() {
     if (editingSeller) {
       await updateSeller(editingSeller.id, data);
       toast.success("Vendedor atualizado com sucesso!");
+      setIsFormOpen(false);
+      setEditingSeller(null);
     } else {
       const currentUser = getCurrentUser();
       if (!currentUser) {
-        toast.error("Sessão expirada. Faça login novamente.");
-        return;
+        throw new Error("Sessão expirada. Faça login novamente.");
       }
       await createSeller({ ...data, userId: currentUser.id });
       toast.success("Vendedor cadastrado com sucesso!");
+      // NÃO fecha o form aqui - deixa o form mostrar tela de sucesso
     }
-    setIsFormOpen(false);
-    setEditingSeller(null);
   };
 
   const handleConfirmDelete = async () => {
