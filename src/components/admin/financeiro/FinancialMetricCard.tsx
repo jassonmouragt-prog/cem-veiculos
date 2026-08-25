@@ -45,7 +45,9 @@ export function FinancialMetricCard({
               <p className="text-[11px] text-gray-500 mt-1 truncate">{description}</p>
             )}
           </div>
-          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${badgeColors[badgeColor]}`}>
+          <div
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${badgeColors[badgeColor]}`}
+          >
             <Icon className="w-5 h-5" />
           </div>
         </div>
@@ -57,7 +59,8 @@ export function FinancialMetricCard({
                 trend.positive ? "text-emerald-400" : "text-red-400"
               }`}
             >
-              {trend.positive ? "+" : ""}{trend.value.toFixed(1)}%
+              {trend.positive ? "+" : ""}
+              {trend.value.toFixed(1)}%
             </span>
             <span className="text-xs text-gray-400">vs mês anterior</span>
           </div>

@@ -52,7 +52,8 @@ import {
   Clock,
   Tag,
 } from "lucide-react";
-import { toast } from "sonner";
+import { SaleFinalizationModal } from "@/components/admin/financeiro/SaleFinalizationModal";
+import { getActiveSellers } from "@/lib/db/store";
 
 export const Route = createFileRoute("/admin/veiculos")({
   component: AdminVehiclesPage,
@@ -67,6 +68,9 @@ function AdminVehiclesPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [vehicleToDelete, setVehicleToDelete] = useState<Vehicle | null>(null);
+  const [vehicleToFinalize, setVehicleToFinalize] = useState<Vehicle | null>(null);
+  const [isFinalizeOpen, setIsFinalizeOpen] = useState(false);
+  const sellers = getActiveSellers();
 
   useEffect(() => {
     const update = () => {
@@ -127,6 +131,14 @@ function AdminVehiclesPage() {
   };
 
   const handleStatusChange = async (id: string, newStatus: VehicleStatus) => {
+    if (newStatus === "vendido") {
+      const vehicle = vehicles.find((v) => v.id === id);
+      if (vehicle) {
+        setVehicleToFinalize(vehicle);
+        setIsFinalizeOpen(true);
+        return;
+      }
+    }
     await updateVehicleStatus(id, newStatus);
     toast.success(`Status atualizado para: ${newStatus.toUpperCase()}`);
   };
@@ -429,6 +441,24 @@ function AdminVehiclesPage() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Sale Finalization Modal */}
+        <SaleFinalizationModal
+          isOpen={isFinalizeOpen}
+          onClose={() => setIsFinalizeOpen(false)}
+          vehicle={
+            vehicleToFinalize
+              ? {
+                  id: vehicleToFinalize.id,
+                  name: vehicleToFinalize.name,
+                  price: vehicleToFinalize.price,
+                  acquisitionCost: vehicleToFinalize.acquisitionCost,
+                }
+              : null
+          }
+          sellers={sellers}
+          onFinalize={() => setIsFinalizeOpen(false)}
+        />
       </main>
     </div>
   );

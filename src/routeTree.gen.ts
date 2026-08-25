@@ -15,9 +15,20 @@ import { Route as EstoqueRouteImport } from './routes/estoque'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin/configuracoes'
+import { Route as AdminFinanceiroRouteImport } from './routes/admin/financeiro'
 import { Route as AdminLeadsRouteImport } from './routes/admin/leads'
 import { Route as AdminVeiculosRouteImport } from './routes/admin/veiculos'
 import { Route as VeiculosSlugRouteImport } from './routes/veiculos/$slug'
+import { Route as AdminFinanceiroIndexRouteImport } from './routes/admin/financeiro/index'
+import { Route as AdminFinanceiroComissoesRouteImport } from './routes/admin/financeiro/comissoes'
+import { Route as AdminFinanceiroContasAPagarRouteImport } from './routes/admin/financeiro/contas-a-pagar'
+import { Route as AdminFinanceiroContasAReceberRouteImport } from './routes/admin/financeiro/contas-a-receber'
+import { Route as AdminFinanceiroDespesasRouteImport } from './routes/admin/financeiro/despesas'
+import { Route as AdminFinanceiroEntradasRouteImport } from './routes/admin/financeiro/entradas'
+import { Route as AdminFinanceiroGraficosRouteImport } from './routes/admin/financeiro/graficos'
+import { Route as AdminFinanceiroRelatoriosRouteImport } from './routes/admin/financeiro/relatorios'
+import { Route as AdminFinanceiroSaidasRouteImport } from './routes/admin/financeiro/saidas'
+import { Route as AdminFinanceiroVendasRouteImport } from './routes/admin/financeiro/vendas'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -49,6 +60,11 @@ const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
   path: '/configuracoes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminFinanceiroRoute = AdminFinanceiroRouteImport.update({
+  id: '/financeiro',
+  path: '/financeiro',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLeadsRoute = AdminLeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
@@ -64,6 +80,60 @@ const VeiculosSlugRoute = VeiculosSlugRouteImport.update({
   path: '/veiculos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminFinanceiroIndexRoute = AdminFinanceiroIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminFinanceiroRoute,
+} as any)
+const AdminFinanceiroComissoesRoute =
+  AdminFinanceiroComissoesRouteImport.update({
+    id: '/comissoes',
+    path: '/comissoes',
+    getParentRoute: () => AdminFinanceiroRoute,
+  } as any)
+const AdminFinanceiroContasAPagarRoute =
+  AdminFinanceiroContasAPagarRouteImport.update({
+    id: '/contas-a-pagar',
+    path: '/contas-a-pagar',
+    getParentRoute: () => AdminFinanceiroRoute,
+  } as any)
+const AdminFinanceiroContasAReceberRoute =
+  AdminFinanceiroContasAReceberRouteImport.update({
+    id: '/contas-a-receber',
+    path: '/contas-a-receber',
+    getParentRoute: () => AdminFinanceiroRoute,
+  } as any)
+const AdminFinanceiroDespesasRoute = AdminFinanceiroDespesasRouteImport.update({
+  id: '/despesas',
+  path: '/despesas',
+  getParentRoute: () => AdminFinanceiroRoute,
+} as any)
+const AdminFinanceiroEntradasRoute = AdminFinanceiroEntradasRouteImport.update({
+  id: '/entradas',
+  path: '/entradas',
+  getParentRoute: () => AdminFinanceiroRoute,
+} as any)
+const AdminFinanceiroGraficosRoute = AdminFinanceiroGraficosRouteImport.update({
+  id: '/graficos',
+  path: '/graficos',
+  getParentRoute: () => AdminFinanceiroRoute,
+} as any)
+const AdminFinanceiroRelatoriosRoute =
+  AdminFinanceiroRelatoriosRouteImport.update({
+    id: '/relatorios',
+    path: '/relatorios',
+    getParentRoute: () => AdminFinanceiroRoute,
+  } as any)
+const AdminFinanceiroSaidasRoute = AdminFinanceiroSaidasRouteImport.update({
+  id: '/saidas',
+  path: '/saidas',
+  getParentRoute: () => AdminFinanceiroRoute,
+} as any)
+const AdminFinanceiroVendasRoute = AdminFinanceiroVendasRouteImport.update({
+  id: '/vendas',
+  path: '/vendas',
+  getParentRoute: () => AdminFinanceiroRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -71,10 +141,21 @@ export interface FileRoutesByFullPath {
   '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/financeiro': typeof AdminFinanceiroRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/veiculos': typeof AdminVeiculosRoute
   '/veiculos/$slug': typeof VeiculosSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/financeiro/comissoes': typeof AdminFinanceiroComissoesRoute
+  '/admin/financeiro/contas-a-pagar': typeof AdminFinanceiroContasAPagarRoute
+  '/admin/financeiro/contas-a-receber': typeof AdminFinanceiroContasAReceberRoute
+  '/admin/financeiro/despesas': typeof AdminFinanceiroDespesasRoute
+  '/admin/financeiro/entradas': typeof AdminFinanceiroEntradasRoute
+  '/admin/financeiro/graficos': typeof AdminFinanceiroGraficosRoute
+  '/admin/financeiro/relatorios': typeof AdminFinanceiroRelatoriosRoute
+  '/admin/financeiro/saidas': typeof AdminFinanceiroSaidasRoute
+  '/admin/financeiro/vendas': typeof AdminFinanceiroVendasRoute
+  '/admin/financeiro/': typeof AdminFinanceiroIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -85,6 +166,16 @@ export interface FileRoutesByTo {
   '/admin/veiculos': typeof AdminVeiculosRoute
   '/veiculos/$slug': typeof VeiculosSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/financeiro/comissoes': typeof AdminFinanceiroComissoesRoute
+  '/admin/financeiro/contas-a-pagar': typeof AdminFinanceiroContasAPagarRoute
+  '/admin/financeiro/contas-a-receber': typeof AdminFinanceiroContasAReceberRoute
+  '/admin/financeiro/despesas': typeof AdminFinanceiroDespesasRoute
+  '/admin/financeiro/entradas': typeof AdminFinanceiroEntradasRoute
+  '/admin/financeiro/graficos': typeof AdminFinanceiroGraficosRoute
+  '/admin/financeiro/relatorios': typeof AdminFinanceiroRelatoriosRoute
+  '/admin/financeiro/saidas': typeof AdminFinanceiroSaidasRoute
+  '/admin/financeiro/vendas': typeof AdminFinanceiroVendasRoute
+  '/admin/financeiro': typeof AdminFinanceiroIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,10 +184,21 @@ export interface FileRoutesById {
   '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/financeiro': typeof AdminFinanceiroRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/veiculos': typeof AdminVeiculosRoute
   '/veiculos/$slug': typeof VeiculosSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/financeiro/comissoes': typeof AdminFinanceiroComissoesRoute
+  '/admin/financeiro/contas-a-pagar': typeof AdminFinanceiroContasAPagarRoute
+  '/admin/financeiro/contas-a-receber': typeof AdminFinanceiroContasAReceberRoute
+  '/admin/financeiro/despesas': typeof AdminFinanceiroDespesasRoute
+  '/admin/financeiro/entradas': typeof AdminFinanceiroEntradasRoute
+  '/admin/financeiro/graficos': typeof AdminFinanceiroGraficosRoute
+  '/admin/financeiro/relatorios': typeof AdminFinanceiroRelatoriosRoute
+  '/admin/financeiro/saidas': typeof AdminFinanceiroSaidasRoute
+  '/admin/financeiro/vendas': typeof AdminFinanceiroVendasRoute
+  '/admin/financeiro/': typeof AdminFinanceiroIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,10 +208,21 @@ export interface FileRouteTypes {
     | '/estoque'
     | '/login'
     | '/admin/configuracoes'
+    | '/admin/financeiro'
     | '/admin/leads'
     | '/admin/veiculos'
     | '/veiculos/$slug'
     | '/admin/'
+    | '/admin/financeiro/comissoes'
+    | '/admin/financeiro/contas-a-pagar'
+    | '/admin/financeiro/contas-a-receber'
+    | '/admin/financeiro/despesas'
+    | '/admin/financeiro/entradas'
+    | '/admin/financeiro/graficos'
+    | '/admin/financeiro/relatorios'
+    | '/admin/financeiro/saidas'
+    | '/admin/financeiro/vendas'
+    | '/admin/financeiro/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -120,6 +233,16 @@ export interface FileRouteTypes {
     | '/admin/veiculos'
     | '/veiculos/$slug'
     | '/admin'
+    | '/admin/financeiro/comissoes'
+    | '/admin/financeiro/contas-a-pagar'
+    | '/admin/financeiro/contas-a-receber'
+    | '/admin/financeiro/despesas'
+    | '/admin/financeiro/entradas'
+    | '/admin/financeiro/graficos'
+    | '/admin/financeiro/relatorios'
+    | '/admin/financeiro/saidas'
+    | '/admin/financeiro/vendas'
+    | '/admin/financeiro'
   id:
     | '__root__'
     | '/'
@@ -127,10 +250,21 @@ export interface FileRouteTypes {
     | '/estoque'
     | '/login'
     | '/admin/configuracoes'
+    | '/admin/financeiro'
     | '/admin/leads'
     | '/admin/veiculos'
     | '/veiculos/$slug'
     | '/admin/'
+    | '/admin/financeiro/comissoes'
+    | '/admin/financeiro/contas-a-pagar'
+    | '/admin/financeiro/contas-a-receber'
+    | '/admin/financeiro/despesas'
+    | '/admin/financeiro/entradas'
+    | '/admin/financeiro/graficos'
+    | '/admin/financeiro/relatorios'
+    | '/admin/financeiro/saidas'
+    | '/admin/financeiro/vendas'
+    | '/admin/financeiro/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -185,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminConfiguracoesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/financeiro': {
+      id: '/admin/financeiro'
+      path: '/financeiro'
+      fullPath: '/admin/financeiro'
+      preLoaderRoute: typeof AdminFinanceiroRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/leads': {
       id: '/admin/leads'
       path: '/leads'
@@ -206,11 +347,112 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VeiculosSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/financeiro/': {
+      id: '/admin/financeiro/'
+      path: '/'
+      fullPath: '/admin/financeiro/'
+      preLoaderRoute: typeof AdminFinanceiroIndexRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
+    '/admin/financeiro/comissoes': {
+      id: '/admin/financeiro/comissoes'
+      path: '/comissoes'
+      fullPath: '/admin/financeiro/comissoes'
+      preLoaderRoute: typeof AdminFinanceiroComissoesRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
+    '/admin/financeiro/contas-a-pagar': {
+      id: '/admin/financeiro/contas-a-pagar'
+      path: '/contas-a-pagar'
+      fullPath: '/admin/financeiro/contas-a-pagar'
+      preLoaderRoute: typeof AdminFinanceiroContasAPagarRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
+    '/admin/financeiro/contas-a-receber': {
+      id: '/admin/financeiro/contas-a-receber'
+      path: '/contas-a-receber'
+      fullPath: '/admin/financeiro/contas-a-receber'
+      preLoaderRoute: typeof AdminFinanceiroContasAReceberRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
+    '/admin/financeiro/despesas': {
+      id: '/admin/financeiro/despesas'
+      path: '/despesas'
+      fullPath: '/admin/financeiro/despesas'
+      preLoaderRoute: typeof AdminFinanceiroDespesasRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
+    '/admin/financeiro/entradas': {
+      id: '/admin/financeiro/entradas'
+      path: '/entradas'
+      fullPath: '/admin/financeiro/entradas'
+      preLoaderRoute: typeof AdminFinanceiroEntradasRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
+    '/admin/financeiro/graficos': {
+      id: '/admin/financeiro/graficos'
+      path: '/graficos'
+      fullPath: '/admin/financeiro/graficos'
+      preLoaderRoute: typeof AdminFinanceiroGraficosRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
+    '/admin/financeiro/relatorios': {
+      id: '/admin/financeiro/relatorios'
+      path: '/relatorios'
+      fullPath: '/admin/financeiro/relatorios'
+      preLoaderRoute: typeof AdminFinanceiroRelatoriosRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
+    '/admin/financeiro/saidas': {
+      id: '/admin/financeiro/saidas'
+      path: '/saidas'
+      fullPath: '/admin/financeiro/saidas'
+      preLoaderRoute: typeof AdminFinanceiroSaidasRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
+    '/admin/financeiro/vendas': {
+      id: '/admin/financeiro/vendas'
+      path: '/vendas'
+      fullPath: '/admin/financeiro/vendas'
+      preLoaderRoute: typeof AdminFinanceiroVendasRouteImport
+      parentRoute: typeof AdminFinanceiroRoute
+    }
   }
 }
 
+interface AdminFinanceiroRouteChildren {
+  AdminFinanceiroComissoesRoute: typeof AdminFinanceiroComissoesRoute
+  AdminFinanceiroContasAPagarRoute: typeof AdminFinanceiroContasAPagarRoute
+  AdminFinanceiroContasAReceberRoute: typeof AdminFinanceiroContasAReceberRoute
+  AdminFinanceiroDespesasRoute: typeof AdminFinanceiroDespesasRoute
+  AdminFinanceiroEntradasRoute: typeof AdminFinanceiroEntradasRoute
+  AdminFinanceiroGraficosRoute: typeof AdminFinanceiroGraficosRoute
+  AdminFinanceiroRelatoriosRoute: typeof AdminFinanceiroRelatoriosRoute
+  AdminFinanceiroSaidasRoute: typeof AdminFinanceiroSaidasRoute
+  AdminFinanceiroVendasRoute: typeof AdminFinanceiroVendasRoute
+  AdminFinanceiroIndexRoute: typeof AdminFinanceiroIndexRoute
+}
+
+const AdminFinanceiroRouteChildren: AdminFinanceiroRouteChildren = {
+  AdminFinanceiroComissoesRoute: AdminFinanceiroComissoesRoute,
+  AdminFinanceiroContasAPagarRoute: AdminFinanceiroContasAPagarRoute,
+  AdminFinanceiroContasAReceberRoute: AdminFinanceiroContasAReceberRoute,
+  AdminFinanceiroDespesasRoute: AdminFinanceiroDespesasRoute,
+  AdminFinanceiroEntradasRoute: AdminFinanceiroEntradasRoute,
+  AdminFinanceiroGraficosRoute: AdminFinanceiroGraficosRoute,
+  AdminFinanceiroRelatoriosRoute: AdminFinanceiroRelatoriosRoute,
+  AdminFinanceiroSaidasRoute: AdminFinanceiroSaidasRoute,
+  AdminFinanceiroVendasRoute: AdminFinanceiroVendasRoute,
+  AdminFinanceiroIndexRoute: AdminFinanceiroIndexRoute,
+}
+
+const AdminFinanceiroRouteWithChildren = AdminFinanceiroRoute._addFileChildren(
+  AdminFinanceiroRouteChildren,
+)
+
 interface AdminRouteChildren {
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
+  AdminFinanceiroRoute: typeof AdminFinanceiroRouteWithChildren
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminVeiculosRoute: typeof AdminVeiculosRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -218,6 +460,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
+  AdminFinanceiroRoute: AdminFinanceiroRouteWithChildren,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminVeiculosRoute: AdminVeiculosRoute,
   AdminIndexRoute: AdminIndexRoute,

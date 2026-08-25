@@ -22,7 +22,13 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useState } from "react";
 import {
   getFluxoFinanceiroChartData,
@@ -33,7 +39,16 @@ import {
   getPayableReceivableChartData,
 } from "@/lib/db/store";
 
-const COLORS = ["#E8231F", "#10B981", "#F59E0B", "#3B82F6", "#8B5CF6", "#EC4899", "#06B6D4", "#84CC16"];
+const COLORS = [
+  "#E8231F",
+  "#10B981",
+  "#F59E0B",
+  "#3B82F6",
+  "#8B5CF6",
+  "#EC4899",
+  "#06B6D4",
+  "#84CC16",
+];
 
 export function FinanceiroCharts() {
   const [fluxoPeriod, setFluxoPeriod] = useState<"day" | "week" | "month">("month");
@@ -209,12 +224,13 @@ export function FinanceiroCharts() {
           </CardHeader>
           <CardContent className="h-72">
             <ChartContainer
-              config={
-                expensesCategoryData.reduce((acc, item, i) => {
+              config={expensesCategoryData.reduce(
+                (acc, item, i) => {
                   acc[item.category] = { label: item.category, color: COLORS[i % COLORS.length] };
                   return acc;
-                }, {} as Record<string, { label: string; color: string }>)
-              }
+                },
+                {} as Record<string, { label: string; color: string }>,
+              )}
             >
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -279,7 +295,12 @@ export function FinanceiroCharts() {
                   />
                   <Tooltip content={<ChartTooltipContent formatter={formatCurrencyTooltip} />} />
                   <Legend />
-                  <Bar dataKey="saleValue" fill="#3B82F6" radius={[0, 4, 4, 0]} name="Valor Venda" />
+                  <Bar
+                    dataKey="saleValue"
+                    fill="#3B82F6"
+                    radius={[0, 4, 4, 0]}
+                    name="Valor Venda"
+                  />
                   <Bar dataKey="margin" fill="#E8231F" radius={[0, 4, 4, 0]} name="Margem" />
                 </BarChart>
               </ResponsiveContainer>
@@ -299,7 +320,10 @@ export function FinanceiroCharts() {
               }}
             >
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={payableReceivableData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <BarChart
+                  data={payableReceivableData}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
                   <XAxis
                     dataKey="period"

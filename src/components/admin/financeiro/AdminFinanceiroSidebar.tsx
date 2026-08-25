@@ -73,7 +73,8 @@ export function AdminFinanceiroSidebar({ onOpenMobileMenu }: AdminFinanceiroSide
       title: "Comissões",
       href: "/admin/financeiro/comissoes",
       icon: Users,
-      badge: stats.totalCommissionsPending > 0 ? formatCurrency(stats.totalCommissionsPending) : null,
+      badge:
+        stats.totalCommissionsPending > 0 ? formatCurrency(stats.totalCommissionsPending) : null,
       exact: false,
     },
     {
@@ -155,7 +156,9 @@ export function AdminFinanceiroSidebar({ onOpenMobileMenu }: AdminFinanceiroSide
               }`}
             >
               <div className="flex items-center gap-3">
-                <item.icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-gray-400"}`} />
+                <item.icon
+                  className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-gray-400"}`}
+                />
                 <span>{item.title}</span>
               </div>
               {item.badge && (

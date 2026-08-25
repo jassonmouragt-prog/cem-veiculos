@@ -109,6 +109,12 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
 
   // 3. Price & Terms
   const [price, setPrice] = useState<number | "">(initialVehicle?.price || "");
+  const [acquisitionCost, setAcquisitionCost] = useState<number | "">(
+    initialVehicle?.acquisitionCost || "",
+  );
+  const [stockEntryDate, setStockEntryDate] = useState(
+    initialVehicle?.stockEntryDate?.split("T")[0] || "",
+  );
   const [entryValue, setEntryValue] = useState<number | "">(initialVehicle?.entryValue || "");
   const [installmentsCount, setInstallmentsCount] = useState<number | "">(
     initialVehicle?.installmentsCount || 48,
@@ -190,6 +196,8 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
       ...(powerHp ? { powerHp: Number(powerHp) } : {}),
       mileage: Number(mileage) || 0,
       price: Number(price),
+      ...(acquisitionCost ? { acquisitionCost: Number(acquisitionCost) } : {}),
+      ...(stockEntryDate ? { stockEntryDate: new Date(stockEntryDate).toISOString() } : {}),
       ...(entryValue ? { entryValue: Number(entryValue) } : {}),
       ...(installmentsCount ? { installmentsCount: Number(installmentsCount) } : {}),
       ...(installmentValue ? { installmentValue: Number(installmentValue) } : {}),
@@ -489,6 +497,27 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
                   onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : "")}
                   className="bg-black/50 border-white/10 text-white h-11 text-base font-bold text-[#E8231F]"
                   required
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs text-gray-300">Custo de Aquisição (R$)</Label>
+                <Input
+                  type="number"
+                  placeholder="Ex: 100000"
+                  value={acquisitionCost}
+                  onChange={(e) => setAcquisitionCost(e.target.value ? Number(e.target.value) : "")}
+                  className="bg-black/50 border-white/10 text-white h-11"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs text-gray-300">Data Entrada Estoque</Label>
+                <Input
+                  type="date"
+                  value={stockEntryDate}
+                  onChange={(e) => setStockEntryDate(e.target.value)}
+                  className="bg-black/50 border-white/10 text-white h-11"
                 />
               </div>
 
