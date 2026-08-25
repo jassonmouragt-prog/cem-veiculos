@@ -31,7 +31,7 @@ export function LeadModal({ isOpen, onClose, vehicle }: LeadModalProps) {
   const [openWhatsApp, setOpenWhatsApp] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name.trim()) {
@@ -45,7 +45,7 @@ export function LeadModal({ isOpen, onClose, vehicle }: LeadModalProps) {
 
     setIsSubmitting(true);
     try {
-      createLead({
+      await createLead({
         name: name.trim(),
         phone: phone.trim(),
         ...(email.trim() ? { email: email.trim() } : {}),
@@ -54,14 +54,13 @@ export function LeadModal({ isOpen, onClose, vehicle }: LeadModalProps) {
         ...(message.trim() ? { message: message.trim() } : {}),
       });
 
-
       toast.success("Mensagem enviada com sucesso! Nossos consultores entrarão em contato.");
 
       if (openWhatsApp) {
         const text = encodeURIComponent(
           `Olá! Meu nome é ${name.trim()}. Tenho interesse no veículo ${vehicle?.name || "do estoque da C&M Veículos"}.${
             message.trim() ? " Observação: " + message.trim() : ""
-          }`
+          }`,
         );
         window.open(`https://wa.me/558699148872?text=${text}`, "_blank");
       }
@@ -93,7 +92,8 @@ export function LeadModal({ isOpen, onClose, vehicle }: LeadModalProps) {
           <DialogDescription className="text-xs text-gray-400">
             {vehicle ? (
               <span>
-                Valor: <strong className="text-white">{formatCurrency(vehicle.price)}</strong> • Ano: {vehicle.modelYear}
+                Valor: <strong className="text-white">{formatCurrency(vehicle.price)}</strong> •
+                Ano: {vehicle.modelYear}
               </span>
             ) : (
               "Preencha seus dados para receber uma proposta exclusiva e personalizada."

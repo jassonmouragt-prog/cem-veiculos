@@ -36,15 +36,16 @@ export const INITIAL_VEHICLES: Vehicle[] = [
       "Rodas de liga leve aro 17",
       "Piloto automático",
       "Controle de tração e estabilidade",
-      "Freio de estacionamento eletrônico com Brake Hold"
+      "Freio de estacionamento eletrônico com Brake Hold",
     ],
     singleOwner: true,
     dealerMaintained: true,
-    description: "Honda HR-V EXL 2021 em estado impecável de conservação. Veículo de único dono, com todas as revisões feitas na concessionária autorizada e laudo cautelar 100% aprovado. Excelente espaço interno com sistema Magic Seat, conforto superior e alta confiabilidade mecânica.",
+    description:
+      "Honda HR-V EXL 2021 em estado impecável de conservação. Veículo de único dono, com todas as revisões feitas na concessionária autorizada e laudo cautelar 100% aprovado. Excelente espaço interno com sistema Magic Seat, conforto superior e alta confiabilidade mecânica.",
     images: [
       "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1200",
       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1200",
-      "https://images.unsplash.com/photo-1550345332-09a3af9c702f?auto=format&fit=crop&q=80&w=1200"
+      "https://images.unsplash.com/photo-1550345332-09a3af9c702f?auto=format&fit=crop&q=80&w=1200",
     ],
     mainImageIndex: 0,
     status: "disponivel",
@@ -86,15 +87,16 @@ export const INITIAL_VEHICLES: Vehicle[] = [
       "Rodas de liga leve aro 17 com acabamento diamantado",
       "Controle de estabilidade (VSC) e tração (TRC)",
       "Assistente de partida em rampa (HAC)",
-      "Chave presencial Smart Entry com partida por botão Start/Stop"
+      "Chave presencial Smart Entry com partida por botão Start/Stop",
     ],
     singleOwner: false,
     dealerMaintained: true,
-    description: "Toyota Corolla XEi 2020 nova geração. Motor 2.0 Dynamic Force de 177cv e câmbio Direct Shift de 10 velocidades com a primeira marcha mecânica. Sedã de referência em durabilidade, segurança e valor de revenda.",
+    description:
+      "Toyota Corolla XEi 2020 nova geração. Motor 2.0 Dynamic Force de 177cv e câmbio Direct Shift de 10 velocidades com a primeira marcha mecânica. Sedã de referência em durabilidade, segurança e valor de revenda.",
     images: [
       "https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&q=80&w=1200",
       "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&q=80&w=1200",
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1200"
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1200",
     ],
     mainImageIndex: 0,
     status: "disponivel",
@@ -135,14 +137,15 @@ export const INITIAL_VEHICLES: Vehicle[] = [
       "Sensor de estacionamento dianteiro e traseiro com Park Assist",
       "Bancos em couro com ajuste elétrico para o motorista",
       "Faróis de xenônio com DRL em LED",
-      "Rodas aro 19 diamantadas"
+      "Rodas aro 19 diamantadas",
     ],
     singleOwner: false,
     dealerMaintained: false,
-    description: "Jeep Compass versão topo de linha Limited Flex. SUV sofisticado, muito confortável e com acabamento refinado. Conta com Park Assist (estaciona sozinho), monitor de ponto cego e central multimídia completa.",
+    description:
+      "Jeep Compass versão topo de linha Limited Flex. SUV sofisticado, muito confortável e com acabamento refinado. Conta com Park Assist (estaciona sozinho), monitor de ponto cego e central multimídia completa.",
     images: [
       "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1200",
-      "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1200"
+      "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1200",
     ],
     mainImageIndex: 0,
     status: "disponivel",
@@ -183,14 +186,15 @@ export const INITIAL_VEHICLES: Vehicle[] = [
       "Faróis com iluminação diurna em LED",
       "Rodas de liga leve aro 17",
       "Chave presencial Kessy com partida por botão",
-      "Controle eletrônico de estabilidade (ESC)"
+      "Controle eletrônico de estabilidade (ESC)",
     ],
     singleOwner: true,
     dealerMaintained: true,
-    description: "Volkswagen Polo Highline 200 TSI com baixíssima quilometragem (apenas 36.200 km). Motor turbo potente e muito econômico, equipado com o painel 100% digital Active Info Display e multimídia VW Play.",
+    description:
+      "Volkswagen Polo Highline 200 TSI com baixíssima quilometragem (apenas 36.200 km). Motor turbo potente e muito econômico, equipado com o painel 100% digital Active Info Display e multimídia VW Play.",
     images: [
       "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&q=80&w=1200",
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1200"
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1200",
     ],
     mainImageIndex: 0,
     status: "disponivel",
@@ -228,19 +232,20 @@ export const INITIAL_VEHICLES: Vehicle[] = [
       "Lanternas e setas em LED",
       "Suspensão dianteira invertida (Upside Down)",
       "Shift Light configurável",
-      "Computador de bordo completo"
+      "Computador de bordo completo",
     ],
     singleOwner: true,
     dealerMaintained: true,
-    description: "Yamaha MT-03 ABS 2023 impecável com menos de 10.000 km rodados. Motor bicilíndrico de 42cv ágil e empolgante, suspensão invertida e design agressivo da família Master of Torque.",
+    description:
+      "Yamaha MT-03 ABS 2023 impecável com menos de 10.000 km rodados. Motor bicilíndrico de 42cv ágil e empolgante, suspensão invertida e design agressivo da família Master of Torque.",
     images: [
       "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=1200",
-      "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&q=80&w=1200"
+      "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&q=80&w=1200",
     ],
     mainImageIndex: 0,
     status: "disponivel",
     isFeatured: true,
     createdAt: "2026-08-12T16:00:00.000Z",
     updatedAt: "2026-08-24T09:00:00.000Z",
-  }
+  },
 ];

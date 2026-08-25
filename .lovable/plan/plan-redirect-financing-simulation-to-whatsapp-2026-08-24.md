@@ -14,10 +14,10 @@ The user wants the "SIMULE SEU FINANCIAMENTO" section to redirect to WhatsApp in
 ### Frontend Changes
 
 - **src/components/landing/FinancingCTA.tsx**:
-    - Remove the grid of mock inputs (`Valor do veículo`, `Entrada`, etc.).
-    - Update the text content to emphasize personalized service.
-    - Keep the WhatsApp link functionality.
-    - Change button text to "Falar com Consultor" or "Solicitar Simulação no WhatsApp".
+  - Remove the grid of mock inputs (`Valor do veículo`, `Entrada`, etc.).
+  - Update the text content to emphasize personalized service.
+  - Keep the WhatsApp link functionality.
+  - Change button text to "Falar com Consultor" or "Solicitar Simulação no WhatsApp".
 
 ### Business Logic
 

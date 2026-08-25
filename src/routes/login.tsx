@@ -11,9 +11,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/login")({
   head: () => ({
     title: "Acesso Administrativo | C&M Veículos",
-    meta: [
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ name: "robots", content: "noindex, nofollow" }],
   }),
   component: LoginPage,
 });
@@ -25,9 +23,12 @@ function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      navigate({ to: "/admin" });
-    }
+    const checkAuth = async () => {
+      if (await isAuthenticated()) {
+        navigate({ to: "/admin" });
+      }
+    };
+    checkAuth();
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,7 +36,7 @@ function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = login(email, password);
+      const res = await login(email, password);
       if (res.success) {
         toast.success("Login realizado com sucesso! Redirecionando...");
         setTimeout(() => {
@@ -74,9 +75,7 @@ function LoginPage() {
             CM
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">C&M Veículos</h1>
-          <p className="text-xs text-gray-400">
-            Acesso restrito ao Painel Administrativo
-          </p>
+          <p className="text-xs text-gray-400">Acesso restrito ao Painel Administrativo</p>
         </div>
 
         <Card className="bg-[#121212] border-white/10 shadow-2xl rounded-2xl">

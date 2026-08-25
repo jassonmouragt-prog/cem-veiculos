@@ -1,15 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { 
-  getVehiclesFromStorage, 
-  createVehicle, 
-  updateVehicle, 
-  deleteVehicle, 
-  toggleVehicleFeatured, 
+import {
+  getVehiclesFromStorage,
+  createVehicle,
+  updateVehicle,
+  deleteVehicle,
+  toggleVehicleFeatured,
   updateVehicleStatus,
-  subscribeToStore, 
-  formatCurrency, 
-  formatMileage 
+  subscribeToStore,
+  formatCurrency,
+  formatMileage,
 } from "@/lib/db/store";
 import { Vehicle, VehicleStatus } from "@/lib/db/types";
 import { AdminHeader } from "@/components/admin/AdminHeader";
@@ -37,20 +37,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { 
-  Plus, 
-  Search, 
-  Car, 
-  MoreVertical, 
-  Edit3, 
-  Trash2, 
-  Sparkles, 
+import {
+  Plus,
+  Search,
+  Car,
+  MoreVertical,
+  Edit3,
+  Trash2,
+  Sparkles,
   ExternalLink,
   Eye,
   SlidersHorizontal,
   CheckCircle2,
   Clock,
-  Tag
+  Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -85,7 +85,7 @@ function AdminVehiclesPage() {
     if (categoryFilter !== "todas" && v.category !== categoryFilter) return false;
     if (search.trim()) {
       const q = search.toLowerCase();
-      const match = 
+      const match =
         v.name.toLowerCase().includes(q) ||
         v.brand.toLowerCase().includes(q) ||
         v.model.toLowerCase().includes(q) ||
@@ -96,27 +96,29 @@ function AdminVehiclesPage() {
     return true;
   });
 
-  const handleCreateOrUpdate = (data: Omit<Vehicle, "id" | "slug" | "createdAt" | "updatedAt">) => {
+  const handleCreateOrUpdate = async (
+    data: Omit<Vehicle, "id" | "slug" | "createdAt" | "updatedAt">,
+  ) => {
     if (editingVehicle) {
-      updateVehicle(editingVehicle.id, data);
+      await updateVehicle(editingVehicle.id, data);
       toast.success("Veículo atualizado com sucesso!");
     } else {
-      createVehicle(data);
+      await createVehicle(data);
       toast.success("Veículo cadastrado e publicado com sucesso!");
     }
     setIsFormOpen(false);
     setEditingVehicle(null);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!vehicleToDelete) return;
-    deleteVehicle(vehicleToDelete.id);
+    await deleteVehicle(vehicleToDelete.id);
     toast.success("Veículo removido do sistema.");
     setVehicleToDelete(null);
   };
 
-  const handleToggleFeatured = (v: Vehicle) => {
-    const result = toggleVehicleFeatured(v.id);
+  const handleToggleFeatured = async (v: Vehicle) => {
+    const result = await toggleVehicleFeatured(v.id);
     if (result) {
       toast.success(`"${v.name}" adicionado aos destaques da home!`);
     } else {
@@ -124,8 +126,8 @@ function AdminVehiclesPage() {
     }
   };
 
-  const handleStatusChange = (id: string, newStatus: VehicleStatus) => {
-    updateVehicleStatus(id, newStatus);
+  const handleStatusChange = async (id: string, newStatus: VehicleStatus) => {
+    await updateVehicleStatus(id, newStatus);
     toast.success(`Status atualizado para: ${newStatus.toUpperCase()}`);
   };
 
@@ -209,7 +211,8 @@ function AdminVehiclesPage() {
                 <Car className="w-12 h-12 text-gray-600 mx-auto mb-3" />
                 <h3 className="text-base font-bold text-white mb-1">Nenhum veículo encontrado</h3>
                 <p className="text-xs text-gray-400 max-w-sm mx-auto mb-4">
-                  Nenhum resultado corresponde aos filtros selecionados. Tente ajustar os termos de busca.
+                  Nenhum resultado corresponde aos filtros selecionados. Tente ajustar os termos de
+                  busca.
                 </p>
                 <Button
                   onClick={() => {
@@ -227,17 +230,36 @@ function AdminVehiclesPage() {
                 {filteredVehicles.map((v) => {
                   const coverImage = v.images[v.mainImageIndex || 0] || v.images[0];
                   const statusBadge = {
-                    disponivel: { label: "Disponível", color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", icon: CheckCircle2 },
-                    reservado: { label: "Reservado", color: "bg-amber-500/15 text-amber-400 border-amber-500/30", icon: Clock },
-                    vendido: { label: "Vendido", color: "bg-zinc-800 text-zinc-400 border-zinc-700", icon: Tag },
+                    disponivel: {
+                      label: "Disponível",
+                      color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+                      icon: CheckCircle2,
+                    },
+                    reservado: {
+                      label: "Reservado",
+                      color: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+                      icon: Clock,
+                    },
+                    vendido: {
+                      label: "Vendido",
+                      color: "bg-zinc-800 text-zinc-400 border-zinc-700",
+                      icon: Tag,
+                    },
                   }[v.status];
 
                   return (
-                    <Card key={v.id} className="bg-[#121212] border-white/5 overflow-hidden flex flex-col rounded-2xl shadow-md hover:border-white/15 transition-all">
+                    <Card
+                      key={v.id}
+                      className="bg-[#121212] border-white/5 overflow-hidden flex flex-col rounded-2xl shadow-md hover:border-white/15 transition-all"
+                    >
                       {/* Image & Badges */}
                       <div className="relative aspect-[16/9] bg-black overflow-hidden">
                         {coverImage ? (
-                          <img src={coverImage} alt={v.name} className="w-full h-full object-cover" />
+                          <img
+                            src={coverImage}
+                            alt={v.name}
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-600">
                             <Car className="w-8 h-8" />
@@ -245,7 +267,9 @@ function AdminVehiclesPage() {
                         )}
 
                         <div className="absolute top-2 left-2 flex gap-1.5">
-                          <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md border backdrop-blur-md ${statusBadge.color}`}>
+                          <span
+                            className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md border backdrop-blur-md ${statusBadge.color}`}
+                          >
                             <statusBadge.icon className="w-3 h-3" />
                             {statusBadge.label}
                           </span>
@@ -259,11 +283,18 @@ function AdminVehiclesPage() {
                         <div className="absolute top-2 right-2">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button size="icon" variant="ghost" className="h-8 w-8 bg-black/60 backdrop-blur-md text-white hover:bg-black rounded-lg">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-8 w-8 bg-black/60 backdrop-blur-md text-white hover:bg-black rounded-lg"
+                              >
                                 <MoreVertical className="w-4 h-4" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-white/10 text-white text-xs">
+                            <DropdownMenuContent
+                              align="end"
+                              className="bg-[#1a1a1a] border-white/10 text-white text-xs"
+                            >
                               <DropdownMenuLabel>Ações Rápidas</DropdownMenuLabel>
                               <DropdownMenuItem
                                 onClick={() => {
@@ -282,14 +313,25 @@ function AdminVehiclesPage() {
                                 {v.isFeatured ? "Remover Destaque" : "Marcar como Destaque"}
                               </DropdownMenuItem>
                               <DropdownMenuSeparator className="bg-white/10" />
-                              <DropdownMenuLabel className="text-[10px] text-gray-400">Alterar Status</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleStatusChange(v.id, "disponivel")} className="gap-2 cursor-pointer">
+                              <DropdownMenuLabel className="text-[10px] text-gray-400">
+                                Alterar Status
+                              </DropdownMenuLabel>
+                              <DropdownMenuItem
+                                onClick={() => handleStatusChange(v.id, "disponivel")}
+                                className="gap-2 cursor-pointer"
+                              >
                                 🟢 Marcar Disponível
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusChange(v.id, "reservado")} className="gap-2 cursor-pointer">
+                              <DropdownMenuItem
+                                onClick={() => handleStatusChange(v.id, "reservado")}
+                                className="gap-2 cursor-pointer"
+                              >
                                 🟡 Marcar Reservado
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusChange(v.id, "vendido")} className="gap-2 cursor-pointer">
+                              <DropdownMenuItem
+                                onClick={() => handleStatusChange(v.id, "vendido")}
+                                className="gap-2 cursor-pointer"
+                              >
                                 🔴 Marcar Vendido
                               </DropdownMenuItem>
                               <DropdownMenuSeparator className="bg-white/10" />
@@ -314,7 +356,7 @@ function AdminVehiclesPage() {
                             </span>
                           </div>
                           <p className="text-xs text-gray-400 truncate">{v.version || v.model}</p>
-                          
+
                           <div className="flex flex-wrap gap-2 text-[11px] text-gray-400 pt-2 border-t border-white/5 mt-2">
                             <span>Ano {v.modelYear}</span>
                             <span>•</span>
@@ -332,7 +374,11 @@ function AdminVehiclesPage() {
                             target="_blank"
                             className="flex-1"
                           >
-                            <Button variant="outline" size="sm" className="w-full h-8 text-xs border-white/10 hover:bg-white/5 gap-1 text-gray-300">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full h-8 text-xs border-white/10 hover:bg-white/5 gap-1 text-gray-300"
+                            >
                               <Eye className="w-3.5 h-3.5" /> Ver no Site
                             </Button>
                           </Link>
@@ -357,12 +403,17 @@ function AdminVehiclesPage() {
         )}
 
         {/* Delete Confirmation Alert Dialog */}
-        <AlertDialog open={vehicleToDelete !== null} onOpenChange={(open) => !open && setVehicleToDelete(null)}>
+        <AlertDialog
+          open={vehicleToDelete !== null}
+          onOpenChange={(open) => !open && setVehicleToDelete(null)}
+        >
           <AlertDialogContent className="bg-[#121212] border border-white/10 text-white">
             <AlertDialogHeader>
               <AlertDialogTitle>Excluir veículo do estoque?</AlertDialogTitle>
               <AlertDialogDescription className="text-xs text-gray-400 leading-relaxed">
-                Tem certeza que deseja excluir <strong>{vehicleToDelete?.name}</strong>? Esta ação removerá o veículo imediatamente do painel administrativo e do catálogo público do site.
+                Tem certeza que deseja excluir <strong>{vehicleToDelete?.name}</strong>? Esta ação
+                removerá o veículo imediatamente do painel administrativo e do catálogo público do
+                site.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

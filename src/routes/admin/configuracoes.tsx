@@ -23,7 +23,7 @@ function AdminSettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isChangingPass, setIsChangingPass] = useState(false);
 
-  const handlePasswordChange = (e: React.FormEvent) => {
+  const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
@@ -33,7 +33,7 @@ function AdminSettingsPage() {
 
     setIsChangingPass(true);
     try {
-      const res = updateAdminPassword(currentPassword, newPassword);
+      const res = await updateAdminPassword(currentPassword, newPassword);
       if (res.success) {
         toast.success("Senha administrativa alterada com sucesso!");
         setCurrentPassword("");
@@ -56,7 +56,6 @@ function AdminSettingsPage() {
       />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-4xl w-full mx-auto">
-        
         {/* Account Info */}
         <Card className="bg-[#121212] border-white/5 rounded-2xl shadow-md">
           <CardHeader className="pb-4 border-b border-white/5">
@@ -65,7 +64,9 @@ function AdminSettingsPage() {
                 <UserCheck className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-base font-bold text-white">Perfil do Administrador</CardTitle>
+                <CardTitle className="text-base font-bold text-white">
+                  Perfil do Administrador
+                </CardTitle>
                 <CardDescription className="text-xs text-gray-400">
                   Dados do usuário logado no painel
                 </CardDescription>
@@ -102,7 +103,9 @@ function AdminSettingsPage() {
                 <KeyRound className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-base font-bold text-white">Alterar Senha de Acesso</CardTitle>
+                <CardTitle className="text-base font-bold text-white">
+                  Alterar Senha de Acesso
+                </CardTitle>
                 <CardDescription className="text-xs text-gray-400">
                   Atualize a senha de acesso ao painel administrativo
                 </CardDescription>
@@ -182,7 +185,9 @@ function AdminSettingsPage() {
                 <Store className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-base font-bold text-white">Dados da Concessionária</CardTitle>
+                <CardTitle className="text-base font-bold text-white">
+                  Dados da Concessionária
+                </CardTitle>
                 <CardDescription className="text-xs text-gray-400">
                   Informações públicas exibidas no site
                 </CardDescription>
@@ -210,7 +215,6 @@ function AdminSettingsPage() {
             </div>
           </CardContent>
         </Card>
-
       </main>
     </div>
   );

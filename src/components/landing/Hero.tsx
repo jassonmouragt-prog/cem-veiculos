@@ -21,11 +21,13 @@ export function Hero() {
       <div className="container relative z-10 mx-auto px-4 py-16 lg:py-24">
         <div className="flex max-w-2xl flex-col gap-4 lg:gap-5">
           <h1 className="text-2xl font-extrabold text-white leading-[1.2] tracking-tight sm:text-3xl lg:text-4xl xl:text-[42px]">
-            Encontre seu próximo carro com <span className="text-brand-gradient">procedência</span> e <span className="text-brand-gradient">sofisticação</span>.
+            Encontre seu próximo carro com <span className="text-brand-gradient">procedência</span>{" "}
+            e <span className="text-brand-gradient">sofisticação</span>.
           </h1>
 
           <p className="max-w-lg text-sm sm:text-base text-gray-300 leading-relaxed">
-            Veículos selecionados, rigorosamente revisados e com garantia para você dirigir com máxima segurança e tranquilidade.
+            Veículos selecionados, rigorosamente revisados e com garantia para você dirigir com
+            máxima segurança e tranquilidade.
           </p>
 
           <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-3 sm:gap-4 lg:pt-3">
@@ -50,7 +52,6 @@ export function Hero() {
           </div>
         </div>
       </div>
-
     </section>
   );
 }

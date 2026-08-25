@@ -1,13 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { 
-  LayoutDashboard, 
-  Car, 
-  Users, 
-  Settings, 
-  ExternalLink, 
-  LogOut, 
-  ShieldCheck, 
-  X 
+import {
+  LayoutDashboard,
+  Car,
+  Users,
+  Settings,
+  ExternalLink,
+  LogOut,
+  ShieldCheck,
+  X,
 } from "lucide-react";
 import { logout, getCurrentUser } from "@/lib/auth/auth-service";
 import { getDashboardStats } from "@/lib/db/store";
@@ -56,8 +56,8 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     },
   ];
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     window.location.href = "/login";
   };
 
@@ -94,8 +94,8 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
           Menu Principal
         </p>
         {navItems.map((item) => {
-          const isActive = item.exact 
-            ? currentPath === item.href 
+          const isActive = item.exact
+            ? currentPath === item.href
             : currentPath.startsWith(item.href);
 
           return (
@@ -110,14 +110,17 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
               }`}
             >
               <div className="flex items-center gap-3">
-                <item.icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-gray-400"}`} />
+                <item.icon
+                  className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-gray-400"}`}
+                />
                 <span>{item.title}</span>
               </div>
               {item.badge && (
                 <Badge
                   variant="secondary"
                   className={`text-[10px] h-5 px-1.5 font-bold rounded-full ${
-                    item.badgeColor || (isActive ? "bg-white/20 text-white" : "bg-white/10 text-gray-300")
+                    item.badgeColor ||
+                    (isActive ? "bg-white/20 text-white" : "bg-white/10 text-gray-300")
                   }`}
                 >
                   {item.badge}

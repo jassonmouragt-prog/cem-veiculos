@@ -1,30 +1,11 @@
-export type VehicleCategory = 
-  | "suv" 
-  | "sedan" 
-  | "hatch" 
-  | "picape" 
-  | "moto" 
-  | "utilitario" 
-  | "coupe" 
-  | "perua";
+export type VehicleCategory =
+  "suv" | "sedan" | "hatch" | "picape" | "moto" | "utilitario" | "coupe" | "perua";
 
-export type FuelType = 
-  | "flex" 
-  | "gasolina" 
-  | "diesel" 
-  | "hibrido" 
-  | "eletrico";
+export type FuelType = "flex" | "gasolina" | "diesel" | "hibrido" | "eletrico";
 
-export type TransmissionType = 
-  | "manual" 
-  | "automatico" 
-  | "automatizado" 
-  | "cvt";
+export type TransmissionType = "manual" | "automatico" | "automatizado" | "cvt";
 
-export type VehicleStatus = 
-  | "disponivel" 
-  | "reservado" 
-  | "vendido";
+export type VehicleStatus = "disponivel" | "reservado" | "vendido";
 
 export interface Vehicle {
   id: string;

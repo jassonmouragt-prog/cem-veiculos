@@ -88,7 +88,6 @@ export function ImageUploader({
     onChangeImages(updated);
   };
 
-
   return (
     <div className="space-y-4">
       {/* Action Buttons */}
@@ -142,13 +141,15 @@ export function ImageUploader({
 
       {/* Gallery Grid */}
       {images.length === 0 ? (
-        <div 
+        <div
           onClick={() => fileInputRef.current?.click()}
           className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-xl bg-black/20 hover:border-[#E8231F]/50 cursor-pointer transition-colors text-center"
         >
           <ImagePlus className="w-10 h-10 text-gray-500 mb-2" />
           <p className="text-sm font-semibold text-white">Nenhuma foto adicionada ainda</p>
-          <p className="text-xs text-gray-400 mt-1">Clique para selecionar fotos do seu computador ou celular</p>
+          <p className="text-xs text-gray-400 mt-1">
+            Clique para selecionar fotos do seu computador ou celular
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
@@ -158,7 +159,9 @@ export function ImageUploader({
               <div
                 key={index}
                 className={`group relative aspect-[4/3] rounded-xl overflow-hidden border-2 bg-black transition-all ${
-                  isCover ? "border-[#E8231F] shadow-lg shadow-[#E8231F]/20" : "border-white/10 hover:border-white/30"
+                  isCover
+                    ? "border-[#E8231F] shadow-lg shadow-[#E8231F]/20"
+                    : "border-white/10 hover:border-white/30"
                 }`}
               >
                 <img
@@ -181,7 +184,9 @@ export function ImageUploader({
                       type="button"
                       onClick={() => onChangeMainImage(index)}
                       className={`p-1.5 rounded-lg transition-colors ${
-                        isCover ? "bg-[#E8231F] text-white" : "bg-black/70 text-gray-300 hover:text-yellow-400 hover:bg-black"
+                        isCover
+                          ? "bg-[#E8231F] text-white"
+                          : "bg-black/70 text-gray-300 hover:text-yellow-400 hover:bg-black"
                       }`}
                       title={isCover ? "Capa Principal" : "Definir como Capa"}
                     >

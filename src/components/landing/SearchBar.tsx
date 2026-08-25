@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Search, SlidersHorizontal, RotateCcw } from "lucide-react";
 
 interface SearchBarProps {
@@ -41,8 +47,8 @@ export function SearchBar({
             <label className="text-xs font-medium text-gray-400">Modelo ou Marca</label>
             <div className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <Input 
-                placeholder="Ex: Corolla, HR-V, Compass..." 
+              <Input
+                placeholder="Ex: Corolla, HR-V, Compass..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange?.(e.target.value)}
                 className="bg-black/50 border-white/10 pl-10 h-11 text-sm text-white placeholder:text-gray-500 rounded-lg focus-visible:ring-[#E8231F]"
@@ -108,12 +114,16 @@ export function SearchBar({
             Buscar veículos
           </Button>
         </div>
-        
+
         <div className="flex justify-between items-center mt-3 pt-2 border-t border-white/5">
           <span className="text-[11px] text-gray-500 hidden sm:inline">
             Filtre por marca, modelo, faixa de preço ou categoria desejada
           </span>
-          {onReset && (searchQuery || category !== "todas" || price !== "indiferente" || year !== "indiferente") ? (
+          {onReset &&
+          (searchQuery ||
+            category !== "todas" ||
+            price !== "indiferente" ||
+            year !== "indiferente") ? (
             <button
               onClick={onReset}
               className="flex items-center gap-1 text-xs text-[#E8231F] hover:underline"

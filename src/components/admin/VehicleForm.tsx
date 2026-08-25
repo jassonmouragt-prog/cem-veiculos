@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Vehicle, VehicleCategory, FuelType, TransmissionType, VehicleStatus } from "@/lib/db/types";
+import {
+  Vehicle,
+  VehicleCategory,
+  FuelType,
+  TransmissionType,
+  VehicleStatus,
+} from "@/lib/db/types";
 import { ImageUploader } from "./ImageUploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,15 +26,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { 
-  Car, 
-  Wrench, 
-  DollarSign, 
-  Sliders, 
-  Image as ImageIcon, 
-  Save, 
+import {
+  Car,
+  Wrench,
+  DollarSign,
+  Sliders,
+  Image as ImageIcon,
+  Save,
   X,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -86,43 +92,59 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
   const [customBrand, setCustomBrand] = useState(initialVehicle?.brand || "");
   const [model, setModel] = useState(initialVehicle?.model || "");
   const [version, setVersion] = useState(initialVehicle?.version || "");
-  const [manufacturingYear, setManufacturingYear] = useState(initialVehicle?.manufacturingYear || new Date().getFullYear());
+  const [manufacturingYear, setManufacturingYear] = useState(
+    initialVehicle?.manufacturingYear || new Date().getFullYear(),
+  );
   const [modelYear, setModelYear] = useState(initialVehicle?.modelYear || new Date().getFullYear());
   const [category, setCategory] = useState<VehicleCategory>(initialVehicle?.category || "sedan");
 
   // 2. Engine & Mechanics
   const [engine, setEngine] = useState(initialVehicle?.engine || "2.0");
   const [fuel, setFuel] = useState<FuelType>(initialVehicle?.fuel || "flex");
-  const [transmission, setTransmission] = useState<TransmissionType>(initialVehicle?.transmission || "automatico");
+  const [transmission, setTransmission] = useState<TransmissionType>(
+    initialVehicle?.transmission || "automatico",
+  );
   const [powerHp, setPowerHp] = useState<number | "">(initialVehicle?.powerHp || "");
   const [mileage, setMileage] = useState<number | "">(initialVehicle?.mileage ?? 0);
 
   // 3. Price & Terms
   const [price, setPrice] = useState<number | "">(initialVehicle?.price || "");
   const [entryValue, setEntryValue] = useState<number | "">(initialVehicle?.entryValue || "");
-  const [installmentsCount, setInstallmentsCount] = useState<number | "">(initialVehicle?.installmentsCount || 48);
-  const [installmentValue, setInstallmentValue] = useState<number | "">(initialVehicle?.installmentValue || "");
+  const [installmentsCount, setInstallmentsCount] = useState<number | "">(
+    initialVehicle?.installmentsCount || 48,
+  );
+  const [installmentValue, setInstallmentValue] = useState<number | "">(
+    initialVehicle?.installmentValue || "",
+  );
   const [acceptsTrade, setAcceptsTrade] = useState(initialVehicle?.acceptsTrade ?? true);
-  const [acceptsFinancing, setAcceptsFinancing] = useState(initialVehicle?.acceptsFinancing ?? true);
+  const [acceptsFinancing, setAcceptsFinancing] = useState(
+    initialVehicle?.acceptsFinancing ?? true,
+  );
 
   // 4. Features & Specs
   const [color, setColor] = useState(initialVehicle?.color || "Preto");
   const [doors, setDoors] = useState(initialVehicle?.doors ?? 4);
-  const [features, setFeatures] = useState<string[]>(initialVehicle?.features || [
-    "Ar-condicionado",
-    "Direção hidráulica / elétrica",
-    "Airbag frontal e lateral",
-    "Central multimídia",
-    "Freios ABS"
-  ]);
+  const [features, setFeatures] = useState<string[]>(
+    initialVehicle?.features || [
+      "Ar-condicionado",
+      "Direção hidráulica / elétrica",
+      "Airbag frontal e lateral",
+      "Central multimídia",
+      "Freios ABS",
+    ],
+  );
   const [singleOwner, setSingleOwner] = useState(initialVehicle?.singleOwner ?? false);
-  const [dealerMaintained, setDealerMaintained] = useState(initialVehicle?.dealerMaintained ?? false);
+  const [dealerMaintained, setDealerMaintained] = useState(
+    initialVehicle?.dealerMaintained ?? false,
+  );
 
   // 5. Media, Description & Status
   const [description, setDescription] = useState(initialVehicle?.description || "");
-  const [images, setImages] = useState<string[]>(initialVehicle?.images || [
-    "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1200"
-  ]);
+  const [images, setImages] = useState<string[]>(
+    initialVehicle?.images || [
+      "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1200",
+    ],
+  );
   const [mainImageIndex, setMainImageIndex] = useState(initialVehicle?.mainImageIndex || 0);
   const [status, setStatus] = useState<VehicleStatus>(initialVehicle?.status || "disponivel");
   const [isFeatured, setIsFeatured] = useState(initialVehicle?.isFeatured ?? true);
@@ -179,12 +201,16 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
       singleOwner,
       dealerMaintained,
       description: description.trim(),
-      images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1200"],
+      images:
+        images.length > 0
+          ? images
+          : [
+              "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1200",
+            ],
       mainImageIndex: Math.min(mainImageIndex, Math.max(0, images.length - 1)),
       status,
       isFeatured,
     });
-
   };
 
   return (
@@ -194,7 +220,9 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
           <h2 className="text-xl font-bold text-white tracking-tight">
             {initialVehicle ? `Editar: ${initialVehicle.name}` : "Cadastrar Novo Veículo"}
           </h2>
-          <p className="text-xs text-gray-400">Preencha as informações do veículo organizadas por seções</p>
+          <p className="text-xs text-gray-400">
+            Preencha as informações do veículo organizadas por seções
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <Button
@@ -216,17 +244,25 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
         </div>
       </div>
 
-      <Accordion type="multiple" defaultValue={["item-1", "item-2", "item-3", "item-4", "item-5"]} className="space-y-4">
-        
+      <Accordion
+        type="multiple"
+        defaultValue={["item-1", "item-2", "item-3", "item-4", "item-5"]}
+        className="space-y-4"
+      >
         {/* 1. Informações Básicas */}
-        <AccordionItem value="item-1" className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1">
+        <AccordionItem
+          value="item-1"
+          className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1"
+        >
           <AccordionTrigger className="hover:no-underline py-4">
             <div className="flex items-center gap-3 text-left">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E8231F]/15 text-[#E8231F]">
                 <Car className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-sm sm:text-base">1. Informações Básicas</h3>
+                <h3 className="font-bold text-white text-sm sm:text-base">
+                  1. Informações Básicas
+                </h3>
                 <p className="text-xs text-gray-400">Marca, modelo, versão, ano e categoria</p>
               </div>
             </div>
@@ -241,7 +277,9 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a1a1a] border-white/10 text-white">
                     {COMMON_BRANDS.map((b) => (
-                      <SelectItem key={b} value={b}>{b}</SelectItem>
+                      <SelectItem key={b} value={b}>
+                        {b}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -305,7 +343,10 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
 
               <div className="space-y-1.5">
                 <Label className="text-xs text-gray-300">Categoria</Label>
-                <Select value={category} onValueChange={(val) => setCategory(val as VehicleCategory)}>
+                <Select
+                  value={category}
+                  onValueChange={(val) => setCategory(val as VehicleCategory)}
+                >
                   <SelectTrigger className="bg-black/50 border-white/10 text-white h-11">
                     <SelectValue placeholder="Categoria" />
                   </SelectTrigger>
@@ -326,15 +367,22 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
         </AccordionItem>
 
         {/* 2. Motorização e Mecânica */}
-        <AccordionItem value="item-2" className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1">
+        <AccordionItem
+          value="item-2"
+          className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1"
+        >
           <AccordionTrigger className="hover:no-underline py-4">
             <div className="flex items-center gap-3 text-left">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E8231F]/15 text-[#E8231F]">
                 <Wrench className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-sm sm:text-base">2. Motorização e Mecânica</h3>
-                <p className="text-xs text-gray-400">Motor, combustível, câmbio, potência e quilometragem</p>
+                <h3 className="font-bold text-white text-sm sm:text-base">
+                  2. Motorização e Mecânica
+                </h3>
+                <p className="text-xs text-gray-400">
+                  Motor, combustível, câmbio, potência e quilometragem
+                </p>
               </div>
             </div>
           </AccordionTrigger>
@@ -368,7 +416,10 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
 
               <div className="space-y-1.5">
                 <Label className="text-xs text-gray-300">Câmbio / Transmissão</Label>
-                <Select value={transmission} onValueChange={(val) => setTransmission(val as TransmissionType)}>
+                <Select
+                  value={transmission}
+                  onValueChange={(val) => setTransmission(val as TransmissionType)}
+                >
                   <SelectTrigger className="bg-black/50 border-white/10 text-white h-11">
                     <SelectValue placeholder="Câmbio" />
                   </SelectTrigger>
@@ -408,15 +459,22 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
         </AccordionItem>
 
         {/* 3. Preço e Condições */}
-        <AccordionItem value="item-3" className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1">
+        <AccordionItem
+          value="item-3"
+          className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1"
+        >
           <AccordionTrigger className="hover:no-underline py-4">
             <div className="flex items-center gap-3 text-left">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E8231F]/15 text-[#E8231F]">
                 <DollarSign className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-sm sm:text-base">3. Preço e Condições de Pagamento</h3>
-                <p className="text-xs text-gray-400">Preço à vista, entrada sugerida, parcelas e facilidades</p>
+                <h3 className="font-bold text-white text-sm sm:text-base">
+                  3. Preço e Condições de Pagamento
+                </h3>
+                <p className="text-xs text-gray-400">
+                  Preço à vista, entrada sugerida, parcelas e facilidades
+                </p>
               </div>
             </div>
           </AccordionTrigger>
@@ -451,7 +509,9 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
                   type="number"
                   placeholder="Ex: 48"
                   value={installmentsCount}
-                  onChange={(e) => setInstallmentsCount(e.target.value ? Number(e.target.value) : "")}
+                  onChange={(e) =>
+                    setInstallmentsCount(e.target.value ? Number(e.target.value) : "")
+                  }
                   className="bg-black/50 border-white/10 text-white h-11"
                 />
               </div>
@@ -462,7 +522,9 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
                   type="number"
                   placeholder="Ex: 1899"
                   value={installmentValue}
-                  onChange={(e) => setInstallmentValue(e.target.value ? Number(e.target.value) : "")}
+                  onChange={(e) =>
+                    setInstallmentValue(e.target.value ? Number(e.target.value) : "")
+                  }
                   className="bg-black/50 border-white/10 text-white h-11"
                 />
               </div>
@@ -470,11 +532,7 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
 
             <div className="flex flex-wrap gap-6 pt-3 border-t border-white/5">
               <div className="flex items-center space-x-2">
-                <Switch
-                  id="trade"
-                  checked={acceptsTrade}
-                  onCheckedChange={setAcceptsTrade}
-                />
+                <Switch id="trade" checked={acceptsTrade} onCheckedChange={setAcceptsTrade} />
                 <Label htmlFor="trade" className="text-xs sm:text-sm text-gray-200 cursor-pointer">
                   Aceita Troca por Veículo Usado
                 </Label>
@@ -486,7 +544,10 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
                   checked={acceptsFinancing}
                   onCheckedChange={setAcceptsFinancing}
                 />
-                <Label htmlFor="finance" className="text-xs sm:text-sm text-gray-200 cursor-pointer">
+                <Label
+                  htmlFor="finance"
+                  className="text-xs sm:text-sm text-gray-200 cursor-pointer"
+                >
                   Aceita Financiamento Bancário
                 </Label>
               </div>
@@ -495,15 +556,22 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
         </AccordionItem>
 
         {/* 4. Características e Opcionais */}
-        <AccordionItem value="item-4" className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1">
+        <AccordionItem
+          value="item-4"
+          className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1"
+        >
           <AccordionTrigger className="hover:no-underline py-4">
             <div className="flex items-center gap-3 text-left">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E8231F]/15 text-[#E8231F]">
                 <Sliders className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-sm sm:text-base">4. Características e Opcionais</h3>
-                <p className="text-xs text-gray-400">Cor, portas, procedência e lista de equipamentos</p>
+                <h3 className="font-bold text-white text-sm sm:text-base">
+                  4. Características e Opcionais
+                </h3>
+                <p className="text-xs text-gray-400">
+                  Cor, portas, procedência e lista de equipamentos
+                </p>
               </div>
             </div>
           </AccordionTrigger>
@@ -557,7 +625,9 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
             </div>
 
             <div className="space-y-2 pt-3 border-t border-white/5">
-              <Label className="text-xs text-gray-300 font-semibold block mb-2">Itens e Opcionais Instalados:</Label>
+              <Label className="text-xs text-gray-300 font-semibold block mb-2">
+                Itens e Opcionais Instalados:
+              </Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
                 {AVAILABLE_FEATURES.map((feat) => {
                   const isChecked = features.includes(feat);
@@ -570,10 +640,7 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
                           : "border-white/5 bg-black/30 text-gray-400 hover:border-white/20"
                       }`}
                     >
-                      <Checkbox
-                        checked={isChecked}
-                        onCheckedChange={() => toggleFeature(feat)}
-                      />
+                      <Checkbox checked={isChecked} onCheckedChange={() => toggleFeature(feat)} />
                       <span>{feat}</span>
                     </label>
                   );
@@ -584,15 +651,22 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
         </AccordionItem>
 
         {/* 5. Descrição, Mídia e Status */}
-        <AccordionItem value="item-5" className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1">
+        <AccordionItem
+          value="item-5"
+          className="border border-white/10 bg-[#141414] rounded-xl px-5 py-1"
+        >
           <AccordionTrigger className="hover:no-underline py-4">
             <div className="flex items-center gap-3 text-left">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E8231F]/15 text-[#E8231F]">
                 <ImageIcon className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-sm sm:text-base">5. Descrição, Galeria de Fotos e Status</h3>
-                <p className="text-xs text-gray-400">Texto descritivo, fotos do veículo, capa e status de publicação</p>
+                <h3 className="font-bold text-white text-sm sm:text-base">
+                  5. Descrição, Galeria de Fotos e Status
+                </h3>
+                <p className="text-xs text-gray-400">
+                  Texto descritivo, fotos do veículo, capa e status de publicação
+                </p>
               </div>
             </div>
           </AccordionTrigger>
@@ -608,7 +682,9 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs text-gray-300 font-semibold block">Fotos do Veículo (Upload Múltiplo e Ordenação)</Label>
+              <Label className="text-xs text-gray-300 font-semibold block">
+                Fotos do Veículo (Upload Múltiplo e Ordenação)
+              </Label>
               <ImageUploader
                 images={images}
                 mainImageIndex={mainImageIndex}
@@ -636,22 +712,22 @@ export function VehicleForm({ initialVehicle, onSave, onCancel }: VehicleFormPro
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-[#E8231F]" />
-                    <Label htmlFor="featured" className="text-xs sm:text-sm font-semibold text-white cursor-pointer">
+                    <Label
+                      htmlFor="featured"
+                      className="text-xs sm:text-sm font-semibold text-white cursor-pointer"
+                    >
                       Destaque na Home
                     </Label>
                   </div>
-                  <p className="text-[11px] text-gray-400">Exibir este veículo no carrossel de destaque do site público</p>
+                  <p className="text-[11px] text-gray-400">
+                    Exibir este veículo no carrossel de destaque do site público
+                  </p>
                 </div>
-                <Switch
-                  id="featured"
-                  checked={isFeatured}
-                  onCheckedChange={setIsFeatured}
-                />
+                <Switch id="featured" checked={isFeatured} onCheckedChange={setIsFeatured} />
               </div>
             </div>
           </AccordionContent>
         </AccordionItem>
-
       </Accordion>
 
       <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">

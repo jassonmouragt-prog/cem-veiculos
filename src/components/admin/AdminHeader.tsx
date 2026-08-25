@@ -9,12 +9,7 @@ interface AdminHeaderProps {
   actions?: React.ReactNode;
 }
 
-export function AdminHeader({
-  title,
-  description,
-  onOpenMobileMenu,
-  actions,
-}: AdminHeaderProps) {
+export function AdminHeader({ title, description, onOpenMobileMenu, actions }: AdminHeaderProps) {
   const user = getCurrentUser();
 
   return (
@@ -35,9 +30,7 @@ export function AdminHeader({
             {title}
           </h1>
           {description && (
-            <p className="text-xs text-gray-400 hidden sm:block truncate">
-              {description}
-            </p>
+            <p className="text-xs text-gray-400 hidden sm:block truncate">{description}</p>
           )}
         </div>
       </div>

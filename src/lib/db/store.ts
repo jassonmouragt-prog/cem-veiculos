@@ -69,10 +69,14 @@ function mapVehicle(row: any): Vehicle {
     engine: row.engine ?? "",
     fuel: row.fuel,
     transmission: row.transmission,
-    ...(row.power_hp !== null && row.power_hp !== undefined ? { powerHp: Number(row.power_hp) } : {}),
+    ...(row.power_hp !== null && row.power_hp !== undefined
+      ? { powerHp: Number(row.power_hp) }
+      : {}),
     mileage: Number(row.mileage ?? 0),
     price: Number(row.price ?? 0),
-    ...(row.entry_value !== null && row.entry_value !== undefined ? { entryValue: Number(row.entry_value) } : {}),
+    ...(row.entry_value !== null && row.entry_value !== undefined
+      ? { entryValue: Number(row.entry_value) }
+      : {}),
     ...(row.installments_count !== null && row.installments_count !== undefined
       ? { installmentsCount: Number(row.installments_count) }
       : {}),
@@ -208,8 +212,19 @@ export function getPublicVehicles(filters?: {
   return cachedVehicles.filter((v) => {
     if (filters?.onlyFeatured && !v.isFeatured) return false;
     if (filters?.status && v.status !== filters.status) return false;
-    if (filters?.category && filters.category !== "todos" && filters.category !== "todas" && v.category !== filters.category) return false;
-    if (filters?.brand && filters.brand !== "todas" && v.brand.toLowerCase() !== filters.brand.toLowerCase()) return false;
+    if (
+      filters?.category &&
+      filters.category !== "todos" &&
+      filters.category !== "todas" &&
+      v.category !== filters.category
+    )
+      return false;
+    if (
+      filters?.brand &&
+      filters.brand !== "todas" &&
+      v.brand.toLowerCase() !== filters.brand.toLowerCase()
+    )
+      return false;
     if (filters?.maxPrice && v.price > filters.maxPrice) return false;
     if (filters?.year && v.modelYear !== filters.year) return false;
     if (filters?.search) {
@@ -236,7 +251,7 @@ export function getVehicleById(id: string): Vehicle | undefined {
 // --- VEHICLES WRITE API ---
 
 export async function createVehicle(
-  data: Omit<Vehicle, "id" | "slug" | "createdAt" | "updatedAt">
+  data: Omit<Vehicle, "id" | "slug" | "createdAt" | "updatedAt">,
 ): Promise<Vehicle> {
   const slug = generateSlug(data.name || `${data.brand} ${data.model}`, data.modelYear);
   const { data: row, error } = await supabase
@@ -254,7 +269,7 @@ export async function createVehicle(
 
 export async function updateVehicle(
   id: string,
-  data: Partial<Omit<Vehicle, "id" | "createdAt">>
+  data: Partial<Omit<Vehicle, "id" | "createdAt">>,
 ): Promise<Vehicle | null> {
   const { data: row, error } = await supabase
     .from("vehicles")
@@ -324,7 +339,10 @@ export async function createLead(data: {
 }
 
 export async function updateLeadStatus(id: string, status: LeadStatus): Promise<boolean> {
-  const { error } = await supabase.from("leads").update({ status } as never).eq("id", id);
+  const { error } = await supabase
+    .from("leads")
+    .update({ status } as never)
+    .eq("id", id);
   if (error) throw error;
   cachedLeads = cachedLeads.map((l) => (l.id === id ? { ...l, status } : l));
   notifyListeners();
@@ -360,7 +378,9 @@ export async function migrateLegacyLocalData(): Promise<number> {
   }
 
   const source = legacy.length > 0 ? legacy : INITIAL_VEHICLES;
-  const rows = source.map((v) => toVehicleRow({ ...v, slug: v.slug || generateSlug(v.name, v.modelYear, v.id) }));
+  const rows = source.map((v) =>
+    toVehicleRow({ ...v, slug: v.slug || generateSlug(v.name, v.modelYear, v.id) }),
+  );
 
   const { error } = await supabase.from("vehicles").insert(rows as never);
   if (error) {
@@ -381,7 +401,7 @@ export async function migrateLegacyLocalData(): Promise<number> {
           vehicle_name: l.vehicleName ?? null,
           message: l.message ?? null,
           status: l.status,
-        })) as never
+        })) as never,
       );
     }
   } catch (e) {

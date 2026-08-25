@@ -148,21 +148,26 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-brand);
     letter-spacing: -0.02em;
   }
 }
 
 @utility text-brand-gradient {
-  background: linear-gradient(to right, #E8231F, #FF4D4D);
+  background: linear-gradient(to right, #e8231f, #ff4d4d);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 @utility bg-brand-gradient {
-  background: linear-gradient(135deg, #E8231F 0%, #B31916 100%);
+  background: linear-gradient(135deg, #e8231f 0%, #b31916 100%);
 }
 
 /* Hide the "Made with Lovable" badge */

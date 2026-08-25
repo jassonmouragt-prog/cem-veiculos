@@ -14,7 +14,7 @@ export const ensureFirstAdmin = createServerFn({ method: "POST" })
         password: z.string().min(6),
         name: z.string().min(1).optional(),
       })
-      .parse(data)
+      .parse(data),
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -34,7 +34,8 @@ export const ensureFirstAdmin = createServerFn({ method: "POST" })
       user_metadata: { name: data.name ?? "Administrador C&M" },
     });
 
-    if (createError || !created.user) throw new Error(createError?.message ?? "Falha ao criar administrador");
+    if (createError || !created.user)
+      throw new Error(createError?.message ?? "Falha ao criar administrador");
 
     const { error: roleError } = await supabaseAdmin
       .from("user_roles")

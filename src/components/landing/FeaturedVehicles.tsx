@@ -67,7 +67,10 @@ export function FeaturedVehicles({
       <div className="container mx-auto px-4">
         <div className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:mb-8">
           <div className="min-w-0">
-            <Badge variant="secondary" className="bg-[#E8231F]/10 border border-[#E8231F]/20 text-[#E8231F] font-semibold text-xs mb-2 rounded-full py-0.5 px-3">
+            <Badge
+              variant="secondary"
+              className="bg-[#E8231F]/10 border border-[#E8231F]/20 text-[#E8231F] font-semibold text-xs mb-2 rounded-full py-0.5 px-3"
+            >
               ESTOQUE SELECIONADO
             </Badge>
             <h2 className="text-xl font-bold text-white tracking-tight sm:text-2xl lg:text-3xl">
@@ -97,9 +100,9 @@ export function FeaturedVehicles({
                 { label: "Picapes", value: "picape" },
                 { label: "Motos", value: "motos" },
               ].map((tab) => (
-                <TabsTrigger 
-                  key={tab.value} 
-                  value={tab.value} 
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
                   className="shrink-0 px-3.5 py-1.5 text-xs font-medium rounded-lg data-[state=active]:bg-[#E8231F] data-[state=active]:text-white sm:px-5"
                 >
                   {tab.label}
@@ -111,8 +114,12 @@ export function FeaturedVehicles({
 
         {displayedVehicles.length === 0 ? (
           <div className="bg-[#121212] border border-white/5 rounded-2xl p-10 text-center">
-            <p className="text-sm font-semibold text-white mb-1">Nenhum veículo encontrado nesta categoria</p>
-            <p className="text-xs text-gray-400 mb-4">Tente selecionar outra categoria ou limpar a busca.</p>
+            <p className="text-sm font-semibold text-white mb-1">
+              Nenhum veículo encontrado nesta categoria
+            </p>
+            <p className="text-xs text-gray-400 mb-4">
+              Tente selecionar outra categoria ou limpar a busca.
+            </p>
             <Button
               variant="outline"
               size="sm"
@@ -133,7 +140,10 @@ export function FeaturedVehicles({
               }[v.status];
 
               return (
-                <Card key={v.id} className="bg-[#121212] border-white/5 overflow-hidden flex flex-col hover:border-[#E8231F]/40 transition-all rounded-xl shadow-md group">
+                <Card
+                  key={v.id}
+                  className="bg-[#121212] border-white/5 overflow-hidden flex flex-col hover:border-[#E8231F]/40 transition-all rounded-xl shadow-md group"
+                >
                   <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="block">
                     <div className="relative aspect-[16/10] overflow-hidden bg-black">
                       <img
@@ -145,7 +155,9 @@ export function FeaturedVehicles({
                         {v.modelYear}
                       </div>
                       {statusTag && (
-                        <div className={`absolute top-2 right-2 backdrop-blur-md px-2 py-0.5 rounded-md text-[11px] font-bold uppercase shadow ${statusTag.color}`}>
+                        <div
+                          className={`absolute top-2 right-2 backdrop-blur-md px-2 py-0.5 rounded-md text-[11px] font-bold uppercase shadow ${statusTag.color}`}
+                        >
                           {statusTag.label}
                         </div>
                       )}
@@ -165,10 +177,15 @@ export function FeaturedVehicles({
                         </h3>
                       </Link>
                       <p className="text-xs text-gray-400 mb-3 truncate">{v.version || v.model}</p>
-                      
+
                       <div className="flex gap-3 mb-3 text-xs text-gray-400">
-                        <div className="flex items-center gap-1"><Gauge className="w-3.5 h-3.5 text-gray-500" /> {formatMileage(v.mileage)}</div>
-                        <div className="flex items-center gap-1"><Fuel className="w-3.5 h-3.5 text-gray-500" /> <span className="capitalize">{v.fuel}</span></div>
+                        <div className="flex items-center gap-1">
+                          <Gauge className="w-3.5 h-3.5 text-gray-500" /> {formatMileage(v.mileage)}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Fuel className="w-3.5 h-3.5 text-gray-500" />{" "}
+                          <span className="capitalize">{v.fuel}</span>
+                        </div>
                       </div>
                     </div>
 
@@ -178,17 +195,23 @@ export function FeaturedVehicles({
                       </div>
                       {v.installmentValue ? (
                         <p className="text-[11px] text-gray-400 truncate">
-                          Entrada + {v.installmentsCount || 48}x de {formatCurrency(v.installmentValue)}
+                          Entrada + {v.installmentsCount || 48}x de{" "}
+                          {formatCurrency(v.installmentValue)}
                         </p>
                       ) : (
-                        <p className="text-[11px] text-gray-400">Consulte condições de parcelamento</p>
+                        <p className="text-[11px] text-gray-400">
+                          Consulte condições de parcelamento
+                        </p>
                       )}
                     </div>
                   </CardContent>
 
                   <CardFooter className="p-4 pt-0 gap-2">
                     <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="flex-1">
-                      <Button variant="outline" className="w-full h-9 text-xs font-semibold border-white/10 hover:bg-white/5 text-gray-200 rounded-lg">
+                      <Button
+                        variant="outline"
+                        className="w-full h-9 text-xs font-semibold border-white/10 hover:bg-white/5 text-gray-200 rounded-lg"
+                      >
                         Detalhes
                       </Button>
                     </Link>

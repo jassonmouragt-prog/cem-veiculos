@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { 
-  getLeadsFromStorage, 
-  updateLeadStatus, 
-  deleteLead, 
-  subscribeToStore, 
-  formatDate 
+import {
+  getLeadsFromStorage,
+  updateLeadStatus,
+  deleteLead,
+  subscribeToStore,
+  formatDate,
 } from "@/lib/db/store";
 import { Lead, LeadStatus } from "@/lib/db/types";
 import { AdminHeader } from "@/components/admin/AdminHeader";
@@ -31,16 +31,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { 
-  Users, 
-  Search, 
-  MessageSquare, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  Car, 
-  Trash2, 
-  ExternalLink 
+import {
+  Users,
+  Search,
+  MessageSquare,
+  Mail,
+  Phone,
+  Calendar,
+  Car,
+  Trash2,
+  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -68,7 +68,7 @@ function AdminLeadsPage() {
     if (statusFilter !== "todos" && lead.status !== statusFilter) return false;
     if (search.trim()) {
       const q = search.toLowerCase();
-      const match = 
+      const match =
         lead.name.toLowerCase().includes(q) ||
         lead.phone.includes(q) ||
         (lead.email && lead.email.toLowerCase().includes(q)) ||
@@ -78,14 +78,14 @@ function AdminLeadsPage() {
     return true;
   });
 
-  const handleStatusChange = (id: string, status: LeadStatus) => {
-    updateLeadStatus(id, status);
+  const handleStatusChange = async (id: string, status: LeadStatus) => {
+    await updateLeadStatus(id, status);
     toast.success("Status do lead atualizado.");
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!leadToDelete) return;
-    deleteLead(leadToDelete.id);
+    await deleteLead(leadToDelete.id);
     toast.success("Lead removido com sucesso.");
     setLeadToDelete(null);
   };
@@ -150,21 +150,38 @@ function AdminLeadsPage() {
             {filteredLeads.map((lead) => {
               const cleanPhone = lead.phone.replace(/\D/g, "");
               const statusMap = {
-                novo: { label: "Novo Lead", color: "bg-blue-500/15 text-blue-400 border-blue-500/30" },
-                em_atendimento: { label: "Em Atendimento", color: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
-                concluido: { label: "Venda Concluída", color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
-                descartado: { label: "Descartado", color: "bg-zinc-800 text-zinc-400 border-zinc-700" },
+                novo: {
+                  label: "Novo Lead",
+                  color: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+                },
+                em_atendimento: {
+                  label: "Em Atendimento",
+                  color: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+                },
+                concluido: {
+                  label: "Venda Concluída",
+                  color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+                },
+                descartado: {
+                  label: "Descartado",
+                  color: "bg-zinc-800 text-zinc-400 border-zinc-700",
+                },
               }[lead.status];
 
               return (
-                <Card key={lead.id} className="bg-[#121212] border-white/5 hover:border-white/15 transition-all rounded-xl p-4 sm:p-5 shadow-md">
+                <Card
+                  key={lead.id}
+                  className="bg-[#121212] border-white/5 hover:border-white/15 transition-all rounded-xl p-4 sm:p-5 shadow-md"
+                >
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                    
                     {/* Left: Customer Info */}
                     <div className="space-y-1.5 min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="font-bold text-white text-base">{lead.name}</h3>
-                        <Badge variant="outline" className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${statusMap.color}`}>
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${statusMap.color}`}
+                        >
                           {statusMap.label}
                         </Badge>
                         <span className="text-[11px] text-gray-500 flex items-center gap-1">
@@ -221,7 +238,10 @@ function AdminLeadsPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <Button size="sm" className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold gap-1.5 rounded-lg shadow-sm">
+                        <Button
+                          size="sm"
+                          className="h-9 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold gap-1.5 rounded-lg shadow-sm"
+                        >
                           <MessageSquare className="w-3.5 h-3.5" />
                           <span>WhatsApp</span>
                         </Button>
@@ -237,7 +257,6 @@ function AdminLeadsPage() {
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
-
                   </div>
                 </Card>
               );
@@ -246,7 +265,10 @@ function AdminLeadsPage() {
         )}
 
         {/* Delete Confirmation Alert Dialog */}
-        <AlertDialog open={leadToDelete !== null} onOpenChange={(open) => !open && setLeadToDelete(null)}>
+        <AlertDialog
+          open={leadToDelete !== null}
+          onOpenChange={(open) => !open && setLeadToDelete(null)}
+        >
           <AlertDialogContent className="bg-[#121212] border border-white/10 text-white">
             <AlertDialogHeader>
               <AlertDialogTitle>Remover registro de lead?</AlertDialogTitle>

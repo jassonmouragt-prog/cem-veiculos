@@ -15,17 +15,17 @@ The user wants to update the typography across all landing page sections and app
 ### Styling Changes
 
 - **src/styles.css**:
-    - Import the new brand font from Google Fonts (e.g., 'Outfit' and 'Archivo Black').
-    - Update `@theme` to include a custom utility for the red gradient.
-    - Update base headings and section title styles to use the new brand font.
-    - Add a utility class `.text-brand-gradient` for text clipping and gradient fill.
+  - Import the new brand font from Google Fonts (e.g., 'Outfit' and 'Archivo Black').
+  - Update `@theme` to include a custom utility for the red gradient.
+  - Update base headings and section title styles to use the new brand font.
+  - Add a utility class `.text-brand-gradient` for text clipping and gradient fill.
 
 ### Component Changes
 
-- **src/components/landing/*.tsx**:
-    - Update instances of `text-[#E8231F]` and `bg-[#E8231F]` to use the new gradient utility or updated primary variables.
-    - Ensure section titles and specific highlighted words use the new font and gradient where appropriate.
-    - Update the `Header`, `Hero`, `FeaturedVehicles`, `WhyChooseUs`, and `FinancingCTA` components to reflect these changes.
+- **src/components/landing/\*.tsx**:
+  - Update instances of `text-[#E8231F]` and `bg-[#E8231F]` to use the new gradient utility or updated primary variables.
+  - Ensure section titles and specific highlighted words use the new font and gradient where appropriate.
+  - Update the `Header`, `Hero`, `FeaturedVehicles`, `WhyChooseUs`, and `FinancingCTA` components to reflect these changes.
 
 ### Business Logic
 

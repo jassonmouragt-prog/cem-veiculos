@@ -90,7 +90,8 @@ function EstoquePage() {
       if (categoryFilter !== "todas" && v.category !== categoryFilter) return false;
       if (brandFilter !== "todas" && v.brand !== brandFilter) return false;
       if (yearFilter !== "indiferente" && v.modelYear !== Number(yearFilter)) return false;
-      if (transmissionFilter !== "indiferente" && v.transmission !== transmissionFilter) return false;
+      if (transmissionFilter !== "indiferente" && v.transmission !== transmissionFilter)
+        return false;
       if (fuelFilter !== "indiferente" && v.fuel !== fuelFilter) return false;
       if (priceFilter !== "indiferente" && v.price > Number(priceFilter)) return false;
       if (search.trim()) {
@@ -104,7 +105,16 @@ function EstoquePage() {
       }
       return true;
     });
-  }, [vehicles, categoryFilter, brandFilter, yearFilter, transmissionFilter, fuelFilter, priceFilter, search]);
+  }, [
+    vehicles,
+    categoryFilter,
+    brandFilter,
+    yearFilter,
+    transmissionFilter,
+    fuelFilter,
+    priceFilter,
+    search,
+  ]);
 
   const categoryLabel: Record<string, string> = {
     suv: "SUV",
@@ -206,7 +216,9 @@ function EstoquePage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {/* Category */}
             <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Categoria</label>
+              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                Categoria
+              </label>
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger className="bg-black/50 border-white/10 h-10 text-xs text-white rounded-lg">
                   <SelectValue placeholder="Todas" />
@@ -224,7 +236,9 @@ function EstoquePage() {
 
             {/* Brand */}
             <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Marca</label>
+              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                Marca
+              </label>
               <Select value={brandFilter} onValueChange={setBrandFilter}>
                 <SelectTrigger className="bg-black/50 border-white/10 h-10 text-xs text-white rounded-lg">
                   <SelectValue placeholder="Todas" />
@@ -242,7 +256,9 @@ function EstoquePage() {
 
             {/* Price */}
             <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Preço Máx.</label>
+              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                Preço Máx.
+              </label>
               <Select value={priceFilter} onValueChange={setPriceFilter}>
                 <SelectTrigger className="bg-black/50 border-white/10 h-10 text-xs text-white rounded-lg">
                   <SelectValue placeholder="Indiferente" />
@@ -260,7 +276,9 @@ function EstoquePage() {
 
             {/* Year */}
             <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Ano</label>
+              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                Ano
+              </label>
               <Select value={yearFilter} onValueChange={setYearFilter}>
                 <SelectTrigger className="bg-black/50 border-white/10 h-10 text-xs text-white rounded-lg">
                   <SelectValue placeholder="Indiferente" />
@@ -278,7 +296,9 @@ function EstoquePage() {
 
             {/* Transmission */}
             <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Câmbio</label>
+              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                Câmbio
+              </label>
               <Select value={transmissionFilter} onValueChange={setTransmissionFilter}>
                 <SelectTrigger className="bg-black/50 border-white/10 h-10 text-xs text-white rounded-lg">
                   <SelectValue placeholder="Indiferente" />
@@ -296,7 +316,9 @@ function EstoquePage() {
 
             {/* Fuel */}
             <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Combustível</label>
+              <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                Combustível
+              </label>
               <Select value={fuelFilter} onValueChange={setFuelFilter}>
                 <SelectTrigger className="bg-black/50 border-white/10 h-10 text-xs text-white rounded-lg">
                   <SelectValue placeholder="Indiferente" />
@@ -319,37 +341,58 @@ function EstoquePage() {
               <span className="text-[10px] text-gray-500 self-center">Filtros ativos:</span>
               {search && (
                 <span className="inline-flex items-center gap-1 bg-[#E8231F]/15 text-[#E8231F] text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#E8231F]/30">
-                  "{search}" <button onClick={() => setSearch("")}><X className="w-3 h-3" /></button>
+                  "{search}"{" "}
+                  <button onClick={() => setSearch("")}>
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
               {categoryFilter !== "todas" && (
                 <span className="inline-flex items-center gap-1 bg-white/5 text-gray-300 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-white/10">
-                  {categoryLabel[categoryFilter] || categoryFilter} <button onClick={() => setCategoryFilter("todas")}><X className="w-3 h-3" /></button>
+                  {categoryLabel[categoryFilter] || categoryFilter}{" "}
+                  <button onClick={() => setCategoryFilter("todas")}>
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
               {brandFilter !== "todas" && (
                 <span className="inline-flex items-center gap-1 bg-white/5 text-gray-300 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-white/10">
-                  {brandFilter} <button onClick={() => setBrandFilter("todas")}><X className="w-3 h-3" /></button>
+                  {brandFilter}{" "}
+                  <button onClick={() => setBrandFilter("todas")}>
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
               {priceFilter !== "indiferente" && (
                 <span className="inline-flex items-center gap-1 bg-white/5 text-gray-300 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-white/10">
-                  Até {formatCurrency(Number(priceFilter))} <button onClick={() => setPriceFilter("indiferente")}><X className="w-3 h-3" /></button>
+                  Até {formatCurrency(Number(priceFilter))}{" "}
+                  <button onClick={() => setPriceFilter("indiferente")}>
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
               {yearFilter !== "indiferente" && (
                 <span className="inline-flex items-center gap-1 bg-white/5 text-gray-300 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-white/10">
-                  Ano {yearFilter} <button onClick={() => setYearFilter("indiferente")}><X className="w-3 h-3" /></button>
+                  Ano {yearFilter}{" "}
+                  <button onClick={() => setYearFilter("indiferente")}>
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
               {transmissionFilter !== "indiferente" && (
                 <span className="inline-flex items-center gap-1 bg-white/5 text-gray-300 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-white/10">
-                  {transmissionLabel[transmissionFilter] || transmissionFilter} <button onClick={() => setTransmissionFilter("indiferente")}><X className="w-3 h-3" /></button>
+                  {transmissionLabel[transmissionFilter] || transmissionFilter}{" "}
+                  <button onClick={() => setTransmissionFilter("indiferente")}>
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
               {fuelFilter !== "indiferente" && (
                 <span className="inline-flex items-center gap-1 bg-white/5 text-gray-300 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-white/10">
-                  {fuelLabel[fuelFilter] || fuelFilter} <button onClick={() => setFuelFilter("indiferente")}><X className="w-3 h-3" /></button>
+                  {fuelLabel[fuelFilter] || fuelFilter}{" "}
+                  <button onClick={() => setFuelFilter("indiferente")}>
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
             </div>
@@ -382,8 +425,8 @@ function EstoquePage() {
                 v.status === "reservado"
                   ? { label: "Reservado", color: "bg-amber-500/80 text-white" }
                   : v.status === "vendido"
-                  ? { label: "Vendido", color: "bg-zinc-700/90 text-zinc-300" }
-                  : null;
+                    ? { label: "Vendido", color: "bg-zinc-700/90 text-zinc-300" }
+                    : null;
 
               return (
                 <Card
@@ -448,10 +491,13 @@ function EstoquePage() {
                       </div>
                       {v.installmentValue ? (
                         <p className="text-[11px] text-gray-400 truncate">
-                          Entrada + {v.installmentsCount || 48}x de {formatCurrency(v.installmentValue)}
+                          Entrada + {v.installmentsCount || 48}x de{" "}
+                          {formatCurrency(v.installmentValue)}
                         </p>
                       ) : (
-                        <p className="text-[11px] text-gray-400">Consulte condições de parcelamento</p>
+                        <p className="text-[11px] text-gray-400">
+                          Consulte condições de parcelamento
+                        </p>
                       )}
                     </div>
                   </CardContent>

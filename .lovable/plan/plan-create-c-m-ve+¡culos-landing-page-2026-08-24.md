@@ -13,24 +13,28 @@ The user wants to replace a large block of descriptive/instructional text (which
 ## Proposed Changes
 
 ### Styling
+
 - Update `src/styles.css` to include the dark theme background and custom colors if necessary, though Tailwind v4 variables will be used directly.
 
 ### Components
+
 - Create a `src/components/landing` directory for modular sections:
-    - `Header.tsx`: Fixed top nav with logo and WhatsApp button.
-    - `Hero.tsx`: Main section with badge, title, image, and seals.
-    - `SearchBar.tsx`: Search filters card.
-    - `FeaturedVehicles.tsx`: Grid of vehicle cards with filters.
-    - `WhyChooseUs.tsx`: Benefits section.
-    - `FinancingCTA.tsx`: Simulated financing card with WhatsApp link.
-    - `Testimonials.tsx`: Customer reviews and Google rating.
-    - `Location.tsx`: Address, hours, and map section.
-    - `Footer.tsx`: 5-column footer with social links.
+  - `Header.tsx`: Fixed top nav with logo and WhatsApp button.
+  - `Hero.tsx`: Main section with badge, title, image, and seals.
+  - `SearchBar.tsx`: Search filters card.
+  - `FeaturedVehicles.tsx`: Grid of vehicle cards with filters.
+  - `WhyChooseUs.tsx`: Benefits section.
+  - `FinancingCTA.tsx`: Simulated financing card with WhatsApp link.
+  - `Testimonials.tsx`: Customer reviews and Google rating.
+  - `Location.tsx`: Address, hours, and map section.
+  - `Footer.tsx`: 5-column footer with social links.
 
 ### Routes
+
 - Rewrite `src/routes/index.tsx` to compose these sections into the full landing page.
 
 ## Technical Details
+
 - Use `lucide-react` for icons.
 - Use `shadcn/ui` components (Button, Input, Select, Card, Badge, Tabs) which are already available in `src/components/ui`.
 - Ensure responsive design using Tailwind's grid and flexbox.
@@ -38,5 +42,6 @@ The user wants to replace a large block of descriptive/instructional text (which
 - SEO: Add `head()` to `src/routes/index.tsx` with appropriate metadata.
 
 ## Execution
+
 - I will first verify the existence of Lucide icons and shadcn components.
 - I will build the page section by section in `src/routes/index.tsx` or separate components for better organization.

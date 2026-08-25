@@ -31,14 +31,33 @@ export function Header() {
           >
             Estoque
           </Link>
-          <a href="/#financiamento" className="text-sm font-medium transition-colors hover:text-white text-gray-300">Financiamento</a>
-          <a href="/#sobre" className="text-sm font-medium transition-colors hover:text-white text-gray-300">Sobre</a>
-          <a href="/#localizacao" className="text-sm font-medium transition-colors hover:text-white text-gray-300">Localização</a>
+          <a
+            href="/#financiamento"
+            className="text-sm font-medium transition-colors hover:text-white text-gray-300"
+          >
+            Financiamento
+          </a>
+          <a
+            href="/#sobre"
+            className="text-sm font-medium transition-colors hover:text-white text-gray-300"
+          >
+            Sobre
+          </a>
+          <a
+            href="/#localizacao"
+            className="text-sm font-medium transition-colors hover:text-white text-gray-300"
+          >
+            Localização
+          </a>
         </nav>
 
         <div className="flex items-center gap-2">
           <Link to="/login" title="Acesso Administrativo" className="hidden sm:inline-flex">
-            <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500 hover:text-white hover:bg-white/5 rounded-lg">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 text-gray-500 hover:text-white hover:bg-white/5 rounded-lg"
+            >
               <ShieldCheck className="w-4 h-4" />
             </Button>
           </Link>

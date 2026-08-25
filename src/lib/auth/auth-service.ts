@@ -72,7 +72,7 @@ export async function isAuthenticated(): Promise<boolean> {
 
 export async function login(
   email: string,
-  password: string
+  password: string,
 ): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
   const cleanEmail = email.trim().toLowerCase();
   const cleanPass = password.trim();
@@ -114,7 +114,7 @@ export async function logout(): Promise<void> {
 
 export async function updateAdminPassword(
   currentPass: string,
-  newPass: string
+  newPass: string,
 ): Promise<{ success: boolean; error?: string }> {
   if (!newPass || newPass.length < 6) {
     return { success: false, error: "A nova senha deve conter no mínimo 6 caracteres." };

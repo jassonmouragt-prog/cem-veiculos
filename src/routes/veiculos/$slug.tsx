@@ -8,23 +8,23 @@ import { LeadModal } from "@/components/landing/LeadModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Car, 
-  Gauge, 
-  Fuel, 
-  CheckCircle2, 
-  Calendar, 
-  Palette, 
-  DoorClosed, 
-  ShieldCheck, 
-  Sparkles, 
-  MessageSquare, 
-  Calculator, 
-  ArrowLeft, 
-  Clock, 
-  Tag, 
-  Check, 
-  Share2 
+import {
+  Car,
+  Gauge,
+  Fuel,
+  CheckCircle2,
+  Calendar,
+  Palette,
+  DoorClosed,
+  ShieldCheck,
+  Sparkles,
+  MessageSquare,
+  Calculator,
+  ArrowLeft,
+  Clock,
+  Tag,
+  Check,
+  Share2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -69,12 +69,23 @@ function VehicleDetailPage() {
     );
   }
 
-  const images = vehicle.images.length > 0 ? vehicle.images : ["https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1200"];
+  const images =
+    vehicle.images.length > 0
+      ? vehicle.images
+      : [
+          "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1200",
+        ];
   const currentImage = images[selectedImageIndex] || images[0];
 
   const statusBadge = {
-    disponivel: { label: "Disponível para Compra", color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
-    reservado: { label: "Veículo Reservado", color: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
+    disponivel: {
+      label: "Disponível para Compra",
+      color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+    },
+    reservado: {
+      label: "Veículo Reservado",
+      color: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+    },
     vendido: { label: "Veículo Vendido", color: "bg-zinc-800 text-zinc-400 border-zinc-700" },
   }[vehicle.status];
 
@@ -92,7 +103,7 @@ function VehicleDetailPage() {
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Olá! Gostaria de mais informações sobre o veículo ${vehicle.name} (${vehicle.modelYear}) anunciado por ${formatCurrency(vehicle.price)}.`
+    `Olá! Gostaria de mais informações sobre o veículo ${vehicle.name} (${vehicle.modelYear}) anunciado por ${formatCurrency(vehicle.price)}.`,
   );
 
   return (
@@ -100,7 +111,6 @@ function VehicleDetailPage() {
       <Header />
 
       <main className="container mx-auto px-4 pt-24 pb-16 lg:pt-28 lg:pb-24 space-y-8">
-        
         {/* Top Breadcrumb and Actions */}
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-gray-400">
           <Link to="/" className="flex items-center gap-1.5 hover:text-white transition-colors">
@@ -120,7 +130,6 @@ function VehicleDetailPage() {
 
         {/* Main Grid: Gallery on Left, Pricing/Actions on Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
           {/* Left Column: Image Gallery & Description (7 cols) */}
           <div className="lg:col-span-7 space-y-5">
             {/* Main Featured Image */}
@@ -131,7 +140,9 @@ function VehicleDetailPage() {
                 className="w-full h-full object-cover transition-all duration-300"
               />
               <div className="absolute top-3 left-3 flex gap-2">
-                <span className={`inline-flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full border backdrop-blur-md ${statusBadge.color}`}>
+                <span
+                  className={`inline-flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full border backdrop-blur-md ${statusBadge.color}`}
+                >
                   {statusBadge.label}
                 </span>
                 {vehicle.isFeatured && (
@@ -156,7 +167,11 @@ function VehicleDetailPage() {
                         : "border-white/10 opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <img src={img} alt={`Miniatura ${idx + 1}`} className="w-full h-full object-cover" />
+                    <img
+                      src={img}
+                      alt={`Miniatura ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -178,7 +193,10 @@ function VehicleDetailPage() {
                 <h3 className="text-base font-bold text-white">Itens de Série e Opcionais</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {vehicle.features.map((feat) => (
-                    <div key={feat} className="flex items-center gap-2 text-xs text-gray-300 bg-black/40 p-2.5 rounded-lg border border-white/5">
+                    <div
+                      key={feat}
+                      className="flex items-center gap-2 text-xs text-gray-300 bg-black/40 p-2.5 rounded-lg border border-white/5"
+                    >
                       <Check className="w-4 h-4 text-[#E8231F] shrink-0" />
                       <span>{feat}</span>
                     </div>
@@ -190,11 +208,13 @@ function VehicleDetailPage() {
 
           {/* Right Column: Pricing, Specs & CTAs (5 cols) */}
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
-            
             {/* Header info card */}
             <Card className="bg-[#121212] border-white/10 p-6 rounded-2xl shadow-xl space-y-5">
               <div>
-                <Badge variant="outline" className="text-[#E8231F] border-[#E8231F]/30 bg-[#E8231F]/10 text-xs font-semibold uppercase mb-2">
+                <Badge
+                  variant="outline"
+                  className="text-[#E8231F] border-[#E8231F]/30 bg-[#E8231F]/10 text-xs font-semibold uppercase mb-2"
+                >
                   {vehicle.category.toUpperCase()} • {vehicle.brand}
                 </Badge>
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -213,8 +233,11 @@ function VehicleDetailPage() {
                 </div>
                 {vehicle.installmentValue && (
                   <p className="text-xs text-gray-400 pt-1">
-                    Entrada sugerida de {formatCurrency(vehicle.entryValue || 0)} + {vehicle.installmentsCount || 48}x de{" "}
-                    <strong className="text-white">{formatCurrency(vehicle.installmentValue)}</strong>
+                    Entrada sugerida de {formatCurrency(vehicle.entryValue || 0)} +{" "}
+                    {vehicle.installmentsCount || 48}x de{" "}
+                    <strong className="text-white">
+                      {formatCurrency(vehicle.installmentValue)}
+                    </strong>
                   </p>
                 )}
               </div>
@@ -225,7 +248,9 @@ function VehicleDetailPage() {
                   <Calendar className="w-4 h-4 text-[#E8231F] shrink-0" />
                   <div>
                     <p className="text-[10px] text-gray-400">Ano Modelo</p>
-                    <p className="text-xs font-semibold text-white">{vehicle.manufacturingYear}/{vehicle.modelYear}</p>
+                    <p className="text-xs font-semibold text-white">
+                      {vehicle.manufacturingYear}/{vehicle.modelYear}
+                    </p>
                   </div>
                 </div>
 
@@ -233,7 +258,9 @@ function VehicleDetailPage() {
                   <Gauge className="w-4 h-4 text-[#E8231F] shrink-0" />
                   <div>
                     <p className="text-[10px] text-gray-400">Quilometragem</p>
-                    <p className="text-xs font-semibold text-white">{formatMileage(vehicle.mileage)}</p>
+                    <p className="text-xs font-semibold text-white">
+                      {formatMileage(vehicle.mileage)}
+                    </p>
                   </div>
                 </div>
 
@@ -249,7 +276,9 @@ function VehicleDetailPage() {
                   <Car className="w-4 h-4 text-[#E8231F] shrink-0" />
                   <div>
                     <p className="text-[10px] text-gray-400">Câmbio</p>
-                    <p className="text-xs font-semibold text-white capitalize">{vehicle.transmission}</p>
+                    <p className="text-xs font-semibold text-white capitalize">
+                      {vehicle.transmission}
+                    </p>
                   </div>
                 </div>
 
@@ -257,7 +286,9 @@ function VehicleDetailPage() {
                   <Palette className="w-4 h-4 text-[#E8231F] shrink-0" />
                   <div>
                     <p className="text-[10px] text-gray-400">Cor</p>
-                    <p className="text-xs font-semibold text-white">{vehicle.color || "Não informada"}</p>
+                    <p className="text-xs font-semibold text-white">
+                      {vehicle.color || "Não informada"}
+                    </p>
                   </div>
                 </div>
 
@@ -265,7 +296,9 @@ function VehicleDetailPage() {
                   <DoorClosed className="w-4 h-4 text-[#E8231F] shrink-0" />
                   <div>
                     <p className="text-[10px] text-gray-400">Portas</p>
-                    <p className="text-xs font-semibold text-white">{vehicle.doors > 0 ? `${vehicle.doors} Portas` : "N/A"}</p>
+                    <p className="text-xs font-semibold text-white">
+                      {vehicle.doors > 0 ? `${vehicle.doors} Portas` : "N/A"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -273,22 +306,34 @@ function VehicleDetailPage() {
               {/* Badges of provenance */}
               <div className="flex flex-wrap gap-2 pt-2 border-t border-white/5">
                 {vehicle.singleOwner && (
-                  <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-medium py-1 px-2.5">
+                  <Badge
+                    variant="secondary"
+                    className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-medium py-1 px-2.5"
+                  >
                     <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Único Dono
                   </Badge>
                 )}
                 {vehicle.dealerMaintained && (
-                  <Badge variant="secondary" className="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[11px] font-medium py-1 px-2.5">
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[11px] font-medium py-1 px-2.5"
+                  >
                     <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Revisões na Concessionária
                   </Badge>
                 )}
                 {vehicle.acceptsTrade && (
-                  <Badge variant="secondary" className="bg-white/5 text-gray-300 border border-white/10 text-[11px] font-medium py-1 px-2.5">
+                  <Badge
+                    variant="secondary"
+                    className="bg-white/5 text-gray-300 border border-white/10 text-[11px] font-medium py-1 px-2.5"
+                  >
                     Aceita Troca
                   </Badge>
                 )}
                 {vehicle.acceptsFinancing && (
-                  <Badge variant="secondary" className="bg-white/5 text-gray-300 border border-white/10 text-[11px] font-medium py-1 px-2.5">
+                  <Badge
+                    variant="secondary"
+                    className="bg-white/5 text-gray-300 border border-white/10 text-[11px] font-medium py-1 px-2.5"
+                  >
                     Financiamento Disponível
                   </Badge>
                 )}
@@ -333,10 +378,8 @@ function VehicleDetailPage() {
                 <li>Financiamento em até 60x com os principais bancos</li>
               </ul>
             </Card>
-
           </div>
         </div>
-
       </main>
 
       {/* Lead Capture Modal */}

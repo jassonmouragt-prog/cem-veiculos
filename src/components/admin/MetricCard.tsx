@@ -32,9 +32,13 @@ export function MetricCard({
         <div className="flex items-center justify-between gap-3">
           <div className="space-y-1">
             <p className="text-xs font-medium text-gray-400">{title}</p>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{value}</h3>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              {value}
+            </h3>
           </div>
-          <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border ${colorMap[badgeColor]}`}>
+          <div
+            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border ${colorMap[badgeColor]}`}
+          >
             <Icon className="h-6 w-6" />
           </div>
         </div>

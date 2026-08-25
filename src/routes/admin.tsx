@@ -1,14 +1,13 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { isAuthenticated, subscribeToAuth } from "@/lib/auth/auth-service";
+import { migrateLegacyLocalData } from "@/lib/db/store";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
     title: "Painel Administrativo | C&M Veículos",
-    meta: [
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminLayout,
 });
@@ -19,20 +18,29 @@ function AdminLayout() {
   const navigate = useNavigate();
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [migrationDone, setMigrationDone] = useState(false);
 
   useEffect(() => {
-    const checkAuth = () => {
-      const auth = isAuthenticated();
+    const checkAuth = async () => {
+      const auth = await isAuthenticated();
       setIsAuth(auth);
       if (!auth) {
         navigate({ to: "/login" });
+      } else if (!migrationDone) {
+        // Run legacy data migration once after successful auth
+        try {
+          await migrateLegacyLocalData();
+        } catch (err) {
+          console.error("Erro na migração de dados legados:", err);
+        }
+        setMigrationDone(true);
       }
     };
 
     checkAuth();
     const unsubscribe = subscribeToAuth(checkAuth);
     return () => unsubscribe();
-  }, [navigate]);
+  }, [navigate, migrationDone]);
 
   if (isAuth === null) {
     return (
