@@ -93,8 +93,17 @@ function VendedoresPage() {
       }
     } catch (err) {
       console.error("Erro ao salvar vendedor:", err);
-      toast.error(err instanceof Error ? err.message : "Erro ao salvar vendedor");
-      // NÃO re-throw - deixa o form lidar com o erro
+      let msg = "Erro ao salvar vendedor";
+      if (err instanceof Error) {
+        msg = err.message;
+        // Erros comuns do Supabase/Postgres
+        if (msg.includes("row-level security") || msg.includes("policy")) {
+          msg = "Sem permissão: seu usuário precisa ter role 'admin' no painel do Supabase (tabela user_roles)";
+        } else if (msg.includes("foreign key") || msg.includes("user_id")) {
+          msg = "Usuário inválido: faça logout e login novamente";
+        }
+      }
+      toast.error(msg);
     }
   };
 
