@@ -325,7 +325,7 @@ interface SellerFormProps {
     commissionRate: number;
     isActive: boolean;
     canReceiveCommission: boolean;
-  }) => void;
+  }) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -336,8 +336,10 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
   const [commissionRate, setCommissionRate] = useState(initialSeller?.commissionRate || 2);
   const [isActive, setIsActive] = useState(initialSeller?.isActive ?? true);
   const [canReceiveCommission, setCanReceiveCommission] = useState(initialSeller?.canReceiveCommission ?? true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
       toast.error("Nome é obrigatório");
@@ -347,21 +349,72 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
       toast.error("Comissão deve ser entre 0% e 20%");
       return;
     }
-    onSave({
-      name: name.trim(),
-      email: email.trim() || undefined,
-      phone: phone.trim() || undefined,
-      commissionRate,
-      isActive,
-      canReceiveCommission,
-    });
+    setIsSubmitting(true);
+    try {
+      await onSave({
+        name: name.trim(),
+        email: email.trim() || undefined,
+        phone: phone.trim() || undefined,
+        commissionRate,
+        isActive,
+        canReceiveCommission,
+      });
+      setSuccess(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (success) {
+    return (
+      <div className="space-y-4 text-center py-8">
+        <div className="w-16 h-16 mx-auto mb-4 bg-emerald-500/20 rounded-full flex items-center justify-center">
+          <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-bold text-white">
+          {initialSeller ? "Vendedor atualizado!" : "Vendedor cadastrado com sucesso!"}
+        </h3>
+        <p className="text-xs text-gray-400">
+          {name} agora está disponível para receber comissões nas vendas.
+        </p>
+        <div className="flex gap-2 pt-4 justify-center">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            className="border-white/10 hover:bg-white/5 text-gray-300 text-xs h-10 px-4 rounded-lg"
+          >
+            Fechar
+          </Button>
+          {!initialSeller && (
+            <Button
+              type="button"
+              onClick={() => {
+                setSuccess(false);
+                setName("");
+                setEmail("");
+                setPhone("");
+                setCommissionRate(2);
+                setIsActive(true);
+                setCanReceiveCommission(true);
+              }}
+              className="bg-brand-gradient hover:opacity-95 text-white font-semibold text-xs h-10 px-4 rounded-lg shadow-sm shadow-[#E8231F]/20"
+            >
+              Cadastrar Outro
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-white">{initialSeller ? "Editar Vendedor" : "Novo Vendedor"}</h3>
-        <Button type="button" variant="ghost" size="icon" onClick={onCancel}>
+        <Button type="button" variant="ghost" size="icon" onClick={onCancel} disabled={isSubmitting}>
           <X className="w-5 h-5" />
         </Button>
       </div>
@@ -372,6 +425,7 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
           placeholder="Nome completo do vendedor"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          disabled={isSubmitting}
           className="bg-black/50 border-white/10 text-white h-10 text-xs sm:text-sm rounded-lg"
         />
       </div>
@@ -383,6 +437,7 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
           placeholder="email@exemplo.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          disabled={isSubmitting}
           className="bg-black/50 border-white/10 text-white h-10 text-xs sm:text-sm rounded-lg"
         />
       </div>
@@ -393,6 +448,7 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
           placeholder="(11) 99999-9999"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          disabled={isSubmitting}
           className="bg-black/50 border-white/10 text-white h-10 text-xs sm:text-sm rounded-lg"
         />
       </div>
@@ -406,6 +462,7 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
           max="20"
           value={commissionRate}
           onChange={(e) => setCommissionRate(Number(e.target.value) || 0)}
+          disabled={isSubmitting}
           className="bg-black/50 border-white/10 text-white h-10 text-xs sm:text-sm rounded-lg w-24"
         />
       </div>
@@ -415,6 +472,7 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
           <Checkbox
             checked={isActive}
             onCheckedChange={setIsActive}
+            disabled={isSubmitting}
             className="data-[state=checked]:bg-[#E8231F] data-[state=checked]:border-[#E8231F]"
           />
           <Label className="text-xs text-gray-300 cursor-pointer">Vendedor ativo (aparece na lista de vendas)</Label>
@@ -423,6 +481,7 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
           <Checkbox
             checked={canReceiveCommission}
             onCheckedChange={setCanReceiveCommission}
+            disabled={isSubmitting}
             className="data-[state=checked]:bg-[#E8231F] data-[state=checked]:border-[#E8231F]"
           />
           <Label className="text-xs text-gray-300 cursor-pointer">Pode receber comissão</Label>
@@ -434,15 +493,17 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
           type="button"
           variant="outline"
           onClick={onCancel}
+          disabled={isSubmitting}
           className="flex-1 border-white/10 hover:bg-white/5 text-gray-300 text-xs h-10 rounded-lg"
         >
           Cancelar
         </Button>
         <Button
           type="submit"
+          disabled={isSubmitting}
           className="flex-1 bg-brand-gradient hover:opacity-95 text-white font-semibold text-xs h-10 rounded-lg shadow-sm shadow-[#E8231F]/20"
         >
-          {initialSeller ? "Salvar Alterações" : "Cadastrar Vendedor"}
+          {isSubmitting ? "Salvando..." : (initialSeller ? "Salvar Alterações" : "Cadastrar Vendedor")}
         </Button>
       </div>
     </form>
