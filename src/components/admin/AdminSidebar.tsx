@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   X,
   DollarSign,
+  UserCheck,
 } from "lucide-react";
 import { logout, getCurrentUser } from "@/lib/auth/auth-service";
 import { getDashboardStats } from "@/lib/db/store";
@@ -52,6 +53,13 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
       title: "Financeiro",
       href: "/admin/financeiro",
       icon: DollarSign,
+      badge: null,
+      exact: false,
+    },
+    {
+      title: "Vendedores",
+      href: "/admin/vendedores",
+      icon: UserCheck,
       badge: null,
       exact: false,
     },

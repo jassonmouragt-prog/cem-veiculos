@@ -18,6 +18,7 @@ import { Route as AdminConfiguracoesRouteImport } from './routes/admin/configura
 import { Route as AdminFinanceiroRouteImport } from './routes/admin/financeiro'
 import { Route as AdminLeadsRouteImport } from './routes/admin/leads'
 import { Route as AdminVeiculosRouteImport } from './routes/admin/veiculos'
+import { Route as AdminVendedoresRouteImport } from './routes/admin/vendedores'
 import { Route as VeiculosSlugRouteImport } from './routes/veiculos/$slug'
 import { Route as AdminFinanceiroIndexRouteImport } from './routes/admin/financeiro/index'
 import { Route as AdminFinanceiroComissoesRouteImport } from './routes/admin/financeiro/comissoes'
@@ -72,6 +73,11 @@ const AdminVeiculosRoute = AdminVeiculosRouteImport.update({
   path: '/veiculos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminVendedoresRoute = AdminVendedoresRouteImport.update({
+  id: '/vendedores',
+  path: '/vendedores',
+  getParentRoute: () => AdminRoute,
+} as any)
 const VeiculosSlugRoute = VeiculosSlugRouteImport.update({
   id: '/veiculos/$slug',
   path: '/veiculos/$slug',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro': typeof AdminFinanceiroRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/veiculos': typeof AdminVeiculosRoute
+  '/admin/vendedores': typeof AdminVendedoresRoute
   '/veiculos/$slug': typeof VeiculosSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/financeiro/comissoes': typeof AdminFinanceiroComissoesRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/veiculos': typeof AdminVeiculosRoute
+  '/admin/vendedores': typeof AdminVendedoresRoute
   '/veiculos/$slug': typeof VeiculosSlugRoute
   '/admin': typeof AdminIndexRoute
   '/admin/financeiro/comissoes': typeof AdminFinanceiroComissoesRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/admin/financeiro': typeof AdminFinanceiroRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/veiculos': typeof AdminVeiculosRoute
+  '/admin/vendedores': typeof AdminVendedoresRoute
   '/veiculos/$slug': typeof VeiculosSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/financeiro/comissoes': typeof AdminFinanceiroComissoesRoute
@@ -182,6 +191,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro'
     | '/admin/leads'
     | '/admin/veiculos'
+    | '/admin/vendedores'
     | '/veiculos/$slug'
     | '/admin/'
     | '/admin/financeiro/comissoes'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/leads'
     | '/admin/veiculos'
+    | '/admin/vendedores'
     | '/veiculos/$slug'
     | '/admin'
     | '/admin/financeiro/comissoes'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro'
     | '/admin/leads'
     | '/admin/veiculos'
+    | '/admin/vendedores'
     | '/veiculos/$slug'
     | '/admin/'
     | '/admin/financeiro/comissoes'
@@ -300,6 +312,13 @@ declare module '@tanstack/react-router' {
       path: '/veiculos'
       fullPath: '/admin/veiculos'
       preLoaderRoute: typeof AdminVeiculosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/vendedores': {
+      id: '/admin/vendedores'
+      path: '/vendedores'
+      fullPath: '/admin/vendedores'
+      preLoaderRoute: typeof AdminVendedoresRouteImport
       parentRoute: typeof AdminRoute
     }
     '/veiculos/$slug': {
@@ -390,6 +409,7 @@ interface AdminRouteChildren {
   AdminFinanceiroRoute: typeof AdminFinanceiroRouteWithChildren
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminVeiculosRoute: typeof AdminVeiculosRoute
+  AdminVendedoresRoute: typeof AdminVendedoresRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -398,6 +418,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminFinanceiroRoute: AdminFinanceiroRouteWithChildren,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminVeiculosRoute: AdminVeiculosRoute,
+  AdminVendedoresRoute: AdminVendedoresRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
