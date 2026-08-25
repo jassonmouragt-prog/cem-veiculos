@@ -120,6 +120,7 @@ function VendedoresPage() {
         }
       }
       toast.error(msg);
+      throw err;
     }
   };
 
