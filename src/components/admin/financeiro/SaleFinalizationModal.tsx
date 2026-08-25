@@ -121,7 +121,35 @@ export function SaleFinalizationModal({
       onFinalize();
     } catch (err: unknown) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Erro ao finalizar venda");
+      const errObj = err as Record<string, unknown>;
+      const code = errObj.code as string | undefined;
+      const message = errObj.message as string | undefined;
+      const details = errObj.details as string | undefined;
+      const hint = errObj.hint as string | undefined;
+      const fullMsg = [message, details, hint].filter(Boolean).join(" | ");
+
+      let msg = "Erro ao finalizar venda";
+      if (
+        code === "42P01" ||
+        fullMsg.includes('relation "public.') ||
+        fullMsg.includes("does not exist")
+      ) {
+        msg =
+          "Tabela não existe no banco: execute a migração completa '20260826000000_financial_module.sql' no Supabase (cria sales, financial_transactions, vehicle_expenses)";
+      } else if (code === "23503" || fullMsg.includes("foreign key")) {
+        msg = "Erro de chave estrangeira: vendedor ou veículo inválido";
+      } else if (code === "23505" || fullMsg.includes("duplicate key")) {
+        msg = "Veículo já foi vendido (chave única vehicle_id na tabela sales)";
+      } else if (
+        code === "42501" ||
+        fullMsg.includes("row-level security") ||
+        fullMsg.includes("policy")
+      ) {
+        msg = "Sem permissão: seu usuário precisa ter role 'admin' (tabela user_roles)";
+      } else if (message) {
+        msg = message;
+      }
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }

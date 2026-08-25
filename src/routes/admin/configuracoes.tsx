@@ -1,14 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { getCurrentUser, updateAdminPassword } from "@/lib/auth/auth-service";
+import { resetAllSales } from "@/lib/db/store";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useAdminLayout } from "@/components/admin/AdminLayoutContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShieldCheck, KeyRound, UserCheck, Store, Save, Lock } from "lucide-react";
+import {
+  ShieldCheck,
+  KeyRound,
+  UserCheck,
+  Store,
+  Save,
+  Lock,
+  AlertTriangle,
+  Trash2,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/admin/configuracoes")({
   component: AdminSettingsPage,
@@ -22,6 +43,8 @@ function AdminSettingsPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isChangingPass, setIsChangingPass] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -215,6 +238,96 @@ function AdminSettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Danger Zone - Reset Data */}
+        <Card className="bg-[#121212] border-red-500/20 rounded-2xl shadow-md">
+          <CardHeader className="pb-4 border-b border-white/5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/15 text-red-500">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <CardTitle className="text-base font-bold text-white">Zona de Perigo</CardTitle>
+                <CardDescription className="text-xs text-gray-400">
+                  Ações irreversíveis para testes e desenvolvimento
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-5 space-y-4">
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+              <p className="text-xs text-red-400 font-semibold mb-2">⚠️ Ação Irreversível</p>
+              <p className="text-xs text-gray-300">
+                Isso vai apagar <strong>TODAS as vendas finalizadas</strong>, transações financeiras
+                associadas (entradas, saídas, comissões) e voltar os veículos para status
+                "disponível".
+                <strong>Não é possível desfazer.</strong>
+              </p>
+            </div>
+            <Button
+              variant="destructive"
+              onClick={() => setResetDialogOpen(true)}
+              disabled={isResetting}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold text-xs h-10 gap-2 px-5 rounded-lg w-full sm:w-auto"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>{isResetting ? "Apagando..." : "Zerar Todas as Vendas"}</span>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+          <AlertDialogContent className="bg-[#121212] border border-white/10 text-white max-w-md">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2 text-red-400">
+                <AlertTriangle className="w-5 h-5" />
+                Confirmar Exclusão Total
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-xs text-gray-400 leading-relaxed">
+                Tem certeza que deseja apagar <strong>TODAS as vendas</strong>?
+                <ul className="list-disc list-inside mt-2 space-y-1 text-xs">
+                  <li>Todas as vendas finalizadas serão removidas</li>
+                  <li>
+                    Transações financeiras (entradas, comissões, financiamentos) serão apagadas
+                  </li>
+                  <li>Veículos vendidos voltarão ao status "Disponível"</li>
+                  <li>
+                    Vendedores e suas comissões <strong>NÃO</strong> serão afetados
+                  </li>
+                </ul>
+                Esta ação <strong className="text-red-400">não pode ser desfeita</strong>.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="gap-2">
+              <AlertDialogCancel
+                onClick={() => setResetDialogOpen(false)}
+                className="border-white/10 hover:bg-white/5 text-gray-300 text-xs flex-1"
+              >
+                <X className="w-4 h-4 mr-1" />
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={async () => {
+                  setIsResetting(true);
+                  try {
+                    const count = await resetAllSales(user?.id);
+                    toast.success(`${count} venda(s) removida(s) com sucesso!`);
+                    setResetDialogOpen(false);
+                  } catch (err) {
+                    console.error(err);
+                    toast.error("Erro ao zerar vendas");
+                  } finally {
+                    setIsResetting(false);
+                  }
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold text-xs flex-1"
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                Sim, Apagar Tudo
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </main>
     </div>
   );

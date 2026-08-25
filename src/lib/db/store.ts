@@ -840,6 +840,30 @@ export async function cancelSale(id: string, updatedBy?: string): Promise<boolea
   return true;
 }
 
+export async function resetAllSales(createdBy?: string): Promise<number> {
+  const { supabase } = await import("@/integrations/supabase/client");
+
+  const saleIds = cachedSales.map((s) => s.id);
+
+  await supabase.from("financial_transactions").delete().in("sale_id", saleIds);
+  await supabase.from("sales").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+
+  const vehicleIds = cachedSales.map((s) => s.vehicleId);
+  await supabase
+    .from("vehicles")
+    .update({ status: "disponivel" } as never)
+    .in("id", vehicleIds);
+
+  cachedSales = [];
+  cachedTransactions = cachedTransactions.filter((t) => !saleIds.includes(t.saleId ?? ""));
+  cachedVehicles = cachedVehicles.map((v) =>
+    vehicleIds.includes(v.id) ? { ...v, status: "disponivel" as VehicleStatus } : v,
+  );
+  notifyListeners();
+
+  return saleIds.length;
+}
+
 // ============================================
 // FINALIZAR VENDA - FLUXO PRINCIPAL
 // ============================================
