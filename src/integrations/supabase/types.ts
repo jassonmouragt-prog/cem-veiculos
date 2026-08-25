@@ -14,16 +14,196 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      leads: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          message: string | null
+          name: string
+          phone: string
+          status: Database["public"]["Enums"]["lead_status"]
+          updated_at: string
+          vehicle_id: string | null
+          vehicle_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string | null
+          name: string
+          phone: string
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+          vehicle_id?: string | null
+          vehicle_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+          vehicle_id?: string | null
+          vehicle_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          accepts_financing: boolean
+          accepts_trade: boolean
+          brand: string
+          category: string
+          color: string
+          created_at: string
+          dealer_maintained: boolean
+          description: string
+          doors: number
+          engine: string
+          entry_value: number | null
+          features: string[]
+          fuel: string
+          id: string
+          images: string[]
+          installment_value: number | null
+          installments_count: number | null
+          is_featured: boolean
+          main_image_index: number
+          manufacturing_year: number
+          mileage: number
+          model: string
+          model_year: number
+          name: string
+          power_hp: number | null
+          price: number
+          single_owner: boolean
+          slug: string
+          status: Database["public"]["Enums"]["vehicle_status"]
+          transmission: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          accepts_financing?: boolean
+          accepts_trade?: boolean
+          brand?: string
+          category?: string
+          color?: string
+          created_at?: string
+          dealer_maintained?: boolean
+          description?: string
+          doors?: number
+          engine?: string
+          entry_value?: number | null
+          features?: string[]
+          fuel?: string
+          id?: string
+          images?: string[]
+          installment_value?: number | null
+          installments_count?: number | null
+          is_featured?: boolean
+          main_image_index?: number
+          manufacturing_year?: number
+          mileage?: number
+          model?: string
+          model_year?: number
+          name: string
+          power_hp?: number | null
+          price?: number
+          single_owner?: boolean
+          slug: string
+          status?: Database["public"]["Enums"]["vehicle_status"]
+          transmission?: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          accepts_financing?: boolean
+          accepts_trade?: boolean
+          brand?: string
+          category?: string
+          color?: string
+          created_at?: string
+          dealer_maintained?: boolean
+          description?: string
+          doors?: number
+          engine?: string
+          entry_value?: number | null
+          features?: string[]
+          fuel?: string
+          id?: string
+          images?: string[]
+          installment_value?: number | null
+          installments_count?: number | null
+          is_featured?: boolean
+          main_image_index?: number
+          manufacturing_year?: number
+          mileage?: number
+          model?: string
+          model_year?: number
+          name?: string
+          power_hp?: number | null
+          price?: number
+          single_owner?: boolean
+          slug?: string
+          status?: Database["public"]["Enums"]["vehicle_status"]
+          transmission?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      lead_status: "novo" | "em_atendimento" | "concluido" | "descartado"
+      vehicle_status: "disponivel" | "reservado" | "vendido"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +330,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      lead_status: ["novo", "em_atendimento", "concluido", "descartado"],
+      vehicle_status: ["disponivel", "reservado", "vendido"],
+    },
   },
 } as const
