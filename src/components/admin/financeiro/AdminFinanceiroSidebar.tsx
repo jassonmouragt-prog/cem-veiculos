@@ -4,19 +4,10 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Users,
-  CreditCard,
-  FileText,
-  BarChart3,
-  Settings,
   DollarSign,
-  Receipt,
   Truck,
   X,
 } from "lucide-react";
-import { getFinancialDashboardStats, subscribeToStore, isStoreLoaded } from "@/lib/db/store";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useState, useEffect } from "react";
 
 interface AdminFinanceiroSidebarProps {
   onOpenMobileMenu?: () => void;
@@ -25,104 +16,42 @@ interface AdminFinanceiroSidebarProps {
 export function AdminFinanceiroSidebar({ onOpenMobileMenu }: AdminFinanceiroSidebarProps) {
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
-  const [stats, setStats] = useState(() => {
-    if (isStoreLoaded()) {
-      return getFinancialDashboardStats();
-    }
-    return {
-      totalPayable: 0,
-      totalToReceive: 0,
-      totalSalesCount: 0,
-      totalCommissionsPending: 0,
-    } as ReturnType<typeof getFinancialDashboardStats>;
-  });
-
-  useEffect(() => {
-    if (!isStoreLoaded()) return;
-    const unsubscribe = subscribeToStore(() => {
-      setStats(getFinancialDashboardStats());
-    });
-    setStats(getFinancialDashboardStats());
-    return () => unsubscribe();
-  }, []);
 
   const navItems = [
     {
       title: "Dashboard",
       href: "/admin/financeiro",
       icon: LayoutDashboard,
-      badge: null,
       exact: true,
     },
     {
       title: "Entradas",
       href: "/admin/financeiro/entradas",
       icon: ArrowDownLeft,
-      badge: null,
       exact: false,
     },
     {
       title: "Saídas",
       href: "/admin/financeiro/saidas",
       icon: ArrowUpRight,
-      badge: null,
-      exact: false,
-    },
-    {
-      title: "Contas a Pagar",
-      href: "/admin/financeiro/contas-a-pagar",
-      icon: CreditCard,
-      badge: stats.totalPayable > 0 ? formatCurrency(stats.totalPayable) : null,
-      exact: false,
-    },
-    {
-      title: "Contas a Receber",
-      href: "/admin/financeiro/contas-a-receber",
-      icon: Receipt,
-      badge: stats.totalToReceive > 0 ? formatCurrency(stats.totalToReceive) : null,
       exact: false,
     },
     {
       title: "Vendas",
       href: "/admin/financeiro/vendas",
       icon: DollarSign,
-      badge: stats.totalSalesCount > 0 ? String(stats.totalSalesCount) : null,
       exact: false,
     },
     {
       title: "Comissões",
       href: "/admin/financeiro/comissoes",
       icon: Users,
-      badge:
-        stats.totalCommissionsPending > 0 ? formatCurrency(stats.totalCommissionsPending) : null,
       exact: false,
     },
     {
       title: "Despesas",
       href: "/admin/financeiro/despesas",
       icon: Truck,
-      badge: null,
-      exact: false,
-    },
-    {
-      title: "Relatórios",
-      href: "/admin/financeiro/relatorios",
-      icon: FileText,
-      badge: null,
-      exact: false,
-    },
-    {
-      title: "Gráficos",
-      href: "/admin/financeiro/graficos",
-      icon: BarChart3,
-      badge: null,
-      exact: false,
-    },
-    {
-      title: "Configurações",
-      href: "/admin/financeiro/configuracoes",
-      icon: Settings,
-      badge: null,
       exact: false,
     },
   ];
@@ -181,17 +110,6 @@ export function AdminFinanceiroSidebar({ onOpenMobileMenu }: AdminFinanceiroSide
                 />
                 <span>{item.title}</span>
               </div>
-              {item.badge && (
-                <Badge
-                  variant="secondary"
-                  className={`text-[10px] h-5 px-1.5 font-bold rounded-full ${
-                    item.badgeColor ||
-                    (isActive ? "bg-white/20 text-white" : "bg-white/10 text-gray-300")
-                  }`}
-                >
-                  {item.badge}
-                </Badge>
-              )}
             </Link>
           );
         })}
@@ -213,12 +131,4 @@ export function AdminFinanceiroSidebar({ onOpenMobileMenu }: AdminFinanceiroSide
       </div>
     </aside>
   );
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    maximumFractionDigits: 0,
-  }).format(value);
 }

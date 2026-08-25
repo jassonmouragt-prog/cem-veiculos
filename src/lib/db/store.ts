@@ -1414,13 +1414,14 @@ export function getFluxoFinanceiroChartData(
   return data;
 }
 
-export function getSalesByMonthChartData(monthsBack = 12): SalesByMonthData[] {
+export function getSalesByMonthChartData(monthsBack = 12, year?: number): SalesByMonthData[] {
   const now = new Date();
+  const targetYear = year ?? now.getFullYear();
   const data: SalesByMonthData[] = [];
 
   for (let i = monthsBack - 1; i >= 0; i--) {
-    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const nextMonth = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+    const date = new Date(targetYear, now.getMonth() - i, 1);
+    const nextMonth = new Date(targetYear, now.getMonth() - i + 1, 1);
 
     const sales = cachedSales.filter((s) => {
       const d = new Date(s.saleDate);
@@ -1435,6 +1436,32 @@ export function getSalesByMonthChartData(monthsBack = 12): SalesByMonthData[] {
   }
 
   return data;
+}
+
+export function getCurrentMonthRevenue(): number {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
+  return cachedSales
+    .filter((s) => {
+      const d = new Date(s.saleDate);
+      return s.status === "concluida" && d >= startOfMonth && d <= endOfMonth;
+    })
+    .reduce((sum, s) => sum + s.finalPrice, 0);
+}
+
+export function getCurrentMonthExpenses(): number {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
+  return cachedTransactions
+    .filter((t) => {
+      const d = new Date(t.transactionDate);
+      return t.type === "saida" && d >= startOfMonth && d <= endOfMonth;
+    })
+    .reduce((sum, t) => sum + t.amount, 0);
 }
 
 export function getSalesBySellerChartData(): SalesBySellerData[] {

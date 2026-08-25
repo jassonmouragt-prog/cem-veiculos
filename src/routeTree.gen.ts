@@ -21,11 +21,8 @@ import { Route as AdminVeiculosRouteImport } from './routes/admin/veiculos'
 import { Route as VeiculosSlugRouteImport } from './routes/veiculos/$slug'
 import { Route as AdminFinanceiroIndexRouteImport } from './routes/admin/financeiro/index'
 import { Route as AdminFinanceiroComissoesRouteImport } from './routes/admin/financeiro/comissoes'
-import { Route as AdminFinanceiroContasAPagarRouteImport } from './routes/admin/financeiro/contas-a-pagar'
-import { Route as AdminFinanceiroContasAReceberRouteImport } from './routes/admin/financeiro/contas-a-receber'
 import { Route as AdminFinanceiroDespesasRouteImport } from './routes/admin/financeiro/despesas'
 import { Route as AdminFinanceiroEntradasRouteImport } from './routes/admin/financeiro/entradas'
-import { Route as AdminFinanceiroGraficosRouteImport } from './routes/admin/financeiro/graficos'
 import { Route as AdminFinanceiroRelatoriosRouteImport } from './routes/admin/financeiro/relatorios'
 import { Route as AdminFinanceiroSaidasRouteImport } from './routes/admin/financeiro/saidas'
 import { Route as AdminFinanceiroVendasRouteImport } from './routes/admin/financeiro/vendas'
@@ -91,18 +88,6 @@ const AdminFinanceiroComissoesRoute =
     path: '/comissoes',
     getParentRoute: () => AdminFinanceiroRoute,
   } as any)
-const AdminFinanceiroContasAPagarRoute =
-  AdminFinanceiroContasAPagarRouteImport.update({
-    id: '/contas-a-pagar',
-    path: '/contas-a-pagar',
-    getParentRoute: () => AdminFinanceiroRoute,
-  } as any)
-const AdminFinanceiroContasAReceberRoute =
-  AdminFinanceiroContasAReceberRouteImport.update({
-    id: '/contas-a-receber',
-    path: '/contas-a-receber',
-    getParentRoute: () => AdminFinanceiroRoute,
-  } as any)
 const AdminFinanceiroDespesasRoute = AdminFinanceiroDespesasRouteImport.update({
   id: '/despesas',
   path: '/despesas',
@@ -111,11 +96,6 @@ const AdminFinanceiroDespesasRoute = AdminFinanceiroDespesasRouteImport.update({
 const AdminFinanceiroEntradasRoute = AdminFinanceiroEntradasRouteImport.update({
   id: '/entradas',
   path: '/entradas',
-  getParentRoute: () => AdminFinanceiroRoute,
-} as any)
-const AdminFinanceiroGraficosRoute = AdminFinanceiroGraficosRouteImport.update({
-  id: '/graficos',
-  path: '/graficos',
   getParentRoute: () => AdminFinanceiroRoute,
 } as any)
 const AdminFinanceiroRelatoriosRoute =
@@ -147,11 +127,8 @@ export interface FileRoutesByFullPath {
   '/veiculos/$slug': typeof VeiculosSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/financeiro/comissoes': typeof AdminFinanceiroComissoesRoute
-  '/admin/financeiro/contas-a-pagar': typeof AdminFinanceiroContasAPagarRoute
-  '/admin/financeiro/contas-a-receber': typeof AdminFinanceiroContasAReceberRoute
   '/admin/financeiro/despesas': typeof AdminFinanceiroDespesasRoute
   '/admin/financeiro/entradas': typeof AdminFinanceiroEntradasRoute
-  '/admin/financeiro/graficos': typeof AdminFinanceiroGraficosRoute
   '/admin/financeiro/relatorios': typeof AdminFinanceiroRelatoriosRoute
   '/admin/financeiro/saidas': typeof AdminFinanceiroSaidasRoute
   '/admin/financeiro/vendas': typeof AdminFinanceiroVendasRoute
@@ -167,11 +144,8 @@ export interface FileRoutesByTo {
   '/veiculos/$slug': typeof VeiculosSlugRoute
   '/admin': typeof AdminIndexRoute
   '/admin/financeiro/comissoes': typeof AdminFinanceiroComissoesRoute
-  '/admin/financeiro/contas-a-pagar': typeof AdminFinanceiroContasAPagarRoute
-  '/admin/financeiro/contas-a-receber': typeof AdminFinanceiroContasAReceberRoute
   '/admin/financeiro/despesas': typeof AdminFinanceiroDespesasRoute
   '/admin/financeiro/entradas': typeof AdminFinanceiroEntradasRoute
-  '/admin/financeiro/graficos': typeof AdminFinanceiroGraficosRoute
   '/admin/financeiro/relatorios': typeof AdminFinanceiroRelatoriosRoute
   '/admin/financeiro/saidas': typeof AdminFinanceiroSaidasRoute
   '/admin/financeiro/vendas': typeof AdminFinanceiroVendasRoute
@@ -190,11 +164,8 @@ export interface FileRoutesById {
   '/veiculos/$slug': typeof VeiculosSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/financeiro/comissoes': typeof AdminFinanceiroComissoesRoute
-  '/admin/financeiro/contas-a-pagar': typeof AdminFinanceiroContasAPagarRoute
-  '/admin/financeiro/contas-a-receber': typeof AdminFinanceiroContasAReceberRoute
   '/admin/financeiro/despesas': typeof AdminFinanceiroDespesasRoute
   '/admin/financeiro/entradas': typeof AdminFinanceiroEntradasRoute
-  '/admin/financeiro/graficos': typeof AdminFinanceiroGraficosRoute
   '/admin/financeiro/relatorios': typeof AdminFinanceiroRelatoriosRoute
   '/admin/financeiro/saidas': typeof AdminFinanceiroSaidasRoute
   '/admin/financeiro/vendas': typeof AdminFinanceiroVendasRoute
@@ -214,11 +185,8 @@ export interface FileRouteTypes {
     | '/veiculos/$slug'
     | '/admin/'
     | '/admin/financeiro/comissoes'
-    | '/admin/financeiro/contas-a-pagar'
-    | '/admin/financeiro/contas-a-receber'
     | '/admin/financeiro/despesas'
     | '/admin/financeiro/entradas'
-    | '/admin/financeiro/graficos'
     | '/admin/financeiro/relatorios'
     | '/admin/financeiro/saidas'
     | '/admin/financeiro/vendas'
@@ -234,11 +202,8 @@ export interface FileRouteTypes {
     | '/veiculos/$slug'
     | '/admin'
     | '/admin/financeiro/comissoes'
-    | '/admin/financeiro/contas-a-pagar'
-    | '/admin/financeiro/contas-a-receber'
     | '/admin/financeiro/despesas'
     | '/admin/financeiro/entradas'
-    | '/admin/financeiro/graficos'
     | '/admin/financeiro/relatorios'
     | '/admin/financeiro/saidas'
     | '/admin/financeiro/vendas'
@@ -256,11 +221,8 @@ export interface FileRouteTypes {
     | '/veiculos/$slug'
     | '/admin/'
     | '/admin/financeiro/comissoes'
-    | '/admin/financeiro/contas-a-pagar'
-    | '/admin/financeiro/contas-a-receber'
     | '/admin/financeiro/despesas'
     | '/admin/financeiro/entradas'
-    | '/admin/financeiro/graficos'
     | '/admin/financeiro/relatorios'
     | '/admin/financeiro/saidas'
     | '/admin/financeiro/vendas'
@@ -361,20 +323,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFinanceiroComissoesRouteImport
       parentRoute: typeof AdminFinanceiroRoute
     }
-    '/admin/financeiro/contas-a-pagar': {
-      id: '/admin/financeiro/contas-a-pagar'
-      path: '/contas-a-pagar'
-      fullPath: '/admin/financeiro/contas-a-pagar'
-      preLoaderRoute: typeof AdminFinanceiroContasAPagarRouteImport
-      parentRoute: typeof AdminFinanceiroRoute
-    }
-    '/admin/financeiro/contas-a-receber': {
-      id: '/admin/financeiro/contas-a-receber'
-      path: '/contas-a-receber'
-      fullPath: '/admin/financeiro/contas-a-receber'
-      preLoaderRoute: typeof AdminFinanceiroContasAReceberRouteImport
-      parentRoute: typeof AdminFinanceiroRoute
-    }
     '/admin/financeiro/despesas': {
       id: '/admin/financeiro/despesas'
       path: '/despesas'
@@ -387,13 +335,6 @@ declare module '@tanstack/react-router' {
       path: '/entradas'
       fullPath: '/admin/financeiro/entradas'
       preLoaderRoute: typeof AdminFinanceiroEntradasRouteImport
-      parentRoute: typeof AdminFinanceiroRoute
-    }
-    '/admin/financeiro/graficos': {
-      id: '/admin/financeiro/graficos'
-      path: '/graficos'
-      fullPath: '/admin/financeiro/graficos'
-      preLoaderRoute: typeof AdminFinanceiroGraficosRouteImport
       parentRoute: typeof AdminFinanceiroRoute
     }
     '/admin/financeiro/relatorios': {
@@ -422,11 +363,8 @@ declare module '@tanstack/react-router' {
 
 interface AdminFinanceiroRouteChildren {
   AdminFinanceiroComissoesRoute: typeof AdminFinanceiroComissoesRoute
-  AdminFinanceiroContasAPagarRoute: typeof AdminFinanceiroContasAPagarRoute
-  AdminFinanceiroContasAReceberRoute: typeof AdminFinanceiroContasAReceberRoute
   AdminFinanceiroDespesasRoute: typeof AdminFinanceiroDespesasRoute
   AdminFinanceiroEntradasRoute: typeof AdminFinanceiroEntradasRoute
-  AdminFinanceiroGraficosRoute: typeof AdminFinanceiroGraficosRoute
   AdminFinanceiroRelatoriosRoute: typeof AdminFinanceiroRelatoriosRoute
   AdminFinanceiroSaidasRoute: typeof AdminFinanceiroSaidasRoute
   AdminFinanceiroVendasRoute: typeof AdminFinanceiroVendasRoute
@@ -435,11 +373,8 @@ interface AdminFinanceiroRouteChildren {
 
 const AdminFinanceiroRouteChildren: AdminFinanceiroRouteChildren = {
   AdminFinanceiroComissoesRoute: AdminFinanceiroComissoesRoute,
-  AdminFinanceiroContasAPagarRoute: AdminFinanceiroContasAPagarRoute,
-  AdminFinanceiroContasAReceberRoute: AdminFinanceiroContasAReceberRoute,
   AdminFinanceiroDespesasRoute: AdminFinanceiroDespesasRoute,
   AdminFinanceiroEntradasRoute: AdminFinanceiroEntradasRoute,
-  AdminFinanceiroGraficosRoute: AdminFinanceiroGraficosRoute,
   AdminFinanceiroRelatoriosRoute: AdminFinanceiroRelatoriosRoute,
   AdminFinanceiroSaidasRoute: AdminFinanceiroSaidasRoute,
   AdminFinanceiroVendasRoute: AdminFinanceiroVendasRoute,
