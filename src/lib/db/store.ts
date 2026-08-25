@@ -630,7 +630,9 @@ export async function createSeller(data: {
   isActive?: boolean;
   canReceiveCommission?: boolean;
 }): Promise<Seller> {
-  const { data: row, error } = await supabase
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+  const { data: row, error } = await supabaseAdmin
     .from("sellers")
     .insert({
       user_id: data.userId,
@@ -655,6 +657,8 @@ export async function updateSeller(
   id: string,
   data: Partial<Omit<Seller, "id" | "createdAt">>,
 ): Promise<Seller | null> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
   const updateData: Record<string, unknown> = {};
   if (data.name !== undefined) updateData.name = data.name;
   if (data.email !== undefined) updateData.email = data.email;
@@ -664,7 +668,7 @@ export async function updateSeller(
   if (data.canReceiveCommission !== undefined)
     updateData.can_receive_commission = data.canReceiveCommission;
 
-  const { data: row, error } = await supabase
+  const { data: row, error } = await supabaseAdmin
     .from("sellers")
     .update(updateData as never)
     .eq("id", id)
@@ -679,7 +683,9 @@ export async function updateSeller(
 }
 
 export async function deleteSeller(id: string): Promise<boolean> {
-  const { error } = await supabase.from("sellers").delete().eq("id", id);
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+  const { error } = await supabaseAdmin.from("sellers").delete().eq("id", id);
   if (error) throw error;
   cachedSellers = cachedSellers.filter((s) => s.id !== id);
   notifyListeners();

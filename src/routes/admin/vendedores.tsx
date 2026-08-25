@@ -75,19 +75,26 @@ function VendedoresPage() {
     isActive: boolean;
     canReceiveCommission: boolean;
   }) => {
-    if (editingSeller) {
-      await updateSeller(editingSeller.id, data);
-      toast.success("Vendedor atualizado com sucesso!");
-      setIsFormOpen(false);
-      setEditingSeller(null);
-    } else {
-      const currentUser = getCurrentUser();
-      if (!currentUser) {
-        throw new Error("Sessão expirada. Faça login novamente.");
+    try {
+      if (editingSeller) {
+        await updateSeller(editingSeller.id, data);
+        toast.success("Vendedor atualizado com sucesso!");
+        setIsFormOpen(false);
+        setEditingSeller(null);
+      } else {
+        const currentUser = getCurrentUser();
+        if (!currentUser) {
+          toast.error("Sessão expirada. Faça login novamente.");
+          return;
+        }
+        await createSeller({ ...data, userId: currentUser.id });
+        toast.success("Vendedor cadastrado com sucesso!");
+        // NÃO fecha o form aqui - deixa o form mostrar tela de sucesso
       }
-      await createSeller({ ...data, userId: currentUser.id });
-      toast.success("Vendedor cadastrado com sucesso!");
-      // NÃO fecha o form aqui - deixa o form mostrar tela de sucesso
+    } catch (err) {
+      console.error("Erro ao salvar vendedor:", err);
+      toast.error(err instanceof Error ? err.message : "Erro ao salvar vendedor");
+      // NÃO re-throw - deixa o form lidar com o erro
     }
   };
 
@@ -360,6 +367,9 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
         canReceiveCommission,
       });
       setSuccess(true);
+    } catch (err) {
+      // Erro já foi tratado no onSave (toast), apenas reseta o loading
+      console.error("Erro no submit:", err);
     } finally {
       setIsSubmitting(false);
     }
