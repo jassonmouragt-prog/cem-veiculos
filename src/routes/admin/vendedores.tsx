@@ -96,29 +96,47 @@ function VendedoresPage() {
     } catch (err) {
       console.error("Erro ao salvar vendedor:", err);
       let msg = "Erro ao salvar vendedor";
-      if (err instanceof Error) {
-        msg = err.message;
-        // Erros comuns do Supabase/Postgres
-        if (msg.includes("row-level security") || msg.includes("policy")) {
-          msg =
-            "Sem permissão: seu usuário precisa ter role 'admin' no painel do Supabase (tabela user_roles)";
-        } else if (msg.includes("foreign key") || msg.includes("user_id")) {
-          msg = "Usuário inválido: faça logout e login novamente";
-        } else if (
-          msg.includes("duplicate key") ||
-          msg.includes("unique constraint") ||
-          msg.includes("sellers_user_id_key")
-        ) {
-          msg =
-            "Erro de constraint: execute a migração '20260826_fix_sellers_user_id.sql' no Supabase para permitir múltiplos vendedores por admin";
-        } else if (
-          msg.includes("not-null constraint") ||
-          msg.includes('null value in column "user_id"')
-        ) {
-          msg =
-            "Migração pendente: execute '20260826_fix_sellers_user_id.sql' no Supabase (torna user_id opcional)";
-        }
+
+      const errObj = err as Record<string, unknown>;
+      const code = errObj.code as string | undefined;
+      const message = errObj.message as string | undefined;
+      const details = errObj.details as string | undefined;
+      const hint = errObj.hint as string | undefined;
+
+      const fullMsg = [message, details, hint].filter(Boolean).join(" | ");
+
+      if (
+        code === "23505" ||
+        fullMsg.includes("duplicate key") ||
+        fullMsg.includes("unique constraint") ||
+        fullMsg.includes("sellers_user_id_key")
+      ) {
+        msg =
+          "Erro de constraint: execute a migração '20260826_fix_sellers_user_id.sql' no Supabase para permitir múltiplos vendedores por admin";
+      } else if (
+        code === "23502" ||
+        fullMsg.includes("not-null constraint") ||
+        fullMsg.includes('null value in column "user_id"')
+      ) {
+        msg =
+          "Migração pendente: execute '20260826_fix_sellers_user_id.sql' no Supabase (torna user_id opcional)";
+      } else if (
+        code === "42501" ||
+        fullMsg.includes("row-level security") ||
+        fullMsg.includes("policy")
+      ) {
+        msg =
+          "Sem permissão: seu usuário precisa ter role 'admin' no painel do Supabase (tabela user_roles)";
+      } else if (
+        code === "23503" ||
+        fullMsg.includes("foreign key") ||
+        fullMsg.includes("user_id")
+      ) {
+        msg = "Usuário inválido: faça logout e login novamente";
+      } else if (message) {
+        msg = message;
       }
+
       toast.error(msg);
       throw err;
     }
