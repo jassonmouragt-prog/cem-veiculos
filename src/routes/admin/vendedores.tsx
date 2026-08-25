@@ -87,7 +87,9 @@ function VendedoresPage() {
           toast.error("Sessão expirada. Faça login novamente.");
           return;
         }
-        await createSeller({ ...data, userId: currentUser.id });
+        // userId é opcional na tabela sellers (migração 20260826_fix_sellers_user_id.sql)
+        // Não passamos para permitir múltiplos vendedores por admin
+        await createSeller({ ...data });
         toast.success("Vendedor cadastrado com sucesso!");
         // NÃO fecha o form aqui - deixa o form mostrar tela de sucesso
       }
@@ -98,9 +100,23 @@ function VendedoresPage() {
         msg = err.message;
         // Erros comuns do Supabase/Postgres
         if (msg.includes("row-level security") || msg.includes("policy")) {
-          msg = "Sem permissão: seu usuário precisa ter role 'admin' no painel do Supabase (tabela user_roles)";
+          msg =
+            "Sem permissão: seu usuário precisa ter role 'admin' no painel do Supabase (tabela user_roles)";
         } else if (msg.includes("foreign key") || msg.includes("user_id")) {
           msg = "Usuário inválido: faça logout e login novamente";
+        } else if (
+          msg.includes("duplicate key") ||
+          msg.includes("unique constraint") ||
+          msg.includes("sellers_user_id_key")
+        ) {
+          msg =
+            "Erro de constraint: execute a migração '20260826_fix_sellers_user_id.sql' no Supabase para permitir múltiplos vendedores por admin";
+        } else if (
+          msg.includes("not-null constraint") ||
+          msg.includes('null value in column "user_id"')
+        ) {
+          msg =
+            "Migração pendente: execute '20260826_fix_sellers_user_id.sql' no Supabase (torna user_id opcional)";
         }
       }
       toast.error(msg);
@@ -165,8 +181,8 @@ function VendedoresPage() {
                 <Users className="w-12 h-12 text-gray-600 mx-auto mb-3" />
                 <h3 className="text-base font-bold text-white mb-1">Nenhum vendedor cadastrado</h3>
                 <p className="text-xs text-gray-400 max-w-sm mx-auto mb-4">
-                  Adicione vendedores para que possam ser selecionados na finalização de vendas
-                  e receber comissões automaticamente.
+                  Adicione vendedores para que possam ser selecionados na finalização de vendas e
+                  receber comissões automaticamente.
                 </p>
                 <Button
                   onClick={() => setIsFormOpen(true)}
@@ -184,7 +200,9 @@ function VendedoresPage() {
                     className="bg-[#121212] border-white/5 overflow-hidden flex flex-col rounded-2xl shadow-md hover:border-white/15 transition-all"
                   >
                     <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-white/5 px-4 pt-4">
-                      <CardTitle className="text-sm font-bold text-white truncate">{seller.name}</CardTitle>
+                      <CardTitle className="text-sm font-bold text-white truncate">
+                        {seller.name}
+                      </CardTitle>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
@@ -307,9 +325,9 @@ function VendedoresPage() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Excluir vendedor?</AlertDialogTitle>
                   <AlertDialogDescription className="text-xs text-gray-400 leading-relaxed">
-                    Tem certeza que deseja excluir <strong>{sellerToDelete?.name}</strong>?
-                    Vendas já finalizadas manterão o registro do vendedor, mas ele não aparecerá
-                    mais para novas vendas.
+                    Tem certeza que deseja excluir <strong>{sellerToDelete?.name}</strong>? Vendas
+                    já finalizadas manterão o registro do vendedor, mas ele não aparecerá mais para
+                    novas vendas.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -351,7 +369,9 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
   const [phone, setPhone] = useState(initialSeller?.phone || "");
   const [commissionRate, setCommissionRate] = useState(initialSeller?.commissionRate || 2);
   const [isActive, setIsActive] = useState(initialSeller?.isActive ?? true);
-  const [canReceiveCommission, setCanReceiveCommission] = useState(initialSeller?.canReceiveCommission ?? true);
+  const [canReceiveCommission, setCanReceiveCommission] = useState(
+    initialSeller?.canReceiveCommission ?? true,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -388,7 +408,12 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
     return (
       <div className="space-y-4 text-center py-8">
         <div className="w-16 h-16 mx-auto mb-4 bg-emerald-500/20 rounded-full flex items-center justify-center">
-          <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-8 h-8 text-emerald-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
@@ -432,8 +457,16 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-white">{initialSeller ? "Editar Vendedor" : "Novo Vendedor"}</h3>
-        <Button type="button" variant="ghost" size="icon" onClick={onCancel} disabled={isSubmitting}>
+        <h3 className="font-bold text-white">
+          {initialSeller ? "Editar Vendedor" : "Novo Vendedor"}
+        </h3>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={onCancel}
+          disabled={isSubmitting}
+        >
           <X className="w-5 h-5" />
         </Button>
       </div>
@@ -494,7 +527,9 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
             disabled={isSubmitting}
             className="data-[state=checked]:bg-[#E8231F] data-[state=checked]:border-[#E8231F]"
           />
-          <Label className="text-xs text-gray-300 cursor-pointer">Vendedor ativo (aparece na lista de vendas)</Label>
+          <Label className="text-xs text-gray-300 cursor-pointer">
+            Vendedor ativo (aparece na lista de vendas)
+          </Label>
         </div>
         <div className="flex items-center gap-2">
           <Checkbox
@@ -522,7 +557,11 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
           disabled={isSubmitting}
           className="flex-1 bg-brand-gradient hover:opacity-95 text-white font-semibold text-xs h-10 rounded-lg shadow-sm shadow-[#E8231F]/20"
         >
-          {isSubmitting ? "Salvando..." : (initialSeller ? "Salvar Alterações" : "Cadastrar Vendedor")}
+          {isSubmitting
+            ? "Salvando..."
+            : initialSeller
+              ? "Salvar Alterações"
+              : "Cadastrar Vendedor"}
         </Button>
       </div>
     </form>

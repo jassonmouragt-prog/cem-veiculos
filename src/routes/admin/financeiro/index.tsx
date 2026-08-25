@@ -1,7 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useAdminLayout } from "@/components/admin/AdminLayoutContext";
-import { getCurrentMonthRevenue, getCurrentMonthExpenses, subscribeToStore, isStoreLoaded } from "@/lib/db/store";
+import {
+  getCurrentMonthRevenue,
+  getCurrentMonthExpenses,
+  subscribeToStore,
+  isStoreLoaded,
+} from "@/lib/db/store";
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { FaturamentoMensalChart } from "@/components/admin/financeiro/FaturamentoMensalChart";
@@ -66,9 +71,7 @@ function FinanceiroDashboardPage() {
             <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight">
               {formatCurrency(currentMonthRevenue)}
             </div>
-            {!storeLoaded && (
-              <p className="text-xs text-gray-500 mt-2">Carregando dados...</p>
-            )}
+            {!storeLoaded && <p className="text-xs text-gray-500 mt-2">Carregando dados...</p>}
           </CardContent>
         </Card>
 

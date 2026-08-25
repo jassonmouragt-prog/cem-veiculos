@@ -16,21 +16,42 @@ import {
   Legend,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useState } from "react";
-import { getSalesByMonthChartData, getSalesByMonthChartData as getSalesByMonthData } from "@/lib/db/store";
+import {
+  getSalesByMonthChartData,
+  getSalesByMonthChartData as getSalesByMonthData,
+} from "@/lib/db/store";
 
 const MONTH_LABELS = [
-  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-  "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+  "Jan",
+  "Fev",
+  "Mar",
+  "Abr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Out",
+  "Nov",
+  "Dez",
 ];
 
 export function FaturamentoMensalChart() {
-  const [selectedPeriod, setSelectedPeriod] = useState<"este-ano" | "ano-anterior" | "ultimos-12-meses">("este-ano");
+  const [selectedPeriod, setSelectedPeriod] = useState<
+    "este-ano" | "ano-anterior" | "ultimos-12-meses"
+  >("este-ano");
 
   const now = new Date();
   const currentYear = now.getFullYear();
-  
+
   let chartData: { month: string; value: number }[];
   let periodLabel: string;
 
@@ -45,7 +66,7 @@ export function FaturamentoMensalChart() {
     periodLabel = "Últimos 12 meses";
   }
 
-  const maxValue = Math.max(...chartData.map(d => d.value), 1);
+  const maxValue = Math.max(...chartData.map((d) => d.value), 1);
 
   return (
     <Card className="bg-[#121212] border-white/5 rounded-2xl w-full">

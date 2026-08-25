@@ -8,7 +8,10 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<{ children: ReactNode; fallback?: ReactNode }, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<
+  { children: ReactNode; fallback?: ReactNode },
+  ErrorBoundaryState
+> {
   state: ErrorBoundaryState = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
@@ -53,7 +56,9 @@ export class ErrorBoundary extends Component<{ children: ReactNode; fallback?: R
             {process.env.NODE_ENV === "development" && this.state.error && (
               <details className="mt-6 text-left text-xs text-gray-500 bg-[#121212] p-3 rounded-lg">
                 <summary className="cursor-pointer mb-2">Detalhes do erro (dev)</summary>
-                <pre className="whitespace-pre-wrap overflow-auto max-h-60">{this.state.error.stack}</pre>
+                <pre className="whitespace-pre-wrap overflow-auto max-h-60">
+                  {this.state.error.stack}
+                </pre>
               </details>
             )}
           </div>
@@ -66,7 +71,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode; fallback?: R
 
 export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
-  fallback?: ReactNode
+  fallback?: ReactNode,
 ) {
   return function WithErrorBoundary(props: P) {
     return (
