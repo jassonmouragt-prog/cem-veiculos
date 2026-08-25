@@ -1,4 +1,5 @@
-import { FinancialTransaction, formatCurrency, formatDate } from "@/lib/db/store";
+import { FinancialTransaction, formatCurrency } from "@/lib/db/store";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical, Edit3, Trash2, CreditCard, Calendar, AlertTriangle } from "lucide-react";
+
+function formatDate(isoDate: string): string {
+  try {
+    const d = new Date(isoDate);
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(d);
+  } catch {
+    return isoDate;
+  }
+}
 
 interface FinancialTableProps {
   transactions: FinancialTransaction[];
@@ -239,17 +253,4 @@ export function FinancialTable({
       )}
     </div>
   );
-}
-
-function formatDate(isoDate: string): string {
-  try {
-    const d = new Date(isoDate);
-    return new Intl.DateTimeFormat("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }).format(d);
-  } catch {
-    return isoDate;
-  }
 }
