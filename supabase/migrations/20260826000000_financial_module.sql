@@ -165,7 +165,7 @@ CREATE TABLE public.vehicle_expenses (
 GRANT SELECT ON public.vehicle_expenses TO authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.vehicle_expenses TO authenticated;
 GRANT ALL ON public.vehicle_expenses TO service_role;
-ALTER TABLE public.vehicle_expenses ENABLE ROW LEVEL SECURITY.
+ALTER TABLE public.vehicle_expenses ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Admins manage vehicle_expenses"
   ON public.vehicle_expenses FOR ALL TO authenticated

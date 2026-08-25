@@ -13,9 +13,10 @@ import {
   Truck,
   X,
 } from "lucide-react";
-import { getFinancialDashboardStats } from "@/lib/db/store";
+import { getFinancialDashboardStats, subscribeToStore, isStoreLoaded } from "@/lib/db/store";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useState, useEffect } from "react";
 
 interface AdminFinanceiroSidebarProps {
   onOpenMobileMenu?: () => void;
@@ -24,7 +25,26 @@ interface AdminFinanceiroSidebarProps {
 export function AdminFinanceiroSidebar({ onOpenMobileMenu }: AdminFinanceiroSidebarProps) {
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
-  const stats = getFinancialDashboardStats();
+  const [stats, setStats] = useState(() => {
+    if (isStoreLoaded()) {
+      return getFinancialDashboardStats();
+    }
+    return {
+      totalPayable: 0,
+      totalToReceive: 0,
+      totalSalesCount: 0,
+      totalCommissionsPending: 0,
+    } as ReturnType<typeof getFinancialDashboardStats>;
+  });
+
+  useEffect(() => {
+    if (!isStoreLoaded()) return;
+    const unsubscribe = subscribeToStore(() => {
+      setStats(getFinancialDashboardStats());
+    });
+    setStats(getFinancialDashboardStats());
+    return () => unsubscribe();
+  }, []);
 
   const navItems = [
     {
