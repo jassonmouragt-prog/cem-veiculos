@@ -1,44 +1,10 @@
+import { supabase } from "@/integrations/supabase/client";
 import { Vehicle, Lead, DashboardStats, VehicleStatus, LeadStatus } from "./types";
 import { INITIAL_VEHICLES } from "./initial-data";
 
-const VEHICLES_STORAGE_KEY = "cm_veiculos_data_v1";
-const LEADS_STORAGE_KEY = "cm_leads_data_v1";
-
-const INITIAL_LEADS: Lead[] = [
-  {
-    id: "lead-1",
-    name: "Carlos Eduardo Mendes",
-    phone: "(86) 99841-2233",
-    email: "carlos.mendes@gmail.com",
-    vehicleId: "veh-1",
-    vehicleName: "Honda HR-V EXL",
-    message: "Tenho interesse no Honda HR-V. Gostaria de simular entrada de R$ 30.000.",
-    status: "em_atendimento",
-    createdAt: "2026-08-23T14:15:00.000Z",
-  },
-  {
-    id: "lead-2",
-    name: "Mariana Albuquerque",
-    phone: "(86) 99455-8899",
-    email: "mariana.albuquerque@hotmail.com",
-    vehicleId: "veh-2",
-    vehicleName: "Toyota Corolla XEi",
-    message: "Aceita carro seminovo na troca (HB20 2019)?",
-    status: "novo",
-    createdAt: "2026-08-24T10:30:00.000Z",
-  },
-  {
-    id: "lead-3",
-    name: "Fernando Vasconcelos",
-    phone: "(86) 98112-7744",
-    email: "f.vasconcelos@outlook.com",
-    vehicleId: "veh-4",
-    vehicleName: "VW Polo Highline",
-    message: "Gostaria de agendar um test drive para esta tarde.",
-    status: "novo",
-    createdAt: "2026-08-24T11:45:00.000Z",
-  }
-];
+const LEGACY_VEHICLES_KEY = "cm_veiculos_data_v1";
+const LEGACY_LEADS_KEY = "cm_leads_data_v1";
+const MIGRATION_FLAG_KEY = "cm_supabase_migrated_v1";
 
 // Helper to create URL friendly slug
 export function generateSlug(name: string, year?: number, id?: string): string {
@@ -48,17 +14,19 @@ export function generateSlug(name: string, year?: number, id?: string): string {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
-  
+
   const yearSuffix = year ? `-${year}` : "";
   const randomSuffix = id ? `-${id.slice(-4)}` : `-${Math.random().toString(36).substring(2, 6)}`;
   return `${base}${yearSuffix}${randomSuffix}`;
 }
 
-// In-memory fallback for SSR/server environment
-let memoryVehicles: Vehicle[] = [...INITIAL_VEHICLES];
-let memoryLeads: Lead[] = [...INITIAL_LEADS];
+// --- CACHE + REACTIVITY ---
 
-// Event listeners for real-time reactivity across components
+let cachedVehicles: Vehicle[] = [];
+let cachedLeads: Lead[] = [];
+let loaded = false;
+let loadingPromise: Promise<void> | null = null;
+
 type StoreListener = () => void;
 const listeners = new Set<StoreListener>();
 
@@ -72,72 +40,161 @@ function notifyListeners() {
   });
 }
 
+export function isStoreLoaded(): boolean {
+  return loaded;
+}
+
 export function subscribeToStore(listener: StoreListener): () => void {
   listeners.add(listener);
-  return () => listeners.delete(listener);
+  void loadStore();
+  return () => {
+    listeners.delete(listener);
+  };
 }
 
-// --- VEHICLES STORAGE METHODS ---
+// --- MAPPERS ---
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function mapVehicle(row: any): Vehicle {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    brand: row.brand ?? "",
+    model: row.model ?? "",
+    version: row.version ?? "",
+    manufacturingYear: row.manufacturing_year ?? 0,
+    modelYear: row.model_year ?? 0,
+    category: row.category,
+    engine: row.engine ?? "",
+    fuel: row.fuel,
+    transmission: row.transmission,
+    ...(row.power_hp !== null && row.power_hp !== undefined ? { powerHp: Number(row.power_hp) } : {}),
+    mileage: Number(row.mileage ?? 0),
+    price: Number(row.price ?? 0),
+    ...(row.entry_value !== null && row.entry_value !== undefined ? { entryValue: Number(row.entry_value) } : {}),
+    ...(row.installments_count !== null && row.installments_count !== undefined
+      ? { installmentsCount: Number(row.installments_count) }
+      : {}),
+    ...(row.installment_value !== null && row.installment_value !== undefined
+      ? { installmentValue: Number(row.installment_value) }
+      : {}),
+    acceptsTrade: !!row.accepts_trade,
+    acceptsFinancing: !!row.accepts_financing,
+    color: row.color ?? "",
+    doors: row.doors ?? 4,
+    features: row.features ?? [],
+    singleOwner: !!row.single_owner,
+    dealerMaintained: !!row.dealer_maintained,
+    description: row.description ?? "",
+    images: row.images ?? [],
+    mainImageIndex: row.main_image_index ?? 0,
+    status: row.status,
+    isFeatured: !!row.is_featured,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function toVehicleRow(data: Partial<Vehicle>): Record<string, unknown> {
+  const row: Record<string, unknown> = {};
+  const set = (key: string, value: unknown) => {
+    if (value !== undefined) row[key] = value;
+  };
+  set("slug", data.slug);
+  set("name", data.name);
+  set("brand", data.brand);
+  set("model", data.model);
+  set("version", data.version);
+  set("manufacturing_year", data.manufacturingYear);
+  set("model_year", data.modelYear);
+  set("category", data.category);
+  set("engine", data.engine);
+  set("fuel", data.fuel);
+  set("transmission", data.transmission);
+  set("power_hp", data.powerHp ?? null);
+  set("mileage", data.mileage);
+  set("price", data.price);
+  set("entry_value", data.entryValue ?? null);
+  set("installments_count", data.installmentsCount ?? null);
+  set("installment_value", data.installmentValue ?? null);
+  set("accepts_trade", data.acceptsTrade);
+  set("accepts_financing", data.acceptsFinancing);
+  set("color", data.color);
+  set("doors", data.doors);
+  set("features", data.features);
+  set("single_owner", data.singleOwner);
+  set("dealer_maintained", data.dealerMaintained);
+  set("description", data.description);
+  set("images", data.images);
+  set("main_image_index", data.mainImageIndex);
+  set("status", data.status);
+  set("is_featured", data.isFeatured);
+  return row;
+}
+
+function mapLead(row: any): Lead {
+  return {
+    id: row.id,
+    name: row.name,
+    phone: row.phone,
+    ...(row.email ? { email: row.email } : {}),
+    ...(row.vehicle_id ? { vehicleId: row.vehicle_id } : {}),
+    ...(row.vehicle_name ? { vehicleName: row.vehicle_name } : {}),
+    ...(row.message ? { message: row.message } : {}),
+    status: row.status,
+    createdAt: row.created_at,
+  };
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
+// --- LOADING ---
+
+export async function loadStore(force = false): Promise<void> {
+  if (loaded && !force) return;
+  if (loadingPromise && !force) return loadingPromise;
+
+  loadingPromise = (async () => {
+    const [vehiclesRes, leadsRes] = await Promise.all([
+      supabase.from("vehicles").select("*").order("created_at", { ascending: false }),
+      supabase.from("leads").select("*").order("created_at", { ascending: false }),
+    ]);
+
+    if (vehiclesRes.error) {
+      console.error("Erro ao carregar veículos:", vehiclesRes.error);
+    } else {
+      cachedVehicles = (vehiclesRes.data ?? []).map(mapVehicle);
+    }
+
+    // Leads are admin-only; a permission error simply keeps the list empty.
+    if (!leadsRes.error) {
+      cachedLeads = (leadsRes.data ?? []).map(mapLead);
+    }
+
+    loaded = true;
+    notifyListeners();
+  })();
+
+  try {
+    await loadingPromise;
+  } finally {
+    loadingPromise = null;
+  }
+}
+
+export async function refreshStore(): Promise<void> {
+  await loadStore(true);
+}
+
+// --- VEHICLES READ API (synchronous, from cache) ---
+
 export function getVehiclesFromStorage(): Vehicle[] {
-  if (typeof window === "undefined") {
-    return memoryVehicles;
-  }
-  try {
-    const raw = localStorage.getItem(VEHICLES_STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(VEHICLES_STORAGE_KEY, JSON.stringify(INITIAL_VEHICLES));
-      return INITIAL_VEHICLES;
-    }
-    return JSON.parse(raw);
-  } catch (e) {
-    console.error("Error reading vehicles from storage:", e);
-    return memoryVehicles;
-  }
+  return cachedVehicles;
 }
 
-export function saveVehiclesToStorage(vehicles: Vehicle[]) {
-  memoryVehicles = vehicles;
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem(VEHICLES_STORAGE_KEY, JSON.stringify(vehicles));
-    } catch (e) {
-      console.error("Error writing vehicles to storage:", e);
-    }
-  }
-  notifyListeners();
-}
-
-// --- LEADS STORAGE METHODS ---
 export function getLeadsFromStorage(): Lead[] {
-  if (typeof window === "undefined") {
-    return memoryLeads;
-  }
-  try {
-    const raw = localStorage.getItem(LEADS_STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(INITIAL_LEADS));
-      return INITIAL_LEADS;
-    }
-    return JSON.parse(raw);
-  } catch (e) {
-    console.error("Error reading leads from storage:", e);
-    return memoryLeads;
-  }
+  return cachedLeads;
 }
-
-export function saveLeadsToStorage(leads: Lead[]) {
-  memoryLeads = leads;
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(leads));
-    } catch (e) {
-      console.error("Error writing leads to storage:", e);
-    }
-  }
-  notifyListeners();
-}
-
-// --- VEHICLES CRUD API ---
 
 export function getPublicVehicles(filters?: {
   category?: string;
@@ -148,8 +205,7 @@ export function getPublicVehicles(filters?: {
   maxPrice?: number;
   year?: number;
 }): Vehicle[] {
-  const all = getVehiclesFromStorage();
-  return all.filter((v) => {
+  return cachedVehicles.filter((v) => {
     if (filters?.onlyFeatured && !v.isFeatured) return false;
     if (filters?.status && v.status !== filters.status) return false;
     if (filters?.category && filters.category !== "todos" && filters.category !== "todas" && v.category !== filters.category) return false;
@@ -158,7 +214,7 @@ export function getPublicVehicles(filters?: {
     if (filters?.year && v.modelYear !== filters.year) return false;
     if (filters?.search) {
       const q = filters.search.toLowerCase().trim();
-      const match = 
+      const match =
         v.name.toLowerCase().includes(q) ||
         v.brand.toLowerCase().includes(q) ||
         v.model.toLowerCase().includes(q) ||
@@ -170,131 +226,178 @@ export function getPublicVehicles(filters?: {
 }
 
 export function getVehicleBySlug(slug: string): Vehicle | undefined {
-  const all = getVehiclesFromStorage();
-  return all.find((v) => v.slug === slug || v.id === slug);
+  return cachedVehicles.find((v) => v.slug === slug || v.id === slug);
 }
 
 export function getVehicleById(id: string): Vehicle | undefined {
-  const all = getVehiclesFromStorage();
-  return all.find((v) => v.id === id);
+  return cachedVehicles.find((v) => v.id === id);
 }
 
-export function createVehicle(data: Omit<Vehicle, "id" | "slug" | "createdAt" | "updatedAt">): Vehicle {
-  const all = getVehiclesFromStorage();
-  const id = `veh-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
-  const slug = generateSlug(data.name || `${data.brand} ${data.model}`, data.modelYear, id);
-  
-  const newVehicle: Vehicle = {
-    ...data,
-    id,
-    slug,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+// --- VEHICLES WRITE API ---
 
-  const updated = [newVehicle, ...all];
-  saveVehiclesToStorage(updated);
-  return newVehicle;
+export async function createVehicle(
+  data: Omit<Vehicle, "id" | "slug" | "createdAt" | "updatedAt">
+): Promise<Vehicle> {
+  const slug = generateSlug(data.name || `${data.brand} ${data.model}`, data.modelYear);
+  const { data: row, error } = await supabase
+    .from("vehicles")
+    .insert(toVehicleRow({ ...data, slug }) as never)
+    .select("*")
+    .single();
+
+  if (error) throw error;
+  const vehicle = mapVehicle(row);
+  cachedVehicles = [vehicle, ...cachedVehicles];
+  notifyListeners();
+  return vehicle;
 }
 
-export function updateVehicle(id: string, data: Partial<Omit<Vehicle, "id" | "createdAt">>): Vehicle | null {
-  const all = getVehiclesFromStorage();
-  const index = all.findIndex((v) => v.id === id);
-  if (index === -1) return null;
+export async function updateVehicle(
+  id: string,
+  data: Partial<Omit<Vehicle, "id" | "createdAt">>
+): Promise<Vehicle | null> {
+  const { data: row, error } = await supabase
+    .from("vehicles")
+    .update(toVehicleRow(data) as never)
+    .eq("id", id)
+    .select("*")
+    .single();
 
-  const existing = all[index]!;
-  const updatedVehicle = {
-    ...existing,
-    ...data,
-    updatedAt: new Date().toISOString(),
-  } as Vehicle;
-
-  all[index] = updatedVehicle;
-  saveVehiclesToStorage([...all]);
-  return updatedVehicle;
+  if (error) throw error;
+  const vehicle = mapVehicle(row);
+  cachedVehicles = cachedVehicles.map((v) => (v.id === id ? vehicle : v));
+  notifyListeners();
+  return vehicle;
 }
 
-
-
-export function deleteVehicle(id: string): boolean {
-  const all = getVehiclesFromStorage();
-  const filtered = all.filter((v) => v.id !== id);
-  if (filtered.length === all.length) return false;
-  saveVehiclesToStorage(filtered);
+export async function deleteVehicle(id: string): Promise<boolean> {
+  const { error } = await supabase.from("vehicles").delete().eq("id", id);
+  if (error) throw error;
+  cachedVehicles = cachedVehicles.filter((v) => v.id !== id);
+  notifyListeners();
   return true;
 }
 
-export function toggleVehicleFeatured(id: string): boolean {
-  const all = getVehiclesFromStorage();
-  const v = all.find((item) => item.id === id);
-  if (!v) return false;
-  v.isFeatured = !v.isFeatured;
-  v.updatedAt = new Date().toISOString();
-  saveVehiclesToStorage([...all]);
-  return v.isFeatured;
+export async function toggleVehicleFeatured(id: string): Promise<boolean> {
+  const current = getVehicleById(id);
+  if (!current) return false;
+  const next = !current.isFeatured;
+  await updateVehicle(id, { isFeatured: next });
+  return next;
 }
 
-export function updateVehicleStatus(id: string, status: VehicleStatus): boolean {
-  const all = getVehiclesFromStorage();
-  const v = all.find((item) => item.id === id);
-  if (!v) return false;
-  v.status = status;
-  v.updatedAt = new Date().toISOString();
-  saveVehiclesToStorage([...all]);
+export async function updateVehicleStatus(id: string, status: VehicleStatus): Promise<boolean> {
+  await updateVehicle(id, { status });
   return true;
 }
 
-// --- LEADS CRUD API ---
+// --- LEADS API ---
 
-export function createLead(data: {
+export async function createLead(data: {
   name: string;
   phone: string;
   email?: string;
   vehicleId?: string;
   vehicleName?: string;
   message?: string;
-}): Lead {
-  const all = getLeadsFromStorage();
-  const newLead: Lead = {
-    id: `lead-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+}): Promise<Lead> {
+  const payload = {
     name: data.name.trim(),
     phone: data.phone.trim(),
-    ...(data.email ? { email: data.email.trim() } : {}),
-    ...(data.vehicleId ? { vehicleId: data.vehicleId } : {}),
-    ...(data.vehicleName ? { vehicleName: data.vehicleName } : {}),
-    ...(data.message ? { message: data.message.trim() } : {}),
-    status: "novo",
-    createdAt: new Date().toISOString(),
+    email: data.email?.trim() ?? null,
+    vehicle_id: data.vehicleId ?? null,
+    vehicle_name: data.vehicleName ?? null,
+    message: data.message?.trim() ?? null,
   };
 
+  const { data: row, error } = await supabase
+    .from("leads")
+    .insert(payload as never)
+    .select("*")
+    .single();
 
-  const updated = [newLead, ...all];
-  saveLeadsToStorage(updated);
-  return newLead;
+  if (error) throw error;
+  const lead = mapLead(row);
+  cachedLeads = [lead, ...cachedLeads];
+  notifyListeners();
+  return lead;
 }
 
-export function updateLeadStatus(id: string, status: LeadStatus): boolean {
-  const all = getLeadsFromStorage();
-  const lead = all.find((l) => l.id === id);
-  if (!lead) return false;
-  lead.status = status;
-  saveLeadsToStorage([...all]);
+export async function updateLeadStatus(id: string, status: LeadStatus): Promise<boolean> {
+  const { error } = await supabase.from("leads").update({ status } as never).eq("id", id);
+  if (error) throw error;
+  cachedLeads = cachedLeads.map((l) => (l.id === id ? { ...l, status } : l));
+  notifyListeners();
   return true;
 }
 
-export function deleteLead(id: string): boolean {
-  const all = getLeadsFromStorage();
-  const filtered = all.filter((l) => l.id !== id);
-  if (filtered.length === all.length) return false;
-  saveLeadsToStorage(filtered);
+export async function deleteLead(id: string): Promise<boolean> {
+  const { error } = await supabase.from("leads").delete().eq("id", id);
+  if (error) throw error;
+  cachedLeads = cachedLeads.filter((l) => l.id !== id);
+  notifyListeners();
   return true;
+}
+
+// --- ONE-TIME MIGRATION FROM LOCALSTORAGE ---
+
+export async function migrateLegacyLocalData(): Promise<number> {
+  if (typeof window === "undefined") return 0;
+  if (localStorage.getItem(MIGRATION_FLAG_KEY)) return 0;
+
+  await loadStore();
+  if (cachedVehicles.length > 0) {
+    localStorage.setItem(MIGRATION_FLAG_KEY, "done");
+    return 0;
+  }
+
+  let legacy: Vehicle[] = [];
+  try {
+    const raw = localStorage.getItem(LEGACY_VEHICLES_KEY);
+    legacy = raw ? (JSON.parse(raw) as Vehicle[]) : [];
+  } catch {
+    legacy = [];
+  }
+
+  const source = legacy.length > 0 ? legacy : INITIAL_VEHICLES;
+  const rows = source.map((v) => toVehicleRow({ ...v, slug: v.slug || generateSlug(v.name, v.modelYear, v.id) }));
+
+  const { error } = await supabase.from("vehicles").insert(rows as never);
+  if (error) {
+    console.error("Falha ao migrar veículos locais:", error);
+    return 0;
+  }
+
+  // Legacy leads (best effort, without vehicle links)
+  try {
+    const rawLeads = localStorage.getItem(LEGACY_LEADS_KEY);
+    const legacyLeads = rawLeads ? (JSON.parse(rawLeads) as Lead[]) : [];
+    if (legacyLeads.length > 0) {
+      await supabase.from("leads").insert(
+        legacyLeads.map((l) => ({
+          name: l.name,
+          phone: l.phone,
+          email: l.email ?? null,
+          vehicle_name: l.vehicleName ?? null,
+          message: l.message ?? null,
+          status: l.status,
+        })) as never
+      );
+    }
+  } catch (e) {
+    console.error("Falha ao migrar leads locais:", e);
+  }
+
+  localStorage.setItem(MIGRATION_FLAG_KEY, "done");
+  await refreshStore();
+  return source.length;
 }
 
 // --- DASHBOARD STATS ---
 
 export function getDashboardStats(): DashboardStats {
-  const vehicles = getVehiclesFromStorage();
-  const leads = getLeadsFromStorage();
+  const vehicles = cachedVehicles;
+  const leads = cachedLeads;
 
   const now = new Date();
   const currentMonth = now.getMonth();

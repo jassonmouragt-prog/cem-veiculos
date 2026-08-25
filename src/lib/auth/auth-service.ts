@@ -1,38 +1,9 @@
+import { supabase } from "@/integrations/supabase/client";
 import { AdminUser } from "../db/types";
+import { ensureFirstAdmin } from "./admin-bootstrap.functions";
 
-const AUTH_STORAGE_KEY = "cm_admin_session_v1";
-const ADMIN_CONFIG_KEY = "cm_admin_credentials_v1";
-
-interface AdminCredentials {
-  id: string;
-  email: string;
-  name: string;
-  passwordHash: string; // Base64 / SHA-256 equivalent
-}
-
-// Default initial administrator
-const DEFAULT_ADMIN: AdminCredentials = {
-  id: "admin-1",
-  email: "admin@cmveiculos.com.br",
-  name: "Administrador C&M",
-  passwordHash: "admin123456", // Default initial password
-};
-
-function getStoredAdmin(): AdminCredentials {
-  if (typeof window === "undefined") {
-    return DEFAULT_ADMIN;
-  }
-  try {
-    const raw = localStorage.getItem(ADMIN_CONFIG_KEY);
-    if (!raw) {
-      localStorage.setItem(ADMIN_CONFIG_KEY, JSON.stringify(DEFAULT_ADMIN));
-      return DEFAULT_ADMIN;
-    }
-    return JSON.parse(raw);
-  } catch {
-    return DEFAULT_ADMIN;
-  }
-}
+let currentUser: AdminUser | null = null;
+let sessionChecked = false;
 
 type AuthListener = () => void;
 const authListeners = new Set<AuthListener>();
@@ -49,78 +20,117 @@ function notifyAuthListeners() {
 
 export function subscribeToAuth(listener: AuthListener): () => void {
   authListeners.add(listener);
-  return () => authListeners.delete(listener);
+  return () => {
+    authListeners.delete(listener);
+  };
 }
 
 export function getCurrentUser(): AdminUser | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
-  try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (!raw) return null;
-    const data = JSON.parse(raw);
-    if (data && data.email && data.role === "admin") {
-      return data as AdminUser;
-    }
-    return null;
-  } catch {
-    return null;
-  }
+  return currentUser;
 }
 
-export function isAuthenticated(): boolean {
-  return getCurrentUser() !== null;
+export function isSessionChecked(): boolean {
+  return sessionChecked;
 }
 
-export function login(email: string, password: string): { success: boolean; user?: AdminUser; error?: string } {
-  const admin = getStoredAdmin();
+/** Resolves the signed-in admin (or null) against Supabase. */
+export async function refreshCurrentUser(): Promise<AdminUser | null> {
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+
+  if (!user) {
+    currentUser = null;
+    sessionChecked = true;
+    notifyAuthListeners();
+    return null;
+  }
+
+  const { data: isAdmin, error } = await supabase.rpc("has_role", {
+    _user_id: user.id,
+    _role: "admin",
+  });
+
+  if (error) console.error("Erro ao verificar permissão de administrador:", error);
+
+  currentUser = isAdmin
+    ? {
+        id: user.id,
+        email: user.email ?? "",
+        name: (user.user_metadata?.["name"] as string) ?? "Administrador C&M",
+        role: "admin",
+      }
+    : null;
+
+  sessionChecked = true;
+  notifyAuthListeners();
+  return currentUser;
+}
+
+export async function isAuthenticated(): Promise<boolean> {
+  return (await refreshCurrentUser()) !== null;
+}
+
+export async function login(
+  email: string,
+  password: string
+): Promise<{ success: boolean; user?: AdminUser; error?: string }> {
   const cleanEmail = email.trim().toLowerCase();
   const cleanPass = password.trim();
 
-  if (cleanEmail !== admin.email.toLowerCase()) {
+  if (!cleanEmail || !cleanPass) {
+    return { success: false, error: "Informe e-mail e senha." };
+  }
+
+  // First access: create the initial administrator if none exists yet.
+  try {
+    await ensureFirstAdmin({ data: { email: cleanEmail, password: cleanPass } });
+  } catch (e) {
+    console.error("Bootstrap de administrador:", e);
+  }
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: cleanEmail,
+    password: cleanPass,
+  });
+
+  if (error) {
     return { success: false, error: "E-mail ou senha incorretos." };
   }
 
-  if (cleanPass !== admin.passwordHash) {
-    return { success: false, error: "E-mail ou senha incorretos." };
+  const user = await refreshCurrentUser();
+  if (!user) {
+    await supabase.auth.signOut();
+    return { success: false, error: "Esta conta não possui acesso administrativo." };
   }
-
-  const user: AdminUser = {
-    id: admin.id,
-    email: admin.email,
-    name: admin.name,
-    role: "admin",
-  };
-
-  if (typeof window !== "undefined") {
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
-  }
-  notifyAuthListeners();
 
   return { success: true, user };
 }
 
-export function logout(): void {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-  }
+export async function logout(): Promise<void> {
+  await supabase.auth.signOut();
+  currentUser = null;
   notifyAuthListeners();
 }
 
-export function updateAdminPassword(currentPass: string, newPass: string): { success: boolean; error?: string } {
-  const admin = getStoredAdmin();
-  if (currentPass !== admin.passwordHash) {
-    return { success: false, error: "A senha atual está incorreta." };
-  }
-
+export async function updateAdminPassword(
+  currentPass: string,
+  newPass: string
+): Promise<{ success: boolean; error?: string }> {
   if (!newPass || newPass.length < 6) {
     return { success: false, error: "A nova senha deve conter no mínimo 6 caracteres." };
   }
 
-  admin.passwordHash = newPass;
-  if (typeof window !== "undefined") {
-    localStorage.setItem(ADMIN_CONFIG_KEY, JSON.stringify(admin));
-  }
+  const email = currentUser?.email;
+  if (!email) return { success: false, error: "Sessão expirada. Entre novamente." };
+
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password: currentPass,
+  });
+  if (signInError) return { success: false, error: "A senha atual está incorreta." };
+
+  const { error } = await supabase.auth.updateUser({ password: newPass });
+  if (error) return { success: false, error: error.message };
+
   return { success: true };
 }
