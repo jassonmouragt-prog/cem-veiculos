@@ -177,7 +177,7 @@ function mapLead(row: any): Lead {
 function mapSeller(row: any): Seller {
   return {
     id: row.id,
-    userId: row.user_id,
+    userId: row.user_id ?? undefined,
     name: row.name,
     email: row.email ?? undefined,
     phone: row.phone ?? undefined,
@@ -622,7 +622,7 @@ export function getActiveSellers(): Seller[] {
 }
 
 export async function createSeller(data: {
-  userId: string;
+  userId?: string;
   name: string;
   email?: string;
   phone?: string;

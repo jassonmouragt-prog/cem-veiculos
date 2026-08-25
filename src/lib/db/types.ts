@@ -129,7 +129,7 @@ export type SaleStatus = "concluida" | "cancelada";
 
 export interface Seller {
   id: string;
-  userId: string;
+  userId?: string;
   name: string;
   email?: string;
   phone?: string;
