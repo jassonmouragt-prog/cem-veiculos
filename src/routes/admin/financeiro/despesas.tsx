@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminFinanceiroSidebar } from "@/components/admin/financeiro/AdminFinanceiroSidebar";
 import { useAdminLayout } from "@/components/admin/AdminLayoutContext";
@@ -16,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { VehicleExpenseModal } from "@/components/admin/financeiro/VehicleExpenseModal";
 
 export const Route = createFileRoute("/admin/financeiro/despesas")({
   component: DespesasPage,
@@ -25,6 +27,17 @@ function DespesasPage() {
   const { openMobileMenu } = useAdminLayout();
   const expenses = getExpensesFromStorage();
   const vehicles = getVehiclesFromStorage();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedVehicleForExpense, setSelectedVehicleForExpense] = useState<{
+    id: string;
+    name: string;
+    price?: number;
+  } | null>(null);
+
+  const handleNewExpense = (vehicle?: { id: string; name: string; price?: number } | null) => {
+    setSelectedVehicleForExpense(vehicle || null);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -32,6 +45,15 @@ function DespesasPage() {
         title="Despesas de Veículos"
         description="Despesas vinculadas a veículos específicos (manutenção, documentação, etc.)"
         onOpenMobileMenu={openMobileMenu}
+        actions={
+          <Button
+            className="bg-brand-gradient hover:opacity-95 text-white font-semibold text-xs sm:text-sm h-9 sm:h-10 gap-1.5 rounded-lg shadow-sm shadow-[#E8231F]/20"
+            onClick={() => handleNewExpense(null)}
+          >
+            <Plus className="w-4 h-4" />
+            <span>Nova Despesa</span>
+          </Button>
+        }
       />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
@@ -48,27 +70,41 @@ function DespesasPage() {
 
           <TabsContent value="veiculos">
             <div className="space-y-4">
-              {vehicles
-                .filter((v) => getExpensesFromStorage().some((e) => e.vehicleId === v.id))
-                .map((vehicle) => {
-                  const vehicleExpenses = expenses.filter((e) => e.vehicleId === vehicle.id);
-                  const totalExpenses = vehicleExpenses.reduce((s, e) => s + e.amount, 0);
-                  return (
-                    <Card key={vehicle.id} className="bg-[#121212] border-white/5 rounded-xl">
-                      <CardHeader className="pb-3 border-b border-white/5">
-                        <div className="flex flex-row items-center justify-between">
-                          <div>
-                            <CardTitle className="text-sm font-bold text-white">
-                              {vehicle.name}
-                            </CardTitle>
-                            <p className="text-xs text-gray-400">
-                              {vehicleExpenses.length} despesas • Total:{" "}
-                              {formatCurrency(totalExpenses)}
-                            </p>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-3">
+              {vehicles.map((vehicle) => {
+                const vehicleExpenses = expenses.filter((e) => e.vehicleId === vehicle.id);
+                const totalExpenses = vehicleExpenses.reduce((s, e) => s + e.amount, 0);
+                return (
+                  <Card key={vehicle.id} className="bg-[#121212] border-white/5 rounded-xl">
+                    <CardHeader className="pb-3 border-b border-white/5 flex flex-row items-center justify-between">
+                      <div>
+                        <CardTitle className="text-sm font-bold text-white">
+                          {vehicle.name}
+                        </CardTitle>
+                        <p className="text-xs text-gray-400">
+                          {vehicleExpenses.length} despesas • Total: {formatCurrency(totalExpenses)}
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 bg-black/60 text-white hover:bg-black rounded-lg"
+                        onClick={() =>
+                          handleNewExpense({
+                            id: vehicle.id,
+                            name: vehicle.name,
+                            price: vehicle.price,
+                          })
+                        }
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    </CardHeader>
+                    <CardContent className="p-3">
+                      {vehicleExpenses.length === 0 ? (
+                        <p className="text-xs text-gray-500 text-center py-4">
+                          Nenhuma despesa registrada para este veículo
+                        </p>
+                      ) : (
                         <div className="space-y-2">
                           {vehicleExpenses.slice(0, 5).map((e) => (
                             <div
@@ -106,10 +142,11 @@ function DespesasPage() {
                             </p>
                           )}
                         </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </TabsContent>
 
@@ -178,6 +215,12 @@ function DespesasPage() {
           </TabsContent>
         </Tabs>
       </main>
+
+      <VehicleExpenseModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialVehicle={selectedVehicleForExpense}
+      />
     </div>
   );
 }
