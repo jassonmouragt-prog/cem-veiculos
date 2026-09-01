@@ -67,18 +67,23 @@ export function isStoreLoaded(): boolean {
   return loaded;
 }
 
-export function subscribeToStore(listener: StoreListener): () => void {
+export function subscribeToStore(listener: StoreListener, skipLoad = false): () => void {
   listeners.add(listener);
-  void loadStore();
+  if (!skipLoad) void loadStore();
   return () => {
     listeners.delete(listener);
   };
 }
 
+/** Seeds the in-memory cache with vehicles fetched via the route loader (SSR). */
+export function seedVehicles(vehicles: Vehicle[]): void {
+  if (vehicles.length > 0) cachedVehicles = vehicles;
+}
+
 // --- MAPPERS ---
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-function mapVehicle(row: any): Vehicle {
+export function mapVehicle(row: any): Vehicle {
   return {
     id: row.id,
     slug: row.slug,

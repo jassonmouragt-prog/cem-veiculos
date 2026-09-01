@@ -9,8 +9,10 @@ import { FinancingCTA } from "@/components/landing/FinancingCTA";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { Location } from "@/components/landing/Location";
 import { Footer } from "@/components/landing/Footer";
+import { getPublicVehiclesServer } from "@/lib/db/vehicles.functions";
 
 export const Route = createFileRoute("/")({
+  loader: async () => ({ vehicles: await getPublicVehiclesServer() }),
   head: () => ({
     title: "C&M Veículos | Confiança que move você",
     meta: [
@@ -33,6 +35,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { vehicles: initialVehicles } = Route.useLoaderData();
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("todas");
   const [price, setPrice] = useState("indiferente");
@@ -65,6 +68,7 @@ function Index() {
         onReset={handleResetFilters}
       />
       <FeaturedVehicles
+        initialVehicles={initialVehicles}
         searchQuery={searchQuery}
         categoryFilter={category}
         {...(maxPriceNum !== undefined ? { maxPriceFilter: maxPriceNum } : {})}

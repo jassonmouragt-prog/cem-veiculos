@@ -1,7 +1,8 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, ShieldCheck } from "lucide-react";
-import logoCem from "@/assets/logo-cem.png.asset.json";
+
+const LOGO_URL = "/images/logo-cem.png";
 
 export function Header() {
   return (
@@ -9,7 +10,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4 lg:h-18">
         <Link to="/" className="flex min-w-0 items-center gap-3">
           <img
-            src={logoCem.url}
+            src={LOGO_URL}
             alt="C&M Veículos"
             className="h-10 w-auto shrink-0 object-contain sm:h-11"
           />

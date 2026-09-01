@@ -1,5 +1,6 @@
 import { CheckCircle2, ShieldCheck, Tag } from "lucide-react";
-import bannerHero from "@/assets/banner-hero.png.asset.json";
+
+const BANNER_URL = "/images/banner-hero.jpg";
 
 export function Hero() {
   return (
@@ -7,7 +8,7 @@ export function Hero() {
       {/* Banner background — full image visible on desktop (no cropping) */}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat lg:bg-contain lg:bg-right-top"
-        style={{ backgroundImage: `url(${bannerHero.url})` }}
+        style={{ backgroundImage: `url(${BANNER_URL})` }}
         aria-hidden="true"
       >
         {/* Left-side darkening overlay for text readability */}

@@ -5,11 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, Fuel, Gauge, ArrowRight, Sparkles, MessageSquare } from "lucide-react";
-import { getPublicVehicles, subscribeToStore, formatCurrency, formatMileage } from "@/lib/db/store";
+import {
+  getPublicVehicles,
+  seedVehicles,
+  subscribeToStore,
+  formatCurrency,
+  formatMileage,
+} from "@/lib/db/store";
 import { Vehicle } from "@/lib/db/types";
 import { LeadModal } from "./LeadModal";
 
 interface FeaturedVehiclesProps {
+  initialVehicles?: Vehicle[];
   searchQuery?: string;
   categoryFilter?: string;
   maxPriceFilter?: number;
@@ -17,23 +24,25 @@ interface FeaturedVehiclesProps {
 }
 
 export function FeaturedVehicles({
+  initialVehicles,
   searchQuery,
   categoryFilter,
   maxPriceFilter,
   yearFilter,
 }: FeaturedVehiclesProps) {
   const [activeTab, setActiveTab] = useState("todos");
-  const [vehicles, setVehicles] = useState<Vehicle[]>(getPublicVehicles());
+  const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles ?? getPublicVehicles());
   const [selectedVehicleForLead, setSelectedVehicleForLead] = useState<Vehicle | null>(null);
 
   useEffect(() => {
+    if (initialVehicles) seedVehicles(initialVehicles);
     const update = () => {
       setVehicles(getPublicVehicles());
     };
     update();
-    const unsubscribe = subscribeToStore(update);
+    const unsubscribe = subscribeToStore(update, true);
     return () => unsubscribe();
-  }, []);
+  }, [initialVehicles]);
 
   // Filter vehicles based on search bar filters and tab
   const displayedVehicles = vehicles.filter((v) => {
