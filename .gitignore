@@ -16,6 +16,17 @@ dist-ssr
 .nitro
 *.local
 
+# Environment
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel
+
+# Lovable
+.lovable/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars

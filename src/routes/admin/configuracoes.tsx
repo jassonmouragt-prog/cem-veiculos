@@ -229,7 +229,7 @@ function AdminSettingsPage() {
               </div>
               <div>
                 <p className="font-semibold text-white">Endereço:</p>
-                <p className="text-gray-400">Av. das Fronteiras, 1417 — Teresina/PI</p>
+                <p className="text-gray-400">Av. das Fronteiras, 1417 — Natal/RN</p>
               </div>
               <div>
                 <p className="font-semibold text-white">Horário de Atendimento:</p>

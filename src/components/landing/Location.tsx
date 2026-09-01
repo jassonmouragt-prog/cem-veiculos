@@ -72,7 +72,7 @@ export function Location() {
               </div>
               <h3 className="font-bold text-white text-base">C&M Veículos</h3>
               <p className="text-xs text-gray-400 leading-relaxed">
-                Av. das Fronteiras, 1417 — Fronteiras - Teresina/PI
+                Av. das Fronteiras, 1417 — Natal/RN
               </p>
               <a
                 href="https://maps.google.com/?q=Av.+das+Fronteiras,+1417"

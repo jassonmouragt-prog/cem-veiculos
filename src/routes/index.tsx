@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
         content:
           "Encontre seu próximo carro com procedência e sofisticação na C&M Veículos. Mais de 30 anos de história conectando você aos melhores veículos.",
       },
-      { property: "og:title", content: "C&M Veículos | Veículos Novos e Seminovos em Teresina" },
+      { property: "og:title", content: "C&M Veículos | Veículos Novos e Seminovos em Natal/RN" },
       {
         property: "og:description",
         content:
