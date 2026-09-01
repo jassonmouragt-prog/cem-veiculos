@@ -58,11 +58,14 @@ export function Location() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl overflow-hidden aspect-square border border-white/5 shadow-md">
-            <img
-              src="https://images.unsplash.com/photo-1555664424-778a195e1a48?auto=format&fit=crop&q=80&w=600"
-              alt="Fachada C&M Veículos"
-              className="w-full h-full object-cover"
+          <div className="rounded-2xl overflow-hidden aspect-square border border-white/5 shadow-md bg-[#121212]">
+            <iframe
+              src="https://www.google.com/maps?q=Av.+das+Fronteiras,+1417,+Natal,+RN&output=embed"
+              title="Mapa C&M Veículos — Av. das Fronteiras, 1417, Natal/RN"
+              className="w-full h-full border-0"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
             />
           </div>
           <div className="rounded-2xl overflow-hidden aspect-square relative bg-[#121212] border border-white/5 flex items-center justify-center p-6 text-center shadow-md">
