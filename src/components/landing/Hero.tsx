@@ -5,14 +5,14 @@ const BANNER_URL = "/images/banner-hero.jpg";
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-black pt-24 lg:pt-28">
-      {/* Banner background — full image visible on desktop (no cropping) */}
+      {/* Banner background — fills the hero (bigger) */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat lg:bg-contain lg:bg-right-top"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${BANNER_URL})` }}
         aria-hidden="true"
       >
-        {/* Left-side darkening overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent" />
+        {/* Fade to black near the text (left side) for readability */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent lg:right-auto lg:w-[70%]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
         {/* Bottom fade — applied to the image only */}
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black via-black/80 to-transparent" />
