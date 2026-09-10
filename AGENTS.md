@@ -11,7 +11,14 @@
 
 <!-- LOVABLE:END -->
 
-# apply-with-ease — Agent Guide
+# cem-veiculos — Agent Guide
+
+## Deploy & Repo
+
+- **Vercel project**: `cemveiculos` (renamed from `apply-with-ease`)
+- **Production URL**: https://cemveiculos.vercel.app
+- **GitHub repo**: `jassonmouragt-prog/cem-veiculos` — connected via Vercel Git integration; pushes to `main` trigger auto-deploy
+- **Vercel account**: `jason-3c4d` (jassonmouragt@gmail.com)
 
 ## Stack
 
