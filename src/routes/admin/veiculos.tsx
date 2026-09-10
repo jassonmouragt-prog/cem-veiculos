@@ -271,6 +271,8 @@ function AdminVehiclesPage() {
                           <img
                             src={coverImage}
                             alt={v.name}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover"
                           />
                         ) : (
@@ -385,6 +387,7 @@ function AdminVehiclesPage() {
                             to="/veiculos/$slug"
                             params={{ slug: v.slug }}
                             target="_blank"
+                            preload="intent"
                             className="flex-1"
                           >
                             <Button

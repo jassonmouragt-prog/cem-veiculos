@@ -1,6 +1,6 @@
 import { CheckCircle2, ShieldCheck, Tag } from "lucide-react";
 
-const BANNER_URL = "/images/banner-hero.jpg";
+const BANNER_URL = "/images/banner-hero.webp";
 
 export function Hero() {
   return (

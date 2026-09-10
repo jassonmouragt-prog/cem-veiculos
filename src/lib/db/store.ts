@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { RealtimeChannel } from "@supabase/supabase-js";
 import {
   Vehicle,
   Lead,
@@ -332,6 +333,126 @@ export async function refreshStore(): Promise<void> {
   await loadStore(true);
 }
 
+// ============================================
+// REALTIME (tempo real entre dispositivos)
+// ============================================
+
+type RealtimeTableName =
+  | "vehicles"
+  | "leads"
+  | "sellers"
+  | "sales"
+  | "financial_transactions"
+  | "vehicle_expenses";
+
+let realtimeStarted = false;
+let realtimeChannel: RealtimeChannel | null = null;
+let realtimeRetryTimer: ReturnType<typeof setTimeout> | null = null;
+
+function upsertById<T extends { id: string }>(list: T[], item: T): T[] {
+  const index = list.findIndex((x) => x.id === item.id);
+  if (index === -1) return [item, ...list];
+  const next = [...list];
+  next[index] = item;
+  return next;
+}
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function applyRealtimeEvent(
+  table: RealtimeTableName,
+  eventType: string,
+  row: Record<string, any>,
+): void {
+  const id = String(row.id ?? "");
+  if (!id) return;
+
+  switch (table) {
+    case "vehicles":
+      if (eventType === "DELETE") cachedVehicles = cachedVehicles.filter((v) => v.id !== id);
+      else cachedVehicles = upsertById(cachedVehicles, mapVehicle(row));
+      break;
+    case "leads":
+      if (eventType === "DELETE") cachedLeads = cachedLeads.filter((l) => l.id !== id);
+      else cachedLeads = upsertById(cachedLeads, mapLead(row));
+      break;
+    case "sellers":
+      if (eventType === "DELETE") cachedSellers = cachedSellers.filter((s) => s.id !== id);
+      else cachedSellers = upsertById(cachedSellers, mapSeller(row));
+      break;
+    case "sales":
+      if (eventType === "DELETE") cachedSales = cachedSales.filter((s) => s.id !== id);
+      else cachedSales = upsertById(cachedSales, mapSale(row));
+      break;
+    case "financial_transactions":
+      if (eventType === "DELETE")
+        cachedTransactions = cachedTransactions.filter((t) => t.id !== id);
+      else cachedTransactions = upsertById(cachedTransactions, mapTransaction(row));
+      break;
+    case "vehicle_expenses":
+      if (eventType === "DELETE") cachedExpenses = cachedExpenses.filter((e) => e.id !== id);
+      else cachedExpenses = upsertById(cachedExpenses, mapExpense(row));
+      break;
+  }
+
+  notifyListeners();
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
+/**
+ * Conecta o painel admin ao Supabase Realtime. Assim qualquer alteração feita
+ * em outra aba, outro usuário ou no site público (ex.: novo lead do visitante)
+ * aparece automaticamente na tela, sem precisar recarregar a página.
+ */
+export function enableRealtime(): void {
+  if (realtimeStarted || typeof window === "undefined") return;
+  realtimeStarted = true;
+
+  const tables: RealtimeTableName[] = [
+    "vehicles",
+    "leads",
+    "sellers",
+    "sales",
+    "financial_transactions",
+    "vehicle_expenses",
+  ];
+
+  realtimeChannel = supabase.channel("cem-veiculos-realtime");
+
+  tables.forEach((table) => {
+    realtimeChannel = realtimeChannel!.on(
+      "postgres_changes",
+      { event: "*", schema: "public", table },
+      (payload) => {
+        const row = (payload.new ?? payload.old) as Record<string, unknown> | null;
+        if (!row) return;
+
+        if (!loaded) {
+          // Cache ainda não carregado (race na abertura do painel): recarrega tudo.
+          void loadStore();
+          return;
+        }
+
+        applyRealtimeEvent(table, payload.eventType, row);
+      },
+    );
+  });
+
+  realtimeChannel.subscribe((status) => {
+    if (status === "SUBSCRIBED") {
+      console.info("[Realtime] Conectado ao painel de tempo real.");
+    } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+      console.warn("[Realtime] Conexão perdida, tentando reconectar em 5s...");
+      if (realtimeRetryTimer) return;
+      realtimeRetryTimer = setTimeout(() => {
+        realtimeRetryTimer = null;
+        realtimeStarted = false;
+        realtimeChannel = null;
+        enableRealtime();
+      }, 5000);
+    }
+  });
+}
+
 // --- VEHICLES READ API (synchronous, from cache) ---
 
 export function getVehiclesFromStorage(): Vehicle[] {
@@ -446,6 +567,47 @@ export async function toggleVehicleFeatured(id: string): Promise<boolean> {
 export async function updateVehicleStatus(id: string, status: VehicleStatus): Promise<boolean> {
   await updateVehicle(id, { status });
   return true;
+}
+
+// ============================================
+// IMAGENS - SUPABASE STORAGE
+// ============================================
+
+function randomId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+/**
+ * Envia fotos para o bucket `vehicle-images` e retorna as URLs públicas.
+ * Substitui o armazenamento em base64 no banco (que pesa muito no
+ * carregamento do site e do painel).
+ */
+export async function uploadVehicleImages(files: File[]): Promise<string[]> {
+  const urls: string[] = [];
+
+  for (const file of files) {
+    const extension = (file.name.split(".").pop() || "jpg")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+
+    if (!extension) continue;
+
+    const path = `vehicles/${randomId()}.${extension}`;
+
+    const { error } = await supabase.storage.from("vehicle-images").upload(path, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type || "image/jpeg",
+    });
+
+    if (error) throw error;
+
+    const { data } = supabase.storage.from("vehicle-images").getPublicUrl(path);
+    urls.push(data.publicUrl);
+  }
+
+  return urls;
 }
 
 // --- LEADS API ---

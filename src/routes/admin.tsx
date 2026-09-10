@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useRef } from "react";
 import { isAuthenticated, subscribeToAuth } from "@/lib/auth/auth-service";
-import { migrateLegacyLocalData } from "@/lib/db/store";
+import { migrateLegacyLocalData, enableRealtime } from "@/lib/db/store";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
@@ -36,14 +36,19 @@ function AdminLayout() {
       setIsAuth(auth);
       if (!auth) {
         navigate({ to: "/login" });
-      } else if (!migrationDone) {
-        // Run legacy data migration once after successful auth
-        try {
-          await migrateLegacyLocalData();
-        } catch (err) {
-          console.error("Erro na migração de dados legados:", err);
+      } else {
+        // Conecta o painel ao tempo real (novos leads, edições em outras abas etc.)
+        enableRealtime();
+
+        if (!migrationDone) {
+          // Run legacy data migration once after successful auth
+          try {
+            await migrateLegacyLocalData();
+          } catch (err) {
+            console.error("Erro na migração de dados legados:", err);
+          }
+          setMigrationDone(true);
         }
-        setMigrationDone(true);
       }
       authCheckRef.current = false;
     };

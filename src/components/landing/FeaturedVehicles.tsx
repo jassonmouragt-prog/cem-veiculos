@@ -153,11 +153,13 @@ export function FeaturedVehicles({
                   key={v.id}
                   className="bg-[#121212] border-white/5 overflow-hidden flex flex-col hover:border-[#E8231F]/40 transition-all rounded-xl shadow-md group"
                 >
-                  <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="block">
+                  <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="block" preload="intent">
                     <div className="relative aspect-[16/10] overflow-hidden bg-black">
                       <img
                         src={coverImage}
                         alt={v.name}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-md px-2 py-0.5 rounded-md text-[11px] font-semibold text-white">
@@ -180,7 +182,7 @@ export function FeaturedVehicles({
 
                   <CardContent className="p-4 flex-1 flex flex-col justify-between">
                     <div>
-                      <Link to="/veiculos/$slug" params={{ slug: v.slug }}>
+                      <Link to="/veiculos/$slug" params={{ slug: v.slug }} preload="intent">
                         <h3 className="font-bold text-white text-base truncate hover:text-[#E8231F] transition-colors mb-0.5">
                           {v.name}
                         </h3>
@@ -216,14 +218,14 @@ export function FeaturedVehicles({
                   </CardContent>
 
                   <CardFooter className="p-4 pt-0 gap-2">
-                    <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="flex-1">
-                      <Button
-                        variant="outline"
-                        className="w-full h-9 text-xs font-semibold border-white/10 hover:bg-white/5 text-gray-200 rounded-lg"
-                      >
-                        Detalhes
-                      </Button>
-                    </Link>
+                    <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="flex-1" preload="intent">
+                        <Button
+                          variant="outline"
+                          className="w-full h-9 text-xs font-semibold border-white/10 hover:bg-white/5 text-gray-200 rounded-lg"
+                        >
+                          Detalhes
+                        </Button>
+                      </Link>
                     <Button
                       onClick={() => setSelectedVehicleForLead(v)}
                       className="flex-1 h-9 text-xs font-semibold bg-brand-gradient hover:opacity-95 text-white rounded-lg shadow-sm shadow-[#E8231F]/15"

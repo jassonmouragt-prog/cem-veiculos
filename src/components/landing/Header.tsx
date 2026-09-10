@@ -1,8 +1,8 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, ShieldCheck } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
-const LOGO_URL = "/images/logo-cem.png";
+const LOGO_URL = "/images/logo-cem.webp";
 
 export function Header() {
   return (
@@ -53,16 +53,6 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link to="/login" title="Acesso Administrativo" className="hidden sm:inline-flex">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 text-gray-500 hover:text-white hover:bg-white/5 rounded-lg"
-            >
-              <ShieldCheck className="w-4 h-4" />
-            </Button>
-          </Link>
-
           <a
             href="https://wa.me/558699148872?text=Olá!%20Gostaria%20de%20mais%20informações."
             target="_blank"

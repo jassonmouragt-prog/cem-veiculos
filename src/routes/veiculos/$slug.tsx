@@ -1,14 +1,7 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import {
-  getVehicleBySlug,
-  seedVehicles,
-  subscribeToStore,
-  formatCurrency,
-  formatMileage,
-} from "@/lib/db/store";
-import { Vehicle } from "@/lib/db/types";
-import { getPublicVehiclesServer } from "@/lib/db/vehicles.functions";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { formatCurrency, formatMileage } from "@/lib/db/store";
+import { getVehicleBySlugServer } from "@/lib/db/vehicles.functions";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { LeadModal } from "@/components/landing/LeadModal";
@@ -36,28 +29,14 @@ import {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/veiculos/$slug")({
-  loader: async () => ({ vehicles: await getPublicVehiclesServer() }),
+  loader: async ({ params }) => ({ vehicle: await getVehicleBySlugServer(params.slug) }),
   component: VehicleDetailPage,
 });
 
 function VehicleDetailPage() {
-  const { slug } = useParams({ from: "/veiculos/$slug" });
-  const { vehicles: initialVehicles } = Route.useLoaderData();
-  const [vehicle, setVehicle] = useState<Vehicle | undefined>(
-    initialVehicles.find((v) => v.slug === slug || v.id === slug) ?? getVehicleBySlug(slug),
-  );
+  const { vehicle } = Route.useLoaderData();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (initialVehicles.length > 0) seedVehicles(initialVehicles);
-    const update = () => {
-      setVehicle(getVehicleBySlug(slug));
-    };
-    update();
-    const unsubscribe = subscribeToStore(update, true);
-    return () => unsubscribe();
-  }, [slug, initialVehicles]);
 
   if (!vehicle) {
     return (
@@ -149,6 +128,8 @@ function VehicleDetailPage() {
               <img
                 src={currentImage}
                 alt={vehicle.name}
+                fetchPriority="high"
+                decoding="async"
                 className="w-full h-full object-cover transition-all duration-300"
               />
               <div className="absolute top-3 left-3 flex gap-2">
@@ -182,6 +163,8 @@ function VehicleDetailPage() {
                     <img
                       src={img}
                       alt={`Miniatura ${idx + 1}`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover"
                     />
                   </button>

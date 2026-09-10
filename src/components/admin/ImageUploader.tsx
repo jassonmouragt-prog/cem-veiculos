@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, X, Star, ArrowLeft, ArrowRight, ImagePlus, Link as LinkIcon } from "lucide-react";
+import { Upload, X, Star, ArrowLeft, ArrowRight, ImagePlus, Link as LinkIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { uploadVehicleImages } from "@/lib/db/store";
 
 interface ImageUploaderProps {
   images: string[];
@@ -19,31 +20,27 @@ export function ImageUploader({
 }: ImageUploaderProps) {
   const [urlInput, setUrlInput] = useState("");
   const [showUrlInput, setShowUrlInput] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
 
-    const readFiles: Promise<string>[] = Array.from(files).map((file) => {
-      return new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (typeof reader.result === "string") {
-            resolve(reader.result);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(readFiles).then((newImageUrls) => {
-      onChangeImages([...images, ...newImageUrls]);
-      toast.success(`${newImageUrls.length} imagem(ns) adicionada(s)!`);
+    setUploading(true);
+    try {
+      const urls = await uploadVehicleImages(files);
+      onChangeImages([...images, ...urls]);
+      toast.success(`${urls.length} imagem(ns) adicionada(s)!`);
+    } catch (err) {
+      console.error("Erro ao enviar imagens:", err);
+      toast.error("Falha ao enviar as imagens. Confira a conexão e tente novamente.");
+    } finally {
+      setUploading(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-    });
+    }
   };
 
   const handleAddUrl = () => {
@@ -103,10 +100,15 @@ export function ImageUploader({
         <Button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="bg-brand-gradient hover:opacity-90 text-white text-xs sm:text-sm font-semibold h-10 gap-2 rounded-lg"
+          disabled={uploading}
+          className="bg-brand-gradient hover:opacity-90 text-white text-xs sm:text-sm font-semibold h-10 gap-2 rounded-lg disabled:opacity-60"
         >
-          <Upload className="w-4 h-4" />
-          Fazer Upload de Fotos
+          {uploading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Upload className="w-4 h-4" />
+          )}
+          {uploading ? "Enviando..." : "Fazer Upload de Fotos"}
         </Button>
         <Button
           type="button"

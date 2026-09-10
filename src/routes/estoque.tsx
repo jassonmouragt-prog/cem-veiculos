@@ -8,7 +8,7 @@ import {
   formatMileage,
 } from "@/lib/db/store";
 import { Vehicle } from "@/lib/db/types";
-import { getPublicVehiclesServer } from "@/lib/db/vehicles.functions";
+import { getPublicVehiclesSummaryServer } from "@/lib/db/vehicles.functions";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { LeadModal } from "@/components/landing/LeadModal";
@@ -37,7 +37,7 @@ import {
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/estoque")({
-  loader: async () => ({ vehicles: await getPublicVehiclesServer() }),
+  loader: async () => ({ vehicles: await getPublicVehiclesSummaryServer() }),
   head: () => ({
     title: "Estoque Completo | C&M Veículos",
     meta: [
@@ -445,12 +445,14 @@ function EstoquePage() {
                   key={v.id}
                   className="bg-[#121212] border-white/5 overflow-hidden flex flex-col hover:border-[#E8231F]/40 transition-all rounded-xl shadow-md group"
                 >
-                  <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="block">
+                  <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="block" preload="intent">
                     <div className="relative aspect-[16/10] overflow-hidden bg-black">
                       {coverImage ? (
                         <img
                           src={coverImage}
                           alt={v.name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
@@ -478,7 +480,7 @@ function EstoquePage() {
 
                   <CardContent className="p-4 flex-1 flex flex-col justify-between">
                     <div>
-                      <Link to="/veiculos/$slug" params={{ slug: v.slug }}>
+                      <Link to="/veiculos/$slug" params={{ slug: v.slug }} preload="intent">
                         <h3 className="font-bold text-white text-base truncate hover:text-[#E8231F] transition-colors mb-0.5">
                           {v.name}
                         </h3>
@@ -515,7 +517,7 @@ function EstoquePage() {
                   </CardContent>
 
                   <CardFooter className="p-4 pt-0 gap-2">
-                    <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="flex-1">
+                    <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="flex-1" preload="intent">
                       <Button
                         variant="outline"
                         className="w-full h-9 text-xs font-semibold border-white/10 hover:bg-white/5 text-gray-200 rounded-lg"

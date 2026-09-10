@@ -9,10 +9,10 @@ import { FinancingCTA } from "@/components/landing/FinancingCTA";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { Location } from "@/components/landing/Location";
 import { Footer } from "@/components/landing/Footer";
-import { getPublicVehiclesServer } from "@/lib/db/vehicles.functions";
+import { getPublicVehiclesSummaryServer } from "@/lib/db/vehicles.functions";
 
 export const Route = createFileRoute("/")({
-  loader: async () => ({ vehicles: await getPublicVehiclesServer() }),
+  loader: async () => ({ vehicles: await getPublicVehiclesSummaryServer() }),
   head: () => ({
     title: "C&M Veículos | Confiança que move você",
     meta: [
