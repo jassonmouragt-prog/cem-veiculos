@@ -54,7 +54,7 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <a
-            href="https://wa.me/558699148872?text=Olá!%20Gostaria%20de%20mais%20informações."
+            href="https://wa.me/5584999290088?text=Olá!%20Gostaria%20de%20mais%20informações."
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -35,7 +35,7 @@ export function FinancingCTA() {
             </div>
 
             <a
-              href="https://wa.me/558699148872?text=Olá!%20Gostaria%20de%20simular%20um%20financiamento%20com%20a%20C&M%20Veículos."
+              href="https://wa.me/5584999290088?text=Olá!%20Gostaria%20de%20simular%20um%20financiamento%20com%20a%20C&M%20Veículos."
               target="_blank"
               rel="noopener noreferrer"
               className="w-full"

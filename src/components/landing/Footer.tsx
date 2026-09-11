@@ -148,7 +148,7 @@ export function Footer() {
             <ul className="space-y-2 text-xs text-gray-400">
               <li>
                 <a
-                  href="https://wa.me/558699148872"
+                  href="https://wa.me/5584999290088"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
@@ -158,7 +158,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://wa.me/558699148872"
+                  href="https://wa.me/5584999290088"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"

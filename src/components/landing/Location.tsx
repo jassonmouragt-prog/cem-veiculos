@@ -34,7 +34,7 @@ export function Location() {
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-4 sm:pt-3">
             <a
-              href="https://wa.me/558699148872?text=Olá!%20Gostaria%20de%20agendar%20uma%20visita."
+              href="https://wa.me/5584999290088?text=Olá!%20Gostaria%20de%20agendar%20uma%20visita."
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -62,7 +62,7 @@ export function LeadModal({ isOpen, onClose, vehicle }: LeadModalProps) {
             message.trim() ? " Observação: " + message.trim() : ""
           }`,
         );
-        window.open(`https://wa.me/558699148872?text=${text}`, "_blank");
+        window.open(`https://wa.me/5584999290088?text=${text}`, "_blank");
       }
 
       setName("");
