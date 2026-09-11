@@ -117,9 +117,14 @@ function AdminVehiclesPage() {
 
   const handleConfirmDelete = async () => {
     if (!vehicleToDelete) return;
-    await deleteVehicle(vehicleToDelete.id);
-    toast.success("Veículo removido do sistema.");
-    setVehicleToDelete(null);
+    try {
+      await deleteVehicle(vehicleToDelete.id);
+      toast.success("Veículo removido do sistema.");
+      setVehicleToDelete(null);
+    } catch (error) {
+      console.error("Erro ao excluir veículo:", error);
+      toast.error("Não foi possível excluir o veículo. Tente novamente.");
+    }
   };
 
   const handleToggleFeatured = async (v: Vehicle) => {

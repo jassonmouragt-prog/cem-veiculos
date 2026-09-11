@@ -587,8 +587,24 @@ export async function updateVehicle(
 }
 
 export async function deleteVehicle(id: string): Promise<boolean> {
+  // sales referenciam o veículo com FK NOT NULL ON DELETE RESTRICT, o que
+  // bloqueava a exclusão (o veículo "voltava" após refresh). Desvinculamos a
+  // venda antes; se a coluna ainda for NOT NULL (migration pendente), removemos
+  // as vendas do veículo para não perder o histórico financeiro da exclusão.
+  const { error: detachErr } = await supabase
+    .from("sales")
+    .update({ vehicle_id: null } as never)
+    .eq("vehicle_id", id);
+  if (detachErr) {
+    const { error: delSalesErr } = await supabase.from("sales").delete().eq("vehicle_id", id);
+    if (delSalesErr) throw delSalesErr;
+  }
+
   const { error } = await supabase.from("vehicles").delete().eq("id", id);
   if (error) throw error;
+  cachedSales = cachedSales.map((s) =>
+    s.vehicleId === id ? { ...s, vehicleId: null as never } : s,
+  );
   cachedVehicles = cachedVehicles.filter((v) => v.id !== id);
   notifyListeners();
   return true;
