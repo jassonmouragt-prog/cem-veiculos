@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Phone, Clock } from "lucide-react";
+import { buildWhatsAppUrl } from "@/lib/db/store";
+import { useSiteSettings } from "@/lib/site/use-site-settings";
 
 export function Location() {
+  const { whatsappPrimary, address, city, hoursWeekdays, hoursSaturday } = useSiteSettings();
+  const fullAddress = `${address}, ${city}`;
+  const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(fullAddress)}`;
+
   return (
     <section id="localizacao" className="bg-[#0a0a0a] py-12 lg:py-16">
       <div className="container mx-auto grid items-center gap-8 px-4 lg:grid-cols-2 lg:gap-12">
@@ -14,7 +20,7 @@ export function Location() {
             VISITE NOSSO SHOWROOM
           </Badge>
           <h2 className="max-w-xl text-2xl font-bold text-white tracking-tight sm:text-3xl lg:text-4xl">
-            Av. das Fronteiras, 1417
+            {address}
           </h2>
           <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
             Venha tomar um café conosco, conhecer nosso estoque pessoalmente e receber um
@@ -27,14 +33,14 @@ export function Location() {
             </div>
             <div className="space-y-0.5">
               <p className="font-medium text-white">Horário de Funcionamento</p>
-              <p className="text-gray-400">Segunda a Sexta: 08h às 18h</p>
-              <p className="text-gray-400">Sábado: 08h às 13h</p>
+              <p className="text-gray-400">{hoursWeekdays}</p>
+              <p className="text-gray-400">{hoursSaturday}</p>
             </div>
           </div>
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-4 sm:pt-3">
             <a
-              href="https://wa.me/5584991548912?text=Olá!%20Gostaria%20de%20agendar%20uma%20visita."
+              href={buildWhatsAppUrl(whatsappPrimary, "Olá! Gostaria de agendar uma visita.")}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -42,11 +48,7 @@ export function Location() {
                 <Phone className="w-4 h-4" /> Fale no WhatsApp
               </Button>
             </a>
-            <a
-              href="https://maps.google.com/?q=Av.+das+Fronteiras,+1417"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href={mapsUrl} target="_blank" rel="noopener noreferrer">
               <Button
                 variant="outline"
                 className="w-full sm:w-auto h-10 sm:h-11 border-white/10 hover:bg-white/5 text-gray-200 font-semibold text-xs sm:text-sm gap-2 rounded-lg"
@@ -60,8 +62,8 @@ export function Location() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="rounded-2xl overflow-hidden aspect-square border border-white/5 shadow-md bg-[#121212]">
             <iframe
-              src="https://www.google.com/maps?q=Av.+das+Fronteiras,+1417,+Natal,+RN&output=embed"
-              title="Mapa C&M Veículos — Av. das Fronteiras, 1417, Natal/RN"
+              src={`${mapsUrl}&output=embed`}
+              title={`Mapa C&M Veículos — ${fullAddress}`}
               className="w-full h-full border-0"
               loading="lazy"
               allowFullScreen
@@ -74,11 +76,9 @@ export function Location() {
                 CM
               </div>
               <h3 className="font-bold text-white text-base">C&M Veículos</h3>
-              <p className="text-xs text-gray-400 leading-relaxed">
-                Av. das Fronteiras, 1417 — Natal/RN
-              </p>
+              <p className="text-xs text-gray-400 leading-relaxed">{fullAddress}</p>
               <a
-                href="https://maps.google.com/?q=Av.+das+Fronteiras,+1417"
+                href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block text-[#E8231F] hover:underline text-xs font-semibold pt-1"

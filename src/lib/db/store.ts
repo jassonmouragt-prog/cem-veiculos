@@ -19,12 +19,25 @@ import {
   PaymentStatus,
   CommissionStatus,
   SaleStatus,
+  SiteSettings,
 } from "./types";
 import { INITIAL_VEHICLES } from "./initial-data";
 
 const LEGACY_VEHICLES_KEY = "cm_veiculos_data_v1";
 const LEGACY_LEADS_KEY = "cm_leads_data_v1";
 const MIGRATION_FLAG_KEY = "cm_supabase_migrated_v1";
+
+export const DEFAULT_SITE_SETTINGS: SiteSettings = {
+  dealerName: "C&M Veículos Ltda.",
+  email: "contato@cmveiculos.com.br",
+  whatsappPrimary: "84991548912",
+  whatsappSecondary: "84999290088",
+  address: "Av. das Fronteiras, 1417",
+  city: "Natal/RN",
+  hoursWeekdays: "Seg - Sex: 08h às 18h",
+  hoursSaturday: "Sáb: 08h às 13h",
+  updatedAt: "",
+};
 
 // Helper to create URL friendly slug
 export function generateSlug(name: string, year?: number, id?: string): string {
@@ -48,6 +61,7 @@ let cachedSellers: Seller[] = [];
 let cachedSales: Sale[] = [];
 let cachedTransactions: FinancialTransaction[] = [];
 let cachedExpenses: VehicleExpense[] = [];
+let cachedSettings: SiteSettings | null = null;
 let loaded = false;
 let loadingPromise: Promise<void> | null = null;
 
@@ -270,6 +284,20 @@ function mapExpense(row: any): VehicleExpense {
     updatedAt: row.updated_at,
   };
 }
+
+function mapSiteSettings(row: any): SiteSettings {
+  return {
+    dealerName: row.dealer_name ?? DEFAULT_SITE_SETTINGS.dealerName,
+    email: row.email ?? DEFAULT_SITE_SETTINGS.email,
+    whatsappPrimary: row.whatsapp_primary ?? DEFAULT_SITE_SETTINGS.whatsappPrimary,
+    whatsappSecondary: row.whatsapp_secondary ?? DEFAULT_SITE_SETTINGS.whatsappSecondary,
+    address: row.address ?? DEFAULT_SITE_SETTINGS.address,
+    city: row.city ?? DEFAULT_SITE_SETTINGS.city,
+    hoursWeekdays: row.hours_weekdays ?? DEFAULT_SITE_SETTINGS.hoursWeekdays,
+    hoursSaturday: row.hours_saturday ?? DEFAULT_SITE_SETTINGS.hoursSaturday,
+    updatedAt: row.updated_at ?? "",
+  };
+}
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 // --- LOADING ---
@@ -279,7 +307,7 @@ export async function loadStore(force = false): Promise<void> {
   if (loadingPromise && !force) return loadingPromise;
 
   loadingPromise = (async () => {
-    const [vehiclesRes, leadsRes, sellersRes, salesRes, transactionsRes, expensesRes] =
+    const [vehiclesRes, leadsRes, sellersRes, salesRes, transactionsRes, expensesRes, settingsRes] =
       await Promise.all([
         supabase.from("vehicles").select("*").order("created_at", { ascending: false }),
         supabase.from("leads").select("*").order("created_at", { ascending: false }),
@@ -290,6 +318,7 @@ export async function loadStore(force = false): Promise<void> {
           .select("*")
           .order("transaction_date", { ascending: false }),
         supabase.from("vehicle_expenses").select("*").order("expense_date", { ascending: false }),
+        supabase.from("site_settings").select("*").limit(1).maybeSingle(),
       ]);
 
     if (vehiclesRes.error) {
@@ -318,6 +347,10 @@ export async function loadStore(force = false): Promise<void> {
       cachedExpenses = (expensesRes.data ?? []).map(mapExpense);
     }
 
+    if (!settingsRes.error && settingsRes.data) {
+      cachedSettings = mapSiteSettings(settingsRes.data);
+    }
+
     loaded = true;
     notifyListeners();
   })();
@@ -343,7 +376,8 @@ type RealtimeTableName =
   | "sellers"
   | "sales"
   | "financial_transactions"
-  | "vehicle_expenses";
+  | "vehicle_expenses"
+  | "site_settings";
 
 let realtimeStarted = false;
 let realtimeChannel: RealtimeChannel | null = null;
@@ -392,6 +426,9 @@ function applyRealtimeEvent(
       if (eventType === "DELETE") cachedExpenses = cachedExpenses.filter((e) => e.id !== id);
       else cachedExpenses = upsertById(cachedExpenses, mapExpense(row));
       break;
+    case "site_settings":
+      cachedSettings = mapSiteSettings(row);
+      break;
   }
 
   notifyListeners();
@@ -414,6 +451,7 @@ export function enableRealtime(): void {
     "sales",
     "financial_transactions",
     "vehicle_expenses",
+    "site_settings",
   ];
 
   realtimeChannel = supabase.channel("cem-veiculos-realtime");
@@ -587,9 +625,7 @@ export async function uploadVehicleImages(files: File[]): Promise<string[]> {
   const urls: string[] = [];
 
   for (const file of files) {
-    const extension = (file.name.split(".").pop() || "jpg")
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, "");
+    const extension = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
 
     if (!extension) continue;
 
@@ -770,6 +806,88 @@ export function formatDate(isoDate: string): string {
   } catch {
     return isoDate;
   }
+}
+
+// ============================================
+// SITE SETTINGS (DADOS DA CONCESSIONÁRIA)
+// ============================================
+
+/** Formata dígitos de telefone BR: "(84) 9 9154-8912" */
+export function formatPhoneDisplay(digits: string): string {
+  const d = digits.replace(/\D/g, "");
+  if (d.length === 11) {
+    return `(${d.slice(0, 2)}) ${d[2]} ${d.slice(3, 7)}-${d.slice(7)}`;
+  }
+  if (d.length === 10) {
+    return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  }
+  return digits;
+}
+
+/** Constroi link wa.me adicionando o DDI +55 quando o número não o tiver. */
+export function buildWhatsAppUrl(number: string, message?: string): string {
+  const digits = number.replace(/\D/g, "");
+  const full =
+    digits.length <= 11 && !digits.startsWith("55")
+      ? `55${digits}`
+      : digits.startsWith("55") && digits.length === 13
+        ? digits
+        : `55${digits.replace(/^55/, "")}`;
+  return message
+    ? `https://wa.me/${full}?text=${encodeURIComponent(message)}`
+    : `https://wa.me/${full}`;
+}
+
+export function getSiteSettings(): SiteSettings {
+  return cachedSettings ?? DEFAULT_SITE_SETTINGS;
+}
+
+let settingsLoading: Promise<void> | null = null;
+
+/** Carrega apenas as configurações do site (leve, usado pelo site público). */
+export function loadSiteSettings(force = false): Promise<void> {
+  if (cachedSettings && !force) return Promise.resolve();
+  if (settingsLoading) return settingsLoading;
+
+  settingsLoading = (async () => {
+    const { data, error } = await supabase.from("site_settings").select("*").limit(1).maybeSingle();
+    if (!error && data) cachedSettings = mapSiteSettings(data);
+    notifyListeners();
+  })();
+
+  return settingsLoading.finally(() => {
+    settingsLoading = null;
+  });
+}
+
+export async function updateSiteSettings(
+  data: Partial<Omit<SiteSettings, "updatedAt">>,
+): Promise<SiteSettings> {
+  const row: Record<string, unknown> = {};
+  if (data.dealerName !== undefined) row.dealer_name = data.dealerName;
+  if (data.email !== undefined) row.email = data.email;
+  if (data.whatsappPrimary !== undefined)
+    row.whatsapp_primary = data.whatsappPrimary.replace(/\D/g, "");
+  if (data.whatsappSecondary !== undefined)
+    row.whatsapp_secondary = data.whatsappSecondary.replace(/\D/g, "");
+  if (data.address !== undefined) row.address = data.address;
+  if (data.city !== undefined) row.city = data.city;
+  if (data.hoursWeekdays !== undefined) row.hours_weekdays = data.hoursWeekdays;
+  if (data.hoursSaturday !== undefined) row.hours_saturday = data.hoursSaturday;
+
+  const { data: result, error } = await supabase
+    .from("site_settings")
+    .update(row as never)
+    .eq("id", "default")
+    .select("*")
+    .maybeSingle();
+
+  if (error || !result) throw error ?? new Error("Falha ao salvar configurações");
+
+  const settings = mapSiteSettings(result);
+  cachedSettings = settings;
+  notifyListeners();
+  return settings;
 }
 
 // ============================================

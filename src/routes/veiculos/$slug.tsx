@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { formatCurrency, formatMileage } from "@/lib/db/store";
+import { formatCurrency, formatMileage, buildWhatsAppUrl } from "@/lib/db/store";
 import { getVehicleBySlugServer } from "@/lib/db/vehicles.functions";
+import { useSiteSettings } from "@/lib/site/use-site-settings";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { LeadModal } from "@/components/landing/LeadModal";
@@ -35,6 +36,7 @@ export const Route = createFileRoute("/veiculos/$slug")({
 
 function VehicleDetailPage() {
   const { vehicle } = Route.useLoaderData();
+  const { whatsappPrimary } = useSiteSettings();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
 
@@ -345,7 +347,7 @@ function VehicleDetailPage() {
                 </Button>
 
                 <a
-                  href={`https://wa.me/5584999290088?text=${whatsappMessage}`}
+                  href={buildWhatsAppUrl(whatsappPrimary, whatsappMessage)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full"

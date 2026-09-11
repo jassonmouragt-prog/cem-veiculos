@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, Youtube } from "lucide-react";
+import { buildWhatsAppUrl, formatPhoneDisplay } from "@/lib/db/store";
+import { useSiteSettings } from "@/lib/site/use-site-settings";
 
 export function Footer() {
+  const { whatsappPrimary, whatsappSecondary, email, address } = useSiteSettings();
   return (
     <footer className="border-t border-white/5 bg-black pb-8 pt-12 lg:pt-16">
       <div className="container mx-auto px-4">
@@ -148,33 +151,30 @@ export function Footer() {
             <ul className="space-y-2 text-xs text-gray-400">
               <li>
                 <a
-                  href="https://wa.me/5584991548912"
+                  href={buildWhatsAppUrl(whatsappPrimary)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
-                  (84) 9 9154-8912
+                  {formatPhoneDisplay(whatsappPrimary)}
                 </a>
               </li>
               <li>
                 <a
-                  href="https://wa.me/5584999290088"
+                  href={buildWhatsAppUrl(whatsappPrimary)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
-                  (84) 9 9929-0088
+                  {formatPhoneDisplay(whatsappSecondary)}
                 </a>
               </li>
               <li>
-                <a
-                  href="mailto:contato@cmveiculos.com.br"
-                  className="hover:text-white transition-colors"
-                >
-                  contato@cmveiculos.com.br
+                <a href={`mailto:${email}`} className="hover:text-white transition-colors">
+                  {email}
                 </a>
               </li>
-              <li className="text-gray-500">Av. das Fronteiras, 1417</li>
+              <li className="text-gray-500">{address}</li>
             </ul>
           </div>
         </div>

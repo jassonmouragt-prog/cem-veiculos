@@ -1,3 +1,15 @@
+export interface SiteSettings {
+  dealerName: string;
+  email: string;
+  whatsappPrimary: string;
+  whatsappSecondary: string;
+  address: string;
+  city: string;
+  hoursWeekdays: string;
+  hoursSaturday: string;
+  updatedAt: string;
+}
+
 export type VehicleCategory =
   "suv" | "sedan" | "hatch" | "picape" | "moto" | "utilitario" | "coupe" | "perua";
 

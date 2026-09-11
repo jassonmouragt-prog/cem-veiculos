@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Vehicle } from "@/lib/db/types";
-import { createLead, formatCurrency } from "@/lib/db/store";
+import { createLead, formatCurrency, buildWhatsAppUrl } from "@/lib/db/store";
+import { useSiteSettings } from "@/lib/site/use-site-settings";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,7 @@ interface LeadModalProps {
 }
 
 export function LeadModal({ isOpen, onClose, vehicle }: LeadModalProps) {
+  const { whatsappPrimary } = useSiteSettings();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -57,12 +59,10 @@ export function LeadModal({ isOpen, onClose, vehicle }: LeadModalProps) {
       toast.success("Mensagem enviada com sucesso! Nossos consultores entrarão em contato.");
 
       if (openWhatsApp) {
-        const text = encodeURIComponent(
-          `Olá! Meu nome é ${name.trim()}. Tenho interesse no veículo ${vehicle?.name || "do estoque da C&M Veículos"}.${
-            message.trim() ? " Observação: " + message.trim() : ""
-          }`,
-        );
-        window.open(`https://wa.me/5584999290088?text=${text}`, "_blank");
+        const text = `Olá! Meu nome é ${name.trim()}. Tenho interesse no veículo ${
+          vehicle?.name || "do estoque da C&M Veículos"
+        }.${message.trim() ? " Observação: " + message.trim() : ""}`;
+        window.open(buildWhatsAppUrl(whatsappPrimary, text), "_blank");
       }
 
       setName("");

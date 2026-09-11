@@ -1,7 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getCurrentUser, updateAdminPassword } from "@/lib/auth/auth-service";
-import { resetAllSales } from "@/lib/db/store";
+import {
+  resetAllSales,
+  updateSiteSettings,
+  formatPhoneDisplay,
+  buildWhatsAppUrl,
+} from "@/lib/db/store";
+import type { SiteSettings } from "@/lib/db/types";
+import { useSiteSettings } from "@/lib/site/use-site-settings";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useAdminLayout } from "@/components/admin/AdminLayoutContext";
 import { Button } from "@/components/ui/button";
@@ -34,6 +41,173 @@ import {
 export const Route = createFileRoute("/admin/configuracoes")({
   component: AdminSettingsPage,
 });
+
+function StoreInformationCard() {
+  const settings = useSiteSettings();
+  const [form, setForm] = useState<Omit<SiteSettings, "updatedAt">>({
+    dealerName: settings.dealerName,
+    email: settings.email,
+    whatsappPrimary: settings.whatsappPrimary,
+    whatsappSecondary: settings.whatsappSecondary,
+    address: settings.address,
+    city: settings.city,
+    hoursWeekdays: settings.hoursWeekdays,
+    hoursSaturday: settings.hoursSaturday,
+  });
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    setForm({
+      dealerName: settings.dealerName,
+      email: settings.email,
+      whatsappPrimary: settings.whatsappPrimary,
+      whatsappSecondary: settings.whatsappSecondary,
+      address: settings.address,
+      city: settings.city,
+      hoursWeekdays: settings.hoursWeekdays,
+      hoursSaturday: settings.hoursSaturday,
+    });
+  }, [settings]);
+
+  const handleChange = (key: keyof Omit<SiteSettings, "updatedAt">, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    try {
+      await updateSiteSettings(form);
+      toast.success("Dados da concessionária atualizados com sucesso!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Não foi possível salvar. Verifique sua permissão e tente novamente.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <Card className="bg-[#121212] border-white/5 rounded-2xl shadow-md">
+      <CardHeader className="pb-4 border-b border-white/5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E8231F]/15 text-[#E8231F]">
+            <Store className="w-5 h-5" />
+          </div>
+          <div>
+            <CardTitle className="text-base font-bold text-white">
+              Dados da Concessionária
+            </CardTitle>
+            <CardDescription className="text-xs text-gray-400">
+              Informações públicas exibidas no site (WhatsApp, endereço, horário e e-mail)
+            </CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <form onSubmit={handleSave}>
+        <CardContent className="pt-5 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5 col-span-full">
+              <Label className="text-xs text-gray-300">Razão Social / Nome Exibido</Label>
+              <Input
+                value={form.dealerName}
+                onChange={(e) => handleChange("dealerName", e.target.value)}
+                placeholder="C&M Veículos Ltda."
+                className="bg-black/50 border-white/10 text-white h-11 text-xs sm:text-sm rounded-lg"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-gray-300">WhatsApp Principal</Label>
+              <Input
+                value={form.whatsappPrimary}
+                onChange={(e) => handleChange("whatsappPrimary", e.target.value)}
+                inputMode="tel"
+                placeholder="84991548912"
+                className="bg-black/50 border-white/10 text-white h-11 text-xs sm:text-sm rounded-lg"
+              />
+              <p className="text-[11px] text-gray-500 truncate">
+                Link: {buildWhatsAppUrl(form.whatsappPrimary)} — exibido como{" "}
+                <span className="text-gray-400">{formatPhoneDisplay(form.whatsappPrimary)}</span>
+              </p>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-gray-300">WhatsApp Secundário</Label>
+              <Input
+                value={form.whatsappSecondary}
+                onChange={(e) => handleChange("whatsappSecondary", e.target.value)}
+                inputMode="tel"
+                placeholder="84999290088"
+                className="bg-black/50 border-white/10 text-white h-11 text-xs sm:text-sm rounded-lg"
+              />
+              <p className="text-[11px] text-gray-500 truncate">
+                Exibido como{" "}
+                <span className="text-gray-400">{formatPhoneDisplay(form.whatsappSecondary)}</span>{" "}
+                (todos os links usam o WhatsApp Principal)
+              </p>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-gray-300">E-mail de Contato</Label>
+              <Input
+                type="email"
+                value={form.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                placeholder="contato@cmveiculos.com.br"
+                className="bg-black/50 border-white/10 text-white h-11 text-xs sm:text-sm rounded-lg"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-gray-300">Cidade / Estado</Label>
+              <Input
+                value={form.city}
+                onChange={(e) => handleChange("city", e.target.value)}
+                placeholder="Natal/RN"
+                className="bg-black/50 border-white/10 text-white h-11 text-xs sm:text-sm rounded-lg"
+              />
+            </div>
+            <div className="space-y-1.5 col-span-full">
+              <Label className="text-xs text-gray-300">Endereço</Label>
+              <Input
+                value={form.address}
+                onChange={(e) => handleChange("address", e.target.value)}
+                placeholder="Av. das Fronteiras, 1417"
+                className="bg-black/50 border-white/10 text-white h-11 text-xs sm:text-sm rounded-lg"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-gray-300">Horário — Dias Úteis</Label>
+              <Input
+                value={form.hoursWeekdays}
+                onChange={(e) => handleChange("hoursWeekdays", e.target.value)}
+                placeholder="Seg - Sex: 08h às 18h"
+                className="bg-black/50 border-white/10 text-white h-11 text-xs sm:text-sm rounded-lg"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-gray-300">Horário — Sábado</Label>
+              <Input
+                value={form.hoursSaturday}
+                onChange={(e) => handleChange("hoursSaturday", e.target.value)}
+                placeholder="Sáb: 08h às 13h"
+                className="bg-black/50 border-white/10 text-white h-11 text-xs sm:text-sm rounded-lg"
+              />
+            </div>
+          </div>
+
+          <div className="pt-1 flex justify-end">
+            <Button
+              type="submit"
+              disabled={isSaving}
+              className="bg-brand-gradient hover:opacity-95 text-white font-semibold text-xs sm:text-sm h-10 gap-2 px-5 rounded-lg shadow-sm shadow-[#E8231F]/20"
+            >
+              <Store className="w-4 h-4" />
+              <span>{isSaving ? "Salvando..." : "Salvar Dados"}</span>
+            </Button>
+          </div>
+        </CardContent>
+      </form>
+    </Card>
+  );
+}
 
 function AdminSettingsPage() {
   const { openMobileMenu } = useAdminLayout();
@@ -74,7 +248,7 @@ function AdminSettingsPage() {
     <div className="flex flex-col min-h-screen">
       <AdminHeader
         title="Configurações e Segurança"
-        description="Gerencie os dados da conta administrativa e credenciais de acesso"
+        description="Gerencie os dados públicos do site e as credenciais de acesso"
         onOpenMobileMenu={openMobileMenu}
       />
 
@@ -201,43 +375,7 @@ function AdminSettingsPage() {
         </Card>
 
         {/* Store Information */}
-        <Card className="bg-[#121212] border-white/5 rounded-2xl shadow-md">
-          <CardHeader className="pb-4 border-b border-white/5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E8231F]/15 text-[#E8231F]">
-                <Store className="w-5 h-5" />
-              </div>
-              <div>
-                <CardTitle className="text-base font-bold text-white">
-                  Dados da Concessionária
-                </CardTitle>
-                <CardDescription className="text-xs text-gray-400">
-                  Informações públicas exibidas no site
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-5 space-y-3 text-xs text-gray-300 leading-relaxed">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <p className="font-semibold text-white">Razão Social:</p>
-                <p className="text-gray-400">C&M Veículos Ltda.</p>
-              </div>
-              <div>
-                <p className="font-semibold text-white">WhatsApp Principal:</p>
-                <p className="text-gray-400">(84) 9 9154-8912</p>
-              </div>
-              <div>
-                <p className="font-semibold text-white">Endereço:</p>
-                <p className="text-gray-400">Av. das Fronteiras, 1417 — Natal/RN</p>
-              </div>
-              <div>
-                <p className="font-semibold text-white">Horário de Atendimento:</p>
-                <p className="text-gray-400">Seg - Sex: 08h às 18h | Sáb: 08h às 13h</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <StoreInformationCard />
 
         {/* Danger Zone - Reset Data */}
         <Card className="bg-[#121212] border-red-500/20 rounded-2xl shadow-md">

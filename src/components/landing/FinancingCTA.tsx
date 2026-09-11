@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Calculator } from "lucide-react";
+import { buildWhatsAppUrl } from "@/lib/db/store";
+import { useSiteSettings } from "@/lib/site/use-site-settings";
 
 export function FinancingCTA() {
+  const { whatsappPrimary } = useSiteSettings();
   return (
     <section id="financiamento" className="bg-black py-12 lg:py-16">
       <div className="container mx-auto px-4">
@@ -35,7 +38,10 @@ export function FinancingCTA() {
             </div>
 
             <a
-              href="https://wa.me/5584999290088?text=Olá!%20Gostaria%20de%20simular%20um%20financiamento%20com%20a%20C&M%20Veículos."
+              href={buildWhatsAppUrl(
+                whatsappPrimary,
+                "Olá! Gostaria de simular um financiamento com a C&M Veículos.",
+              )}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full"

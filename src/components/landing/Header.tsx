@@ -1,10 +1,13 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
+import { buildWhatsAppUrl } from "@/lib/db/store";
+import { useSiteSettings } from "@/lib/site/use-site-settings";
 
 const LOGO_URL = "/images/logo-cem.webp";
 
 export function Header() {
+  const { whatsappPrimary } = useSiteSettings();
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/85 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4 lg:h-18">
@@ -54,7 +57,7 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <a
-            href="https://wa.me/5584999290088?text=Olá!%20Gostaria%20de%20mais%20informações."
+            href={buildWhatsAppUrl(whatsappPrimary, "Olá! Gostaria de mais informações.")}
             target="_blank"
             rel="noopener noreferrer"
           >
