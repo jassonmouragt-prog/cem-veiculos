@@ -225,7 +225,7 @@ function AdminSettingsPage() {
               </div>
               <div>
                 <p className="font-semibold text-white">WhatsApp Principal:</p>
-                <p className="text-gray-400">(86) 9 9914-8872</p>
+                <p className="text-gray-400">(84) 9 9154-8912</p>
               </div>
               <div>
                 <p className="font-semibold text-white">Endereço:</p>

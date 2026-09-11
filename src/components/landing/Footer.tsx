@@ -148,12 +148,12 @@ export function Footer() {
             <ul className="space-y-2 text-xs text-gray-400">
               <li>
                 <a
-                  href="https://wa.me/5584999290088"
+                  href="https://wa.me/5584991548912"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
-                  (86) 9 9914-8872
+                  (84) 9 9154-8912
                 </a>
               </li>
               <li>
@@ -163,7 +163,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
-                  (86) 9 9529-0088
+                  (84) 9 9929-0088
                 </a>
               </li>
               <li>

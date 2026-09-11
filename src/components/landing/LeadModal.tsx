@@ -122,7 +122,7 @@ export function LeadModal({ isOpen, onClose, vehicle }: LeadModalProps) {
               <div className="relative">
                 <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <Input
-                  placeholder="(86) 99999-9999"
+                  placeholder="(84) 99999-9999"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
