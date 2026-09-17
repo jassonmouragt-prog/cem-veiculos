@@ -31,11 +31,21 @@ export const getVehicleBySlugServer = createServerFn({ method: "GET" })
   .handler(async ({ data: slug }): Promise<Vehicle | null> => {
     if (!slug) return null;
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from("vehicles")
       .select("*")
       .eq("slug", slug)
       .maybeSingle();
+
+    if (error) throw new Error(error.message);
+    if (data) return mapVehicle(data);
+
+    // Fallback: search by name (slug mismatch may occur due to manual DB edits or migrations)
+    ;({ data, error } = await supabase
+      .from("vehicles")
+      .select("*")
+      .ilike("name", `%${slug}%`)
+      .maybeSingle());
 
     if (error) throw new Error(error.message);
     return data ? mapVehicle(data) : null;

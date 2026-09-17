@@ -1,0 +1,3 @@
+import { createClient } from '@supabase/supabase-js';
+const supa = createClient('https://lhbjkdtwlmqucqoqjdyb.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxoYmprZHR3bG1xdWNxb3FqZHliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MjYzOTcsImV4cCI6MjEwMzIwMjM5N30.Wh-XsFql3m1aAOek053MTEJAP7J4WT9zesCkMVPEcPw');
+supa.from('vehicles').select('id, name, slug').then(r => { console.log(JSON.stringify(r.data, null, 2)); }).catch(e => console.error(e));
