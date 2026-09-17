@@ -50,10 +50,10 @@ function VehicleDetailPage() {
           <p className="text-sm text-gray-400 max-w-md mb-6">
             O veículo solicitado pode ter sido vendido ou o link está incorreto.
           </p>
-          <Link to="/">
+          <Link to="/estoque">
             <Button className="bg-brand-gradient hover:opacity-95 text-white gap-2">
               <ArrowLeft className="w-4 h-4" />
-              Voltar ao Início
+              Voltar ao Estoque
             </Button>
           </Link>
         </div>
