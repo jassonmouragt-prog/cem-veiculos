@@ -40,13 +40,35 @@ export const getVehicleBySlugServer = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     if (data) return mapVehicle(data);
 
-    // Fallback: search by name (slug mismatch may occur due to manual DB edits or migrations)
-    ;({ data, error } = await supabase
-      .from("vehicles")
-      .select("*")
-      .ilike("name", `%${slug}%`)
-      .maybeSingle());
+    // Fallback: try searching by base name extracted from slug
+    // Slug format: "basename-year-random", e.g., "chevrolet-celta-2005-lvhj"
+    // Extract the base term(s) and search in vehicle name
+    const slugLower = slug.toLowerCase();
+    const baseTerms = slugLower.split("-").slice(0, -2); // remove year and random suffix
 
-    if (error) throw new Error(error.message);
-    return data ? mapVehicle(data) : null;
+    let found = null;
+    for (const term of baseTerms) {
+      if (term.length > 2) {
+        ;({ data, error } = await supabase
+          .from("vehicles")
+          .select("*")
+          .ilike("name", `%${term}%`)
+          .maybeSingle());
+        if (error) throw new Error(error.message);
+        if (data) { found = data; break; }
+      }
+    }
+
+    if (!found) {
+      // Last resort: search entire slug as substring in name
+      ;({ data, error } = await supabase
+        .from("vehicles")
+        .select("*")
+        .ilike("name", `%${slug}%`)
+        .maybeSingle());
+      if (error) throw new Error(error.message);
+      found = data;
+    }
+
+    return found ? mapVehicle(found) : null;
   });
