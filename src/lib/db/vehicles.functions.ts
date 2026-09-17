@@ -31,44 +31,12 @@ export const getVehicleBySlugServer = createServerFn({ method: "GET" })
   .handler(async ({ data: slug }): Promise<Vehicle | null> => {
     if (!slug) return null;
 
-    let { data, error } = await supabase
+    const { data, error } = await supabase
       .from("vehicles")
       .select("*")
       .eq("slug", slug)
       .maybeSingle();
 
     if (error) throw new Error(error.message);
-    if (data) return mapVehicle(data);
-
-    // Fallback: try searching by base name extracted from slug
-    // Slug format: "basename-year-random", e.g., "chevrolet-celta-2005-lvhj"
-    // Extract the base term(s) and search in vehicle name
-    const slugLower = slug.toLowerCase();
-    const baseTerms = slugLower.split("-").slice(0, -2); // remove year and random suffix
-
-    let found = null;
-    for (const term of baseTerms) {
-      if (term.length > 2) {
-        ;({ data, error } = await supabase
-          .from("vehicles")
-          .select("*")
-          .ilike("name", `%${term}%`)
-          .maybeSingle());
-        if (error) throw new Error(error.message);
-        if (data) { found = data; break; }
-      }
-    }
-
-    if (!found) {
-      // Last resort: search entire slug as substring in name
-      ;({ data, error } = await supabase
-        .from("vehicles")
-        .select("*")
-        .ilike("name", `%${slug}%`)
-        .maybeSingle());
-      if (error) throw new Error(error.message);
-      found = data;
-    }
-
-    return found ? mapVehicle(found) : null;
+    return data ? mapVehicle(data) : null;
   });

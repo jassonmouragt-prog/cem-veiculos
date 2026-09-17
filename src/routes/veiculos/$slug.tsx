@@ -30,7 +30,7 @@ import {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/veiculos/$slug")({
-  loader: async ({ params }) => ({ vehicle: await getVehicleBySlugServer(params.slug) }),
+  loader: async ({ params }) => ({ vehicle: await getVehicleBySlugServer({ data: params.slug }) }),
   component: VehicleDetailPage,
 });
 
