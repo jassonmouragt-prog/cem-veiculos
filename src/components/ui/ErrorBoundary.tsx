@@ -12,13 +12,13 @@ export class ErrorBoundary extends Component<
   { children: ReactNode; fallback?: ReactNode },
   ErrorBoundaryState
 > {
-  state: ErrorBoundaryState = { hasError: false, error: null };
+  override state: ErrorBoundaryState = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("ErrorBoundary caught:", error, errorInfo);
   }
 
@@ -26,7 +26,7 @@ export class ErrorBoundary extends Component<
     this.setState({ hasError: false, error: null });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;
@@ -53,7 +53,7 @@ export class ErrorBoundary extends Component<
                 </Button>
               </Link>
             </div>
-            {process.env.NODE_ENV === "development" && this.state.error && (
+            {process.env["NODE_ENV"] === "development" && this.state.error && (
               <details className="mt-6 text-left text-xs text-gray-500 bg-[#121212] p-3 rounded-lg">
                 <summary className="cursor-pointer mb-2">Detalhes do erro (dev)</summary>
                 <pre className="whitespace-pre-wrap overflow-auto max-h-60">

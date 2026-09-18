@@ -20,6 +20,12 @@ import {
   CommissionStatus,
   SaleStatus,
   SiteSettings,
+  ChartDataPoint,
+  SalesByMonthData,
+  SalesBySellerData,
+  ExpensesByCategoryData,
+  VehicleProfitabilityData,
+  PayableReceivableData,
 } from "./types";
 import { INITIAL_VEHICLES } from "./initial-data";
 
@@ -397,7 +403,7 @@ function applyRealtimeEvent(
   eventType: string,
   row: Record<string, any>,
 ): void {
-  const id = String(row.id ?? "");
+  const id = String(row["id"] ?? "");
   if (!id) return;
 
   switch (table) {
@@ -880,16 +886,16 @@ export async function updateSiteSettings(
   data: Partial<Omit<SiteSettings, "updatedAt">>,
 ): Promise<SiteSettings> {
   const row: Record<string, unknown> = {};
-  if (data.dealerName !== undefined) row.dealer_name = data.dealerName;
-  if (data.email !== undefined) row.email = data.email;
+  if (data.dealerName !== undefined) row["dealer_name"] = data.dealerName;
+  if (data.email !== undefined) row["email"] = data.email;
   if (data.whatsappPrimary !== undefined)
-    row.whatsapp_primary = data.whatsappPrimary.replace(/\D/g, "");
+    row["whatsapp_primary"] = data.whatsappPrimary.replace(/\D/g, "");
   if (data.whatsappSecondary !== undefined)
-    row.whatsapp_secondary = data.whatsappSecondary.replace(/\D/g, "");
-  if (data.address !== undefined) row.address = data.address;
-  if (data.city !== undefined) row.city = data.city;
-  if (data.hoursWeekdays !== undefined) row.hours_weekdays = data.hoursWeekdays;
-  if (data.hoursSaturday !== undefined) row.hours_saturday = data.hoursSaturday;
+    row["whatsapp_secondary"] = data.whatsappSecondary.replace(/\D/g, "");
+  if (data.address !== undefined) row["address"] = data.address;
+  if (data.city !== undefined) row["city"] = data.city;
+  if (data.hoursWeekdays !== undefined) row["hours_weekdays"] = data.hoursWeekdays;
+  if (data.hoursSaturday !== undefined) row["hours_saturday"] = data.hoursSaturday;
 
   const { data: result, error } = await supabase
     .from("site_settings")
@@ -961,13 +967,13 @@ export async function updateSeller(
   const { supabase } = await import("@/integrations/supabase/client");
 
   const updateData: Record<string, unknown> = {};
-  if (data.name !== undefined) updateData.name = data.name;
-  if (data.email !== undefined) updateData.email = data.email;
-  if (data.phone !== undefined) updateData.phone = data.phone;
-  if (data.commissionRate !== undefined) updateData.commission_rate = data.commissionRate;
-  if (data.isActive !== undefined) updateData.is_active = data.isActive;
+  if (data.name !== undefined) updateData["name"] = data.name;
+  if (data.email !== undefined) updateData["email"] = data.email;
+  if (data.phone !== undefined) updateData["phone"] = data.phone;
+  if (data.commissionRate !== undefined) updateData["commission_rate"] = data.commissionRate;
+  if (data.isActive !== undefined) updateData["is_active"] = data.isActive;
   if (data.canReceiveCommission !== undefined)
-    updateData.can_receive_commission = data.canReceiveCommission;
+    updateData["can_receive_commission"] = data.canReceiveCommission;
 
   const { data: row, error } = await supabase
     .from("sellers")
@@ -1021,8 +1027,8 @@ export async function createSale(data: {
   paymentMethod: PaymentMethod;
   downPayment: number;
   financedAmount: number;
-  notes?: string;
-  createdBy?: string;
+  notes?: string | undefined;
+  createdBy?: string | undefined;
 }): Promise<Sale> {
   const discountAmount = data.announcedPrice - data.finalPrice;
   const discountPercent =
@@ -1070,19 +1076,19 @@ export async function updateSale(
   data: Partial<Omit<Sale, "id" | "createdAt">>,
 ): Promise<Sale | null> {
   const updateData: Record<string, unknown> = {};
-  if (data.sellerId !== undefined) updateData.seller_id = data.sellerId;
-  if (data.announcedPrice !== undefined) updateData.announced_price = data.announcedPrice;
-  if (data.finalPrice !== undefined) updateData.final_price = data.finalPrice;
-  if (data.hadNegotiation !== undefined) updateData.had_negotiation = data.hadNegotiation;
-  if (data.acquisitionCost !== undefined) updateData.acquisition_cost = data.acquisitionCost;
-  if (data.totalExpenses !== undefined) updateData.total_expenses = data.totalExpenses;
-  if (data.commissionRate !== undefined) updateData.commission_rate = data.commissionRate;
-  if (data.paymentMethod !== undefined) updateData.payment_method = data.paymentMethod;
-  if (data.downPayment !== undefined) updateData.down_payment = data.downPayment;
-  if (data.financedAmount !== undefined) updateData.financed_amount = data.financedAmount;
-  if (data.notes !== undefined) updateData.notes = data.notes;
-  if (data.status !== undefined) updateData.status = data.status;
-  if (data.updatedBy !== undefined) updateData.updated_by = data.updatedBy;
+  if (data.sellerId !== undefined) updateData["seller_id"] = data.sellerId;
+  if (data.announcedPrice !== undefined) updateData["announced_price"] = data.announcedPrice;
+  if (data.finalPrice !== undefined) updateData["final_price"] = data.finalPrice;
+  if (data.hadNegotiation !== undefined) updateData["had_negotiation"] = data.hadNegotiation;
+  if (data.acquisitionCost !== undefined) updateData["acquisition_cost"] = data.acquisitionCost;
+  if (data.totalExpenses !== undefined) updateData["total_expenses"] = data.totalExpenses;
+  if (data.commissionRate !== undefined) updateData["commission_rate"] = data.commissionRate;
+  if (data.paymentMethod !== undefined) updateData["payment_method"] = data.paymentMethod;
+  if (data.downPayment !== undefined) updateData["down_payment"] = data.downPayment;
+  if (data.financedAmount !== undefined) updateData["financed_amount"] = data.financedAmount;
+  if (data.notes !== undefined) updateData["notes"] = data.notes;
+  if (data.status !== undefined) updateData["status"] = data.status;
+  if (data.updatedBy !== undefined) updateData["updated_by"] = data.updatedBy;
 
   // Recalculate derived fields if price/expenses changed
   const existing = getSaleById(id);
@@ -1094,12 +1100,12 @@ export async function updateSale(
     const commissionRate = data.commissionRate ?? existing.commissionRate;
 
     if (data.finalPrice !== undefined || data.announcedPrice !== undefined) {
-      updateData.discount_amount = announcedPrice - finalPrice;
-      updateData.discount_percent =
+      updateData["discount_amount"] = announcedPrice - finalPrice;
+      updateData["discount_percent"] =
         announcedPrice > 0 ? ((announcedPrice - finalPrice) / announcedPrice) * 100 : 0;
     }
     if (data.finalPrice !== undefined || data.commissionRate !== undefined) {
-      updateData.commission_value = (finalPrice * commissionRate) / 100;
+      updateData["commission_value"] = (finalPrice * commissionRate) / 100;
     }
     if (
       data.finalPrice !== undefined ||
@@ -1109,8 +1115,8 @@ export async function updateSale(
     ) {
       const commissionValue = (finalPrice * commissionRate) / 100;
       const grossMargin = finalPrice - acquisitionCost - totalExpenses;
-      updateData.gross_margin = grossMargin;
-      updateData.net_margin = grossMargin - commissionValue;
+      updateData["gross_margin"] = grossMargin;
+      updateData["net_margin"] = grossMargin - commissionValue;
     }
   }
 
@@ -1329,17 +1335,17 @@ export async function createFinancialTransaction(data: {
   description: string;
   amount: number;
   transactionDate: string;
-  dueDate?: string;
-  paidDate?: string;
+  dueDate?: string | undefined;
+  paidDate?: string | undefined;
   paymentMethod?: PaymentMethod;
   status?: PaymentStatus;
-  vehicleId?: string;
-  saleId?: string;
-  sellerId?: string;
-  supplier?: string;
-  client?: string;
-  notes?: string;
-  createdBy?: string;
+  vehicleId?: string | undefined;
+  saleId?: string | undefined;
+  sellerId?: string | undefined;
+  supplier?: string | undefined;
+  client?: string | undefined;
+  notes?: string | undefined;
+  createdBy?: string | undefined;
 }): Promise<FinancialTransaction> {
   const { data: row, error } = await supabase
     .from("financial_transactions")
@@ -1376,22 +1382,22 @@ export async function updateFinancialTransaction(
   data: Partial<FinancialTransaction>,
 ): Promise<FinancialTransaction | null> {
   const updateData: Record<string, unknown> = {};
-  if (data.type !== undefined) updateData.type = data.type;
-  if (data.category !== undefined) updateData.category = data.category;
-  if (data.description !== undefined) updateData.description = data.description;
-  if (data.amount !== undefined) updateData.amount = data.amount;
-  if (data.transactionDate !== undefined) updateData.transaction_date = data.transactionDate;
-  if (data.dueDate !== undefined) updateData.due_date = data.dueDate;
-  if (data.paidDate !== undefined) updateData.paid_date = data.paidDate;
-  if (data.paymentMethod !== undefined) updateData.payment_method = data.paymentMethod;
-  if (data.status !== undefined) updateData.status = data.status;
-  if (data.vehicleId !== undefined) updateData.vehicle_id = data.vehicleId;
-  if (data.saleId !== undefined) updateData.sale_id = data.saleId;
-  if (data.sellerId !== undefined) updateData.seller_id = data.sellerId;
-  if (data.supplier !== undefined) updateData.supplier = data.supplier;
-  if (data.client !== undefined) updateData.client = data.client;
-  if (data.notes !== undefined) updateData.notes = data.notes;
-  if (data.updatedBy !== undefined) updateData.updated_by = data.updatedBy;
+  if (data.type !== undefined) updateData["type"] = data.type;
+  if (data.category !== undefined) updateData["category"] = data.category;
+  if (data.description !== undefined) updateData["description"] = data.description;
+  if (data.amount !== undefined) updateData["amount"] = data.amount;
+  if (data.transactionDate !== undefined) updateData["transaction_date"] = data.transactionDate;
+  if (data.dueDate !== undefined) updateData["due_date"] = data.dueDate;
+  if (data.paidDate !== undefined) updateData["paid_date"] = data.paidDate;
+  if (data.paymentMethod !== undefined) updateData["payment_method"] = data.paymentMethod;
+  if (data.status !== undefined) updateData["status"] = data.status;
+  if (data.vehicleId !== undefined) updateData["vehicle_id"] = data.vehicleId;
+  if (data.saleId !== undefined) updateData["sale_id"] = data.saleId;
+  if (data.sellerId !== undefined) updateData["seller_id"] = data.sellerId;
+  if (data.supplier !== undefined) updateData["supplier"] = data.supplier;
+  if (data.client !== undefined) updateData["client"] = data.client;
+  if (data.notes !== undefined) updateData["notes"] = data.notes;
+  if (data.updatedBy !== undefined) updateData["updated_by"] = data.updatedBy;
 
   const { data: row, error } = await supabase
     .from("financial_transactions")
@@ -1415,7 +1421,7 @@ export async function markTransactionAsPaid(
   return updateFinancialTransaction(id, {
     status: "pago",
     paidDate: paidDate ?? new Date().toISOString(),
-    updatedBy,
+    ...(updatedBy ? { updatedBy } : {}),
   });
 }
 
@@ -1446,11 +1452,11 @@ export async function createVehicleExpense(data: {
   amount: number;
   expenseDate: string;
   paymentStatus?: PaymentStatus;
-  paidDate?: string;
+  paidDate?: string | undefined;
   paymentMethod?: PaymentMethod;
-  supplier?: string;
-  notes?: string;
-  createdBy?: string;
+  supplier?: string | undefined;
+  notes?: string | undefined;
+  createdBy?: string | undefined;
 }): Promise<VehicleExpense> {
   const { data: row, error } = await supabase
     .from("vehicle_expenses")
@@ -1482,16 +1488,16 @@ export async function updateVehicleExpense(
   data: Partial<VehicleExpense>,
 ): Promise<VehicleExpense | null> {
   const updateData: Record<string, unknown> = {};
-  if (data.description !== undefined) updateData.description = data.description;
-  if (data.category !== undefined) updateData.category = data.category;
-  if (data.amount !== undefined) updateData.amount = data.amount;
-  if (data.expenseDate !== undefined) updateData.expense_date = data.expenseDate;
-  if (data.paymentStatus !== undefined) updateData.payment_status = data.paymentStatus;
-  if (data.paidDate !== undefined) updateData.paid_date = data.paidDate;
-  if (data.paymentMethod !== undefined) updateData.payment_method = data.paymentMethod;
-  if (data.supplier !== undefined) updateData.supplier = data.supplier;
-  if (data.notes !== undefined) updateData.notes = data.notes;
-  if (data.updatedBy !== undefined) updateData.updated_by = data.updatedBy;
+  if (data.description !== undefined) updateData["description"] = data.description;
+  if (data.category !== undefined) updateData["category"] = data.category;
+  if (data.amount !== undefined) updateData["amount"] = data.amount;
+  if (data.expenseDate !== undefined) updateData["expense_date"] = data.expenseDate;
+  if (data.paymentStatus !== undefined) updateData["payment_status"] = data.paymentStatus;
+  if (data.paidDate !== undefined) updateData["paid_date"] = data.paidDate;
+  if (data.paymentMethod !== undefined) updateData["payment_method"] = data.paymentMethod;
+  if (data.supplier !== undefined) updateData["supplier"] = data.supplier;
+  if (data.notes !== undefined) updateData["notes"] = data.notes;
+  if (data.updatedBy !== undefined) updateData["updated_by"] = data.updatedBy;
 
   const { data: row, error } = await supabase
     .from("vehicle_expenses")
@@ -1693,9 +1699,9 @@ export function getVehicleProfitability(vehicleId: string): VehicleProfitability
     netMargin: sale.netMargin,
     marginPercent: sale.finalPrice > 0 ? (sale.netMargin / sale.finalPrice) * 100 : 0,
     daysInStock: Math.max(0, daysInStock),
-    sellerName: seller?.name,
+    ...(seller?.name ? { sellerName: seller.name } : {}),
     commissionRate: sale.commissionRate,
-    saleDate: sale.saleDate,
+    ...(sale.saleDate ? { saleDate: sale.saleDate } : {}),
   };
 }
 
@@ -1807,16 +1813,10 @@ export function getSalesBySellerChartData(): SalesBySellerData[] {
 }
 
 export function getExpensesByCategoryChartData(): ExpensesByCategoryData[] {
-  const categories: TransactionCategory[] = [
-    "operacional",
-    "veiculos",
-    "marketing",
-    "comissao",
-    "estrutura",
-    "outros",
-  ];
-  // Since we use specific categories, group them
-  const categoryMap: Record<string, number> = {
+  const categoryMap: Record<
+    "Operacionais" | "Veículos" | "Marketing" | "Comissões" | "Estrutura" | "Outros",
+    number
+  > = {
     Operacionais: 0,
     Veículos: 0,
     Marketing: 0,
@@ -1872,7 +1872,7 @@ export function getExpensesByCategoryChartData(): ExpensesByCategoryData[] {
 
 export function getVehicleProfitabilityChartData(limit = 10): VehicleProfitabilityData[] {
   return getAllVehiclesProfitability()
-    .sort((a, b) => b.margin - a.margin)
+    .sort((a, b) => b.netMargin - a.netMargin)
     .slice(0, limit)
     .map((v) => ({
       vehicleName: v.vehicleName.length > 20 ? v.vehicleName.slice(0, 20) + "..." : v.vehicleName,

@@ -114,7 +114,7 @@ export function SaleFinalizationModal({
         paymentMethod,
         downPayment,
         financedAmount,
-        notes: notes.trim() || undefined,
+        ...(notes.trim() ? { notes: notes.trim() } : {}),
       });
 
       toast.success("Venda finalizada com sucesso!");
@@ -122,10 +122,10 @@ export function SaleFinalizationModal({
     } catch (err: unknown) {
       console.error(err);
       const errObj = err as Record<string, unknown>;
-      const code = errObj.code as string | undefined;
-      const message = errObj.message as string | undefined;
-      const details = errObj.details as string | undefined;
-      const hint = errObj.hint as string | undefined;
+      const code = errObj["code"] as string | undefined;
+      const message = errObj["message"] as string | undefined;
+      const details = errObj["details"] as string | undefined;
+      const hint = errObj["hint"] as string | undefined;
       const fullMsg = [message, details, hint].filter(Boolean).join(" | ");
 
       let msg = "Erro ao finalizar venda";

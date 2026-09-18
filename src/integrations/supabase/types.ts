@@ -8,6 +8,111 @@ export type Database = {
   };
   public: {
     Tables: {
+      financial_audit_log: {
+        Row: {
+          action: string;
+          changed_fields: string[] | null;
+          created_at: string;
+          id: string;
+          new_data: Json | null;
+          old_data: Json | null;
+          record_id: string;
+          table_name: string;
+          user_id: string | null;
+        };
+        Insert: {
+          action: string;
+          changed_fields?: string[] | null;
+          created_at?: string;
+          id?: string;
+          new_data?: Json | null;
+          old_data?: Json | null;
+          record_id: string;
+          table_name: string;
+          user_id?: string | null;
+        };
+        Update: {
+          action?: string;
+          changed_fields?: string[] | null;
+          created_at?: string;
+          id?: string;
+          new_data?: Json | null;
+          old_data?: Json | null;
+          record_id?: string;
+          table_name?: string;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
+      financial_transactions: {
+        Row: {
+          amount: number;
+          category: Database["public"]["Enums"]["transaction_category"];
+          client: string | null;
+          created_at: string;
+          created_by: string | null;
+          description: string;
+          due_date: string | null;
+          id: string;
+          notes: string | null;
+          paid_date: string | null;
+          payment_method: Database["public"]["Enums"]["payment_method"] | null;
+          sale_id: string | null;
+          seller_id: string | null;
+          status: Database["public"]["Enums"]["payment_status"];
+          supplier: string | null;
+          transaction_date: string;
+          type: Database["public"]["Enums"]["transaction_type"];
+          updated_at: string;
+          updated_by: string | null;
+          vehicle_id: string | null;
+        };
+        Insert: {
+          amount: number;
+          category: Database["public"]["Enums"]["transaction_category"];
+          client?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          description: string;
+          due_date?: string | null;
+          id?: string;
+          notes?: string | null;
+          paid_date?: string | null;
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null;
+          sale_id?: string | null;
+          seller_id?: string | null;
+          status?: Database["public"]["Enums"]["payment_status"];
+          supplier?: string | null;
+          transaction_date?: string;
+          type: Database["public"]["Enums"]["transaction_type"];
+          updated_at?: string;
+          updated_by?: string | null;
+          vehicle_id?: string | null;
+        };
+        Update: {
+          amount?: number;
+          category?: Database["public"]["Enums"]["transaction_category"];
+          client?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          description?: string;
+          due_date?: string | null;
+          id?: string;
+          notes?: string | null;
+          paid_date?: string | null;
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null;
+          sale_id?: string | null;
+          seller_id?: string | null;
+          status?: Database["public"]["Enums"]["payment_status"];
+          supplier?: string | null;
+          transaction_date?: string;
+          type?: Database["public"]["Enums"]["transaction_type"];
+          updated_at?: string;
+          updated_by?: string | null;
+          vehicle_id?: string | null;
+        };
+        Relationships: [];
+      };
       leads: {
         Row: {
           created_at: string;
@@ -55,6 +160,170 @@ export type Database = {
           },
         ];
       };
+      sales: {
+        Row: {
+          acquisition_cost: number;
+          announced_price: number;
+          commission_rate: number;
+          commission_value: number;
+          created_at: string;
+          created_by: string | null;
+          discount_amount: number;
+          discount_percent: number;
+          down_payment: number;
+          financed_amount: number;
+          final_price: number;
+          gross_margin: number;
+          had_negotiation: boolean;
+          id: string;
+          net_margin: number;
+          notes: string | null;
+          payment_method: Database["public"]["Enums"]["payment_method"];
+          sale_date: string;
+          seller_id: string | null;
+          status: Database["public"]["Enums"]["sale_status"];
+          total_expenses: number;
+          total_received: number;
+          total_to_receive: number;
+          updated_at: string;
+          updated_by: string | null;
+          vehicle_id: string | null;
+        };
+        Insert: {
+          acquisition_cost: number;
+          announced_price: number;
+          commission_rate?: number;
+          commission_value?: number;
+          created_at?: string;
+          created_by?: string | null;
+          discount_amount?: number;
+          discount_percent?: number;
+          down_payment?: number;
+          financed_amount?: number;
+          final_price: number;
+          had_negotiation?: boolean;
+          id?: string;
+          notes?: string | null;
+          payment_method?: Database["public"]["Enums"]["payment_method"];
+          sale_date?: string;
+          seller_id?: string | null;
+          status?: Database["public"]["Enums"]["sale_status"];
+          total_expenses?: number;
+          total_received?: number;
+          total_to_receive?: number;
+          updated_at?: string;
+          updated_by?: string | null;
+          vehicle_id?: string | null;
+        };
+        Update: {
+          acquisition_cost?: number;
+          announced_price?: number;
+          commission_rate?: number;
+          commission_value?: number;
+          created_at?: string;
+          created_by?: string | null;
+          discount_amount?: number;
+          discount_percent?: number;
+          down_payment?: number;
+          financed_amount?: number;
+          final_price?: number;
+          had_negotiation?: boolean;
+          id?: string;
+          notes?: string | null;
+          payment_method?: Database["public"]["Enums"]["payment_method"];
+          sale_date?: string;
+          seller_id?: string | null;
+          status?: Database["public"]["Enums"]["sale_status"];
+          total_expenses?: number;
+          total_received?: number;
+          total_to_receive?: number;
+          updated_at?: string;
+          updated_by?: string | null;
+          vehicle_id?: string | null;
+        };
+        Relationships: [];
+      };
+      sellers: {
+        Row: {
+          can_receive_commission: boolean;
+          commission_rate: number;
+          created_at: string;
+          email: string | null;
+          id: string;
+          is_active: boolean;
+          name: string;
+          phone: string | null;
+          updated_at: string;
+          user_id: string | null;
+        };
+        Insert: {
+          can_receive_commission?: boolean;
+          commission_rate?: number;
+          created_at?: string;
+          email?: string | null;
+          id?: string;
+          is_active?: boolean;
+          name: string;
+          phone?: string | null;
+          updated_at?: string;
+          user_id?: string | null;
+        };
+        Update: {
+          can_receive_commission?: boolean;
+          commission_rate?: number;
+          created_at?: string;
+          email?: string | null;
+          id?: string;
+          is_active?: boolean;
+          name?: string;
+          phone?: string | null;
+          updated_at?: string;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
+      site_settings: {
+        Row: {
+          address: string;
+          city: string;
+          created_at: string;
+          dealer_name: string;
+          email: string;
+          hours_saturday: string;
+          hours_weekdays: string;
+          id: string;
+          updated_at: string;
+          whatsapp_primary: string;
+          whatsapp_secondary: string;
+        };
+        Insert: {
+          address?: string;
+          city?: string;
+          created_at?: string;
+          dealer_name?: string;
+          email?: string;
+          hours_saturday?: string;
+          hours_weekdays?: string;
+          id?: string;
+          updated_at?: string;
+          whatsapp_primary?: string;
+          whatsapp_secondary?: string;
+        };
+        Update: {
+          address?: string;
+          city?: string;
+          created_at?: string;
+          dealer_name?: string;
+          email?: string;
+          hours_saturday?: string;
+          hours_weekdays?: string;
+          id?: string;
+          updated_at?: string;
+          whatsapp_primary?: string;
+          whatsapp_secondary?: string;
+        };
+        Relationships: [];
+      };
       user_roles: {
         Row: {
           created_at: string;
@@ -76,10 +345,65 @@ export type Database = {
         };
         Relationships: [];
       };
+      vehicle_expenses: {
+        Row: {
+          amount: number;
+          category: Database["public"]["Enums"]["transaction_category"];
+          created_at: string;
+          created_by: string | null;
+          description: string;
+          expense_date: string;
+          id: string;
+          notes: string | null;
+          paid_date: string | null;
+          payment_method: Database["public"]["Enums"]["payment_method"] | null;
+          payment_status: Database["public"]["Enums"]["payment_status"];
+          supplier: string | null;
+          updated_at: string;
+          updated_by: string | null;
+          vehicle_id: string;
+        };
+        Insert: {
+          amount: number;
+          category: Database["public"]["Enums"]["transaction_category"];
+          created_at?: string;
+          created_by?: string | null;
+          description: string;
+          expense_date?: string;
+          id?: string;
+          notes?: string | null;
+          paid_date?: string | null;
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null;
+          payment_status?: Database["public"]["Enums"]["payment_status"];
+          supplier?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+          vehicle_id: string;
+        };
+        Update: {
+          amount?: number;
+          category?: Database["public"]["Enums"]["transaction_category"];
+          created_at?: string;
+          created_by?: string | null;
+          description?: string;
+          expense_date?: string;
+          id?: string;
+          notes?: string | null;
+          paid_date?: string | null;
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null;
+          payment_status?: Database["public"]["Enums"]["payment_status"];
+          supplier?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+          vehicle_id?: string;
+        };
+        Relationships: [];
+      };
       vehicles: {
         Row: {
           accepts_financing: boolean;
           accepts_trade: boolean;
+          acquisition_cost: number;
           brand: string;
           category: string;
           color: string;
@@ -107,6 +431,7 @@ export type Database = {
           single_owner: boolean;
           slug: string;
           status: Database["public"]["Enums"]["vehicle_status"];
+          stock_entry_date: string;
           transmission: string;
           updated_at: string;
           version: string;
@@ -114,6 +439,7 @@ export type Database = {
         Insert: {
           accepts_financing?: boolean;
           accepts_trade?: boolean;
+          acquisition_cost?: number;
           brand?: string;
           category?: string;
           color?: string;
@@ -141,6 +467,7 @@ export type Database = {
           single_owner?: boolean;
           slug: string;
           status?: Database["public"]["Enums"]["vehicle_status"];
+          stock_entry_date?: string;
           transmission?: string;
           updated_at?: string;
           version?: string;
@@ -148,6 +475,7 @@ export type Database = {
         Update: {
           accepts_financing?: boolean;
           accepts_trade?: boolean;
+          acquisition_cost?: number;
           brand?: string;
           category?: string;
           color?: string;
@@ -175,6 +503,7 @@ export type Database = {
           single_owner?: boolean;
           slug?: string;
           status?: Database["public"]["Enums"]["vehicle_status"];
+          stock_entry_date?: string;
           transmission?: string;
           updated_at?: string;
           version?: string;
@@ -196,7 +525,49 @@ export type Database = {
     };
     Enums: {
       app_role: "admin" | "user";
+      commission_status: "pendente" | "a_pagar" | "pago";
       lead_status: "novo" | "em_atendimento" | "concluido" | "descartado";
+      payment_method:
+        | "a_vista"
+        | "financiamento"
+        | "entrada_financiamento"
+        | "consorcio"
+        | "pix"
+        | "transferencia"
+        | "cartao"
+        | "outro";
+      payment_status: "pendente" | "pago" | "atrasado" | "cancelado";
+      sale_status: "concluida" | "cancelada";
+      transaction_category:
+        | "venda_veiculo"
+        | "sinal_veiculo"
+        | "recebimento_financiamento"
+        | "recebimento_parcelado"
+        | "servicos"
+        | "outros_recebimentos"
+        | "compra_veiculo"
+        | "comissao"
+        | "manutencao"
+        | "documentacao"
+        | "despachante"
+        | "lavagem"
+        | "combustivel"
+        | "marketing"
+        | "trafego_pago"
+        | "aluguel"
+        | "energia"
+        | "agua"
+        | "internet"
+        | "contabilidade"
+        | "salarios"
+        | "pro_labore"
+        | "impostos"
+        | "seguros"
+        | "fornecedores"
+        | "equipamentos"
+        | "escritorio"
+        | "outros";
+      transaction_type: "entrada" | "saida";
       vehicle_status: "disponivel" | "reservado" | "vendido";
     };
     CompositeTypes: {
@@ -320,7 +691,51 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      commission_status: ["pendente", "a_pagar", "pago"],
       lead_status: ["novo", "em_atendimento", "concluido", "descartado"],
+      payment_method: [
+        "a_vista",
+        "financiamento",
+        "entrada_financiamento",
+        "consorcio",
+        "pix",
+        "transferencia",
+        "cartao",
+        "outro",
+      ],
+      payment_status: ["pendente", "pago", "atrasado", "cancelado"],
+      sale_status: ["concluida", "cancelada"],
+      transaction_category: [
+        "venda_veiculo",
+        "sinal_veiculo",
+        "recebimento_financiamento",
+        "recebimento_parcelado",
+        "servicos",
+        "outros_recebimentos",
+        "compra_veiculo",
+        "comissao",
+        "manutencao",
+        "documentacao",
+        "despachante",
+        "lavagem",
+        "combustivel",
+        "marketing",
+        "trafego_pago",
+        "aluguel",
+        "energia",
+        "agua",
+        "internet",
+        "contabilidade",
+        "salarios",
+        "pro_labore",
+        "impostos",
+        "seguros",
+        "fornecedores",
+        "equipamentos",
+        "escritorio",
+        "outros",
+      ],
+      transaction_type: ["entrada", "saida"],
       vehicle_status: ["disponivel", "reservado", "vendido"],
     },
   },

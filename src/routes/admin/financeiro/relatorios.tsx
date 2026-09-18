@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminFinanceiroSidebar } from "@/components/admin/financeiro/AdminFinanceiroSidebar";
@@ -41,7 +42,10 @@ function RelatoriosPage() {
         onOpenMobileMenu={openMobileMenu}
         actions={
           <div className="flex items-center gap-2">
-            <Select value={period} onValueChange={setPeriod}>
+            <Select
+              value={period}
+              onValueChange={(value) => setPeriod(value as "month" | "quarter" | "year" | "custom")}
+            >
               <SelectTrigger className="w-40 h-8 text-xs bg-black/50 border-white/10">
                 <SelectValue placeholder="Período" />
               </SelectTrigger>

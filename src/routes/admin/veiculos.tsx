@@ -104,15 +104,22 @@ function AdminVehiclesPage() {
   const handleCreateOrUpdate = async (
     data: Omit<Vehicle, "id" | "slug" | "createdAt" | "updatedAt">,
   ) => {
-    if (editingVehicle) {
-      await updateVehicle(editingVehicle.id, data);
-      toast.success("Veículo atualizado com sucesso!");
-    } else {
-      await createVehicle(data);
-      toast.success("Veículo cadastrado e publicado com sucesso!");
+    try {
+      if (editingVehicle) {
+        await updateVehicle(editingVehicle.id, data);
+        toast.success("Veículo atualizado com sucesso!");
+      } else {
+        await createVehicle(data);
+        toast.success("Veículo cadastrado e publicado com sucesso!");
+      }
+      setIsFormOpen(false);
+      setEditingVehicle(null);
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        `Não foi possível ${editingVehicle ? "atualizar" : "cadastrar"} o veículo. Verifique a conexão e tente novamente.`,
+      );
     }
-    setIsFormOpen(false);
-    setEditingVehicle(null);
   };
 
   const handleConfirmDelete = async () => {
@@ -461,7 +468,9 @@ function AdminVehiclesPage() {
                   id: vehicleToFinalize.id,
                   name: vehicleToFinalize.name,
                   price: vehicleToFinalize.price,
-                  acquisitionCost: vehicleToFinalize.acquisitionCost,
+                  ...(vehicleToFinalize.acquisitionCost
+                    ? { acquisitionCost: vehicleToFinalize.acquisitionCost }
+                    : {}),
                 }
               : null
           }

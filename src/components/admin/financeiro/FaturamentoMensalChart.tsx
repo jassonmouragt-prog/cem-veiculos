@@ -73,7 +73,12 @@ export function FaturamentoMensalChart() {
       <CardHeader className="pb-3 border-b border-white/5">
         <div className="flex flex-row items-center justify-between">
           <CardTitle className="text-base font-bold text-white">Faturamento por mês</CardTitle>
-          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+          <Select
+            value={selectedPeriod}
+            onValueChange={(value) =>
+              setSelectedPeriod(value as "este-ano" | "ano-anterior" | "ultimos-12-meses")
+            }
+          >
             <SelectTrigger className="w-48 h-8 text-xs bg-black/50 border-white/10">
               <SelectValue placeholder="Período" />
             </SelectTrigger>
@@ -109,7 +114,11 @@ export function FaturamentoMensalChart() {
                 domain={[0, maxValue * 1.15]}
               />
               <Tooltip
-                content={<ChartTooltipContent formatter={formatCurrencyTooltip} />}
+                content={
+                  <ChartTooltipContent
+                    formatter={(value) => formatCurrencyTooltip(Number(value))}
+                  />
+                }
                 labelFormatter={(month) => month}
               />
               <Legend />

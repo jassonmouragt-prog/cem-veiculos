@@ -154,8 +154,8 @@ function DespesasPage() {
             <Card className="bg-[#121212] border-white/5 rounded-xl">
               <CardHeader className="pb-3 border-b border-white/5 flex flex-row items-center justify-between">
                 <CardTitle className="text-base font-bold text-white">Todas as Despesas</CardTitle>
-                <Select className="w-48">
-                  <SelectTrigger className="h-8 text-xs bg-black/50 border-white/10">
+                <Select>
+                  <SelectTrigger className="w-48 h-8 text-xs bg-black/50 border-white/10">
                     <SelectValue placeholder="Filtrar categoria" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a1a1a] border-white/10 text-white text-xs">

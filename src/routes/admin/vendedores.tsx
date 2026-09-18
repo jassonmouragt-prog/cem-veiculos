@@ -98,10 +98,10 @@ function VendedoresPage() {
       let msg = "Erro ao salvar vendedor";
 
       const errObj = err as Record<string, unknown>;
-      const code = errObj.code as string | undefined;
-      const message = errObj.message as string | undefined;
-      const details = errObj.details as string | undefined;
-      const hint = errObj.hint as string | undefined;
+      const code = errObj["code"] as string | undefined;
+      const message = errObj["message"] as string | undefined;
+      const details = errObj["details"] as string | undefined;
+      const hint = errObj["hint"] as string | undefined;
 
       const fullMsg = [message, details, hint].filter(Boolean).join(" | ");
 
@@ -408,8 +408,8 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
     try {
       await onSave({
         name: name.trim(),
-        email: email.trim() || undefined,
-        phone: phone.trim() || undefined,
+        ...(email.trim() ? { email: email.trim() } : {}),
+        ...(phone.trim() ? { phone: phone.trim() } : {}),
         commissionRate,
         isActive,
         canReceiveCommission,
@@ -542,7 +542,7 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
         <div className="flex items-center gap-2">
           <Checkbox
             checked={isActive}
-            onCheckedChange={setIsActive}
+            onCheckedChange={(checked) => setIsActive(checked === true)}
             disabled={isSubmitting}
             className="data-[state=checked]:bg-[#E8231F] data-[state=checked]:border-[#E8231F]"
           />
@@ -553,7 +553,7 @@ function SellerForm({ initialSeller, onSave, onCancel }: SellerFormProps) {
         <div className="flex items-center gap-2">
           <Checkbox
             checked={canReceiveCommission}
-            onCheckedChange={setCanReceiveCommission}
+            onCheckedChange={(checked) => setCanReceiveCommission(checked === true)}
             disabled={isSubmitting}
             className="data-[state=checked]:bg-[#E8231F] data-[state=checked]:border-[#E8231F]"
           />

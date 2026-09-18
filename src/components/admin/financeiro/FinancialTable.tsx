@@ -1,4 +1,5 @@
-import { FinancialTransaction, formatCurrency } from "@/lib/db/store";
+import { FinancialTransaction } from "@/lib/db/types";
+import { formatCurrency } from "@/lib/db/store";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

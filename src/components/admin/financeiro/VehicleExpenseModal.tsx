@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Vehicle } from "@/lib/db/types";
+import { Vehicle, TransactionCategory } from "@/lib/db/types";
 import { createVehicleExpense, getVehiclesFromStorage } from "@/lib/db/store";
 import { formatCurrency } from "@/lib/db/store";
 import {
@@ -56,8 +56,8 @@ export function VehicleExpenseModal({
 }: VehicleExpenseModalProps) {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState("manutencao");
-  const [expenseDate, setExpenseDate] = useState(new Date().toISOString().split("T")[0]);
+  const [category, setCategory] = useState<TransactionCategory>("manutencao");
+  const [expenseDate, setExpenseDate] = useState(new Date().toISOString().slice(0, 10));
   const [paymentStatus, setPaymentStatus] = useState<
     "pendente" | "pago" | "atrasado" | "cancelado"
   >("pendente");
@@ -83,7 +83,7 @@ export function VehicleExpenseModal({
       setDescription("");
       setAmount(0);
       setCategory("manutencao");
-      setExpenseDate(new Date().toISOString().split("T")[0]);
+      setExpenseDate(new Date().toISOString().slice(0, 10));
       setPaymentStatus("pendente");
       setPaidDate("");
       setPaymentMethod("a_vista");
@@ -201,7 +201,10 @@ export function VehicleExpenseModal({
 
             <div className="space-y-1.5">
               <Label className="text-xs text-gray-300">Categoria *</Label>
-              <Select value={category} onValueChange={setCategory}>
+              <Select
+                value={category}
+                onValueChange={(value) => setCategory(value as TransactionCategory)}
+              >
                 <SelectTrigger className="bg-black/50 border-white/10 text-white h-10 text-xs sm:text-sm rounded-lg">
                   <SelectValue placeholder="Categoria" />
                 </SelectTrigger>
@@ -233,7 +236,12 @@ export function VehicleExpenseModal({
 
             <div className="space-y-1.5">
               <Label className="text-xs text-gray-300">Status do Pagamento</Label>
-              <Select value={paymentStatus} onValueChange={setPaymentStatus}>
+              <Select
+                value={paymentStatus}
+                onValueChange={(value) =>
+                  setPaymentStatus(value as "pendente" | "pago" | "atrasado" | "cancelado")
+                }
+              >
                 <SelectTrigger className="bg-black/50 border-white/10 text-white h-10 text-xs sm:text-sm rounded-lg">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
@@ -265,7 +273,21 @@ export function VehicleExpenseModal({
 
             <div className="space-y-1.5">
               <Label className="text-xs text-gray-300">Forma de Pagamento</Label>
-              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+              <Select
+                value={paymentMethod}
+                onValueChange={(value) =>
+                  setPaymentMethod(
+                    value as
+                      | "a_vista"
+                      | "financiamento"
+                      | "entrada_financiamento"
+                      | "pix"
+                      | "transferencia"
+                      | "cartao"
+                      | "outro",
+                  )
+                }
+              >
                 <SelectTrigger className="bg-black/50 border-white/10 text-white h-10 text-xs sm:text-sm rounded-lg">
                   <SelectValue placeholder="Forma" />
                 </SelectTrigger>

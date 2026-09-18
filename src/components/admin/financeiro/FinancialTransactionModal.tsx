@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Vehicle } from "@/lib/db/types";
+import { Vehicle, TransactionCategory } from "@/lib/db/types";
 import {
   createFinancialTransaction,
   getVehiclesFromStorage,
@@ -82,8 +82,10 @@ export function FinancialTransactionModal({
 }: FinancialTransactionModalProps) {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState(type === "entrada" ? "venda_veiculo" : "outros");
-  const [transactionDate, setTransactionDate] = useState(new Date().toISOString().split("T")[0]);
+  const [category, setCategory] = useState<TransactionCategory>(
+    type === "entrada" ? "venda_veiculo" : "outros",
+  );
+  const [transactionDate, setTransactionDate] = useState(new Date().toISOString().slice(0, 10));
   const [dueDate, setDueDate] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<
     | "a_vista"
@@ -115,7 +117,7 @@ export function FinancialTransactionModal({
       setDescription("");
       setAmount(0);
       setCategory(type === "entrada" ? "venda_veiculo" : "outros");
-      setTransactionDate(new Date().toISOString().split("T")[0]);
+      setTransactionDate(new Date().toISOString().slice(0, 10));
       setDueDate("");
       setPaymentMethod("a_vista");
       setStatus("pendente");
@@ -222,7 +224,10 @@ export function FinancialTransactionModal({
 
             <div className="space-y-1.5">
               <Label className="text-xs text-gray-300">Categoria *</Label>
-              <Select value={category} onValueChange={setCategory}>
+              <Select
+                value={category}
+                onValueChange={(value) => setCategory(value as TransactionCategory)}
+              >
                 <SelectTrigger className="bg-black/50 border-white/10 text-white h-10 text-xs sm:text-sm rounded-lg">
                   <SelectValue placeholder="Selecione a categoria" />
                 </SelectTrigger>
@@ -270,7 +275,18 @@ export function FinancialTransactionModal({
             <Label className="text-xs text-gray-300">Forma de Pagamento</Label>
             <RadioGroup
               value={paymentMethod}
-              onValueChange={setPaymentMethod}
+              onValueChange={(value) =>
+                setPaymentMethod(
+                  value as
+                    | "a_vista"
+                    | "financiamento"
+                    | "entrada_financiamento"
+                    | "pix"
+                    | "transferencia"
+                    | "cartao"
+                    | "outro",
+                )
+              }
               className="flex flex-wrap gap-3"
             >
               {[
@@ -301,7 +317,12 @@ export function FinancialTransactionModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-white/5">
             <div className="space-y-1.5">
               <Label className="text-xs text-gray-300">Status</Label>
-              <Select value={status} onValueChange={setStatus}>
+              <Select
+                value={status}
+                onValueChange={(value) =>
+                  setStatus(value as "pendente" | "pago" | "atrasado" | "cancelado")
+                }
+              >
                 <SelectTrigger className="bg-black/50 border-white/10 text-white h-10 text-xs sm:text-sm rounded-lg">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
