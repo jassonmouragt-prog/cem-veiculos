@@ -6,6 +6,7 @@ import {
   deleteLead,
   subscribeToStore,
   formatDate,
+  buildWhatsAppUrl,
 } from "@/lib/db/store";
 import { Lead, LeadStatus } from "@/lib/db/types";
 import { AdminHeader } from "@/components/admin/AdminHeader";
@@ -234,7 +235,10 @@ function AdminLeadsPage() {
                       </Select>
 
                       <a
-                        href={`https://wa.me/55${cleanPhone}?text=Olá%20${encodeURIComponent(lead.name)},%20sou%20da%20C&M%20Veículos!%20Recebi%20seu%20interesse%20no%20${encodeURIComponent(lead.vehicleName || "nosso estoque")}.`}
+                        href={buildWhatsAppUrl(
+                          cleanPhone,
+                          `Olá ${lead.name}, sou da C&M Veículos! Recebi seu interesse no ${lead.vehicleName || "nosso estoque"}.`,
+                        )}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

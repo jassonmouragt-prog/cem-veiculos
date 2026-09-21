@@ -95,9 +95,7 @@ function VehicleDetailPage() {
     }
   };
 
-  const whatsappMessage = encodeURIComponent(
-    `Olá! Gostaria de mais informações sobre o veículo ${vehicle.name} (${vehicle.modelYear}) anunciado por ${formatCurrency(vehicle.price)}.`,
-  );
+  const whatsappMessage = `Olá! Gostaria de mais informações sobre o veículo ${vehicle.name} (${vehicle.modelYear}) anunciado por ${formatCurrency(vehicle.price)}.`;
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-[#E8231F] selection:text-white">

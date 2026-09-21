@@ -7,6 +7,7 @@ import {
   subscribeToStore,
   formatCurrency,
   formatDate,
+  buildWhatsAppUrl,
 } from "@/lib/db/store";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { MetricCard } from "@/components/admin/MetricCard";
@@ -232,7 +233,7 @@ function DashboardPage() {
                         {lead.vehicleName || "Interesse geral"}
                       </span>
                       <a
-                        href={`https://wa.me/55${lead.phone.replace(/\D/g, "")}`}
+                        href={buildWhatsAppUrl(lead.phone)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[11px] text-gray-400 hover:text-emerald-400 transition-colors flex items-center gap-1 shrink-0"
