@@ -678,23 +678,27 @@ export async function createLead(data: {
   vehicleName?: string;
   message?: string;
 }): Promise<Lead> {
+  // O site público envia leads com a chave anônima, que possui apenas
+  // permissão de INSERT na tabela `leads`. Por isso não usamos `.select()`
+  // (isso exigiria SELECT/RETURNING) e montamos o objeto localmente.
+  const now = new Date().toISOString();
   const payload = {
+    id: randomId(),
     name: data.name.trim(),
     phone: data.phone.trim(),
     email: data.email?.trim() ?? null,
     vehicle_id: data.vehicleId ?? null,
     vehicle_name: data.vehicleName ?? null,
     message: data.message?.trim() ?? null,
+    status: "novo",
+    created_at: now,
+    updated_at: now,
   };
 
-  const { data: row, error } = await supabase
-    .from("leads")
-    .insert(payload as never)
-    .select("*")
-    .single();
+  const { error } = await supabase.from("leads").insert(payload as never);
 
   if (error) throw error;
-  const lead = mapLead(row);
+  const lead = mapLead(payload);
   cachedLeads = [lead, ...cachedLeads];
   notifyListeners();
   return lead;
