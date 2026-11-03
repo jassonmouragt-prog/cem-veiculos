@@ -9,6 +9,7 @@ import {
   getPublicVehicles,
   seedVehicles,
   subscribeToStore,
+  getVehicleThumbnailUrl,
   formatCurrency,
   formatMileage,
 } from "@/lib/db/store";
@@ -156,7 +157,7 @@ export function FeaturedVehicles({
                   <Link to="/veiculos/$slug" params={{ slug: v.slug }} className="block" preload="intent">
                     <div className="relative aspect-[16/10] overflow-hidden bg-black">
                       <img
-                        src={coverImage}
+                        src={getVehicleThumbnailUrl(coverImage)}
                         alt={v.name}
                         loading="lazy"
                         decoding="async"
