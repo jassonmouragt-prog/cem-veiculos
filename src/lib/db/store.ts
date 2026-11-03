@@ -639,15 +639,10 @@ function randomId(): string {
 }
 
 /**
- * Envia fotos para o bucket `vehicle-images` e retorna as URLs públicas.
- * Substitui o armazenamento em base64 no banco (que pesa muito no
- * carregamento do site e do painel).
- */
-/**
  * Prepares vehicle photos in the browser before uploading to Supabase Storage.
  * Keep processing client-side: no paid Supabase image transformations required.
  */
-async function optimizeVehiclePhoto(file: File): Promise<File> {
+async function optimizeVehiclePhoto(file: File, maxDimension = 1600, quality = 0.78): Promise<File> {
   if (!file.type.startsWith("image/") || file.type === "image/svg+xml" || file.type === "image/gif") {
     throw new Error("Use fotos JPG, PNG, WebP ou AVIF. GIF e SVG não são suportados.");
   }
@@ -659,7 +654,6 @@ async function optimizeVehiclePhoto(file: File): Promise<File> {
     image.src = objectUrl;
     await image.decode();
 
-    const maxDimension = 1600;
     const scale = Math.min(1, maxDimension / Math.max(image.naturalWidth, image.naturalHeight));
     const width = Math.max(1, Math.round(image.naturalWidth * scale));
     const height = Math.max(1, Math.round(image.naturalHeight * scale));
@@ -676,7 +670,7 @@ async function optimizeVehiclePhoto(file: File): Promise<File> {
       canvas.toBlob(
         (result) => result ? resolve(result) : reject(new Error("Não foi possível converter a foto.")),
         "image/webp",
-        0.78,
+        quality,
       );
     });
     if (blob.type !== "image/webp") {
@@ -694,21 +688,49 @@ export async function uploadVehicleImages(files: File[]): Promise<string[]> {
 
   for (const file of files) {
     const optimized = await optimizeVehiclePhoto(file);
-    const path = `vehicles/${randomId()}.webp`;
+    const thumbnail = await optimizeVehiclePhoto(file, 640, 0.68);
+    const id = randomId();
+    const path = `vehicles/${id}.webp`;
+    const thumbnailPath = `vehicles/${id}-thumb.webp`;
+    const bucket = supabase.storage.from("vehicle-images");
+    const options = { cacheControl: "2592000", upsert: false, contentType: "image/webp" };
 
-    const { error } = await supabase.storage.from("vehicle-images").upload(path, optimized, {
-      cacheControl: "2592000",
-      upsert: false,
-      contentType: "image/webp",
-    });
+    // Upload the thumbnail first, then the gallery image. Both URLs remain public.
+    const { error: thumbnailError } = await bucket.upload(thumbnailPath, thumbnail, options);
+    if (thumbnailError) throw thumbnailError;
 
-    if (error) throw error;
+    const { error } = await bucket.upload(path, optimized, options);
+    if (error) {
+      // Best-effort cleanup of the thumbnail if the full upload fails.
+      await bucket.remove([thumbnailPath]);
+      throw error;
+    }
 
-    const { data } = supabase.storage.from("vehicle-images").getPublicUrl(path);
+    const { data } = bucket.getPublicUrl(path);
     urls.push(data.publicUrl);
   }
 
   return urls;
+}
+
+/**
+ * New uploads have a sibling 640px thumbnail for stock cards.
+ * Existing photos and external URLs keep working without a migration.
+ */
+export function getVehicleThumbnailUrl(url: string | undefined): string | undefined {
+  if (!url) return url;
+  try {
+    const parsed = new URL(url);
+    if (
+      parsed.hostname !== "lhbjkdtwlmqucqoqjdyb.supabase.co" ||
+      !parsed.pathname.startsWith("/storage/v1/object/public/vehicle-images/vehicles/") ||
+      !/\/vehicles\/[a-zA-Z0-9-]+\.webp$/.test(parsed.pathname)
+    ) return url;
+    parsed.pathname = parsed.pathname.replace(/\.webp$/, "-thumb.webp");
+    return parsed.toString();
+  } catch {
+    return url;
+  }
 }
 
 // --- LEADS API ---
