@@ -4,6 +4,7 @@ import {
   getPublicVehicles,
   seedVehicles,
   subscribeToStore,
+  getVehicleThumbnailUrl,
   formatCurrency,
   formatMileage,
 } from "@/lib/db/store";
@@ -449,7 +450,7 @@ function EstoquePage() {
                     <div className="relative aspect-[16/10] overflow-hidden bg-black">
                       {coverImage ? (
                         <img
-                          src={coverImage}
+                          src={getVehicleThumbnailUrl(coverImage)}
                           alt={v.name}
                           loading="lazy"
                           decoding="async"
