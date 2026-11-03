@@ -690,8 +690,8 @@ export async function uploadVehicleImages(files: File[]): Promise<string[]> {
     const optimized = await optimizeVehiclePhoto(file);
     const thumbnail = await optimizeVehiclePhoto(file, 640, 0.68);
     const id = randomId();
-    const path = `vehicles/${id}.webp`;
-    const thumbnailPath = `vehicles/${id}-thumb.webp`;
+    const path = `vehicles/optimized-${id}.webp`;
+    const thumbnailPath = `vehicles/optimized-${id}-thumb.webp`;
     const bucket = supabase.storage.from("vehicle-images");
     const options = { cacheControl: "2592000", upsert: false, contentType: "image/webp" };
 
@@ -724,7 +724,7 @@ export function getVehicleThumbnailUrl(url: string | undefined): string | undefi
     if (
       parsed.hostname !== "lhbjkdtwlmqucqoqjdyb.supabase.co" ||
       !parsed.pathname.startsWith("/storage/v1/object/public/vehicle-images/vehicles/") ||
-      !/\/vehicles\/[a-zA-Z0-9-]+\.webp$/.test(parsed.pathname)
+      !/\/vehicles\/optimized-[a-zA-Z0-9-]+\.webp$/.test(parsed.pathname)
     ) return url;
     parsed.pathname = parsed.pathname.replace(/\.webp$/, "-thumb.webp");
     return parsed.toString();
