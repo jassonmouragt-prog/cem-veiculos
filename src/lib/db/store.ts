@@ -643,20 +643,63 @@ function randomId(): string {
  * Substitui o armazenamento em base64 no banco (que pesa muito no
  * carregamento do site e do painel).
  */
+/**
+ * Prepares vehicle photos in the browser before uploading to Supabase Storage.
+ * Keep processing client-side: no paid Supabase image transformations required.
+ */
+async function optimizeVehiclePhoto(file: File): Promise<File> {
+  if (!file.type.startsWith("image/") || file.type === "image/svg+xml" || file.type === "image/gif") {
+    throw new Error("Use fotos JPG, PNG, WebP ou AVIF. GIF e SVG não são suportados.");
+  }
+
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = objectUrl;
+    await image.decode();
+
+    const maxDimension = 1600;
+    const scale = Math.min(1, maxDimension / Math.max(image.naturalWidth, image.naturalHeight));
+    const width = Math.max(1, Math.round(image.naturalWidth * scale));
+    const height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Não foi possível processar esta foto.");
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+    context.drawImage(image, 0, 0, width, height);
+
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (result) => result ? resolve(result) : reject(new Error("Não foi possível converter a foto.")),
+        "image/webp",
+        0.78,
+      );
+    });
+    if (blob.type !== "image/webp") {
+      throw new Error("O navegador não conseguiu converter a foto para WebP.");
+    }
+    const baseName = file.name.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "-");
+    return new File([blob], `${baseName || "veiculo"}.webp`, { type: "image/webp" });
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 export async function uploadVehicleImages(files: File[]): Promise<string[]> {
   const urls: string[] = [];
 
   for (const file of files) {
-    const extension = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const optimized = await optimizeVehiclePhoto(file);
+    const path = `vehicles/${randomId()}.webp`;
 
-    if (!extension) continue;
-
-    const path = `vehicles/${randomId()}.${extension}`;
-
-    const { error } = await supabase.storage.from("vehicle-images").upload(path, file, {
-      cacheControl: "3600",
+    const { error } = await supabase.storage.from("vehicle-images").upload(path, optimized, {
+      cacheControl: "2592000",
       upsert: false,
-      contentType: file.type || "image/jpeg",
+      contentType: "image/webp",
     });
 
     if (error) throw error;
